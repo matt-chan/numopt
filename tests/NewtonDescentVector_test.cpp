@@ -14,7 +14,7 @@
 /**
  *  Implement a simple vector function that returns (x.x, 2x.x)
  */
-Eigen::VectorXd f(Eigen::VectorXd& x) {
+Eigen::VectorXd f(const Eigen::VectorXd& x) {
 
     Eigen::VectorXd f (2);
 
@@ -28,7 +28,7 @@ Eigen::VectorXd f(Eigen::VectorXd& x) {
 /**
  *  Implement the Jacobian of the previous function
  */
-Eigen::MatrixXd J(Eigen::VectorXd& x) {
+Eigen::MatrixXd J(const Eigen::VectorXd& x) {
 
     Eigen::MatrixXd J (2, 2);
 

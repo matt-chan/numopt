@@ -13,7 +13,7 @@ namespace numopt {
 /**
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
-NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, Eigen::VectorXd (*f)(Eigen::VectorXd& x), Eigen::MatrixXd (*J)(Eigen::VectorXd& x), double threshold) :
+NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, Eigen::VectorXd (*f)(const Eigen::VectorXd& x), Eigen::MatrixXd (*J)(const Eigen::VectorXd& x), double threshold) :
     x0 (x0),
     f (f),
     J (J),
