@@ -2,32 +2,32 @@
 
 namespace numopt {
 
-    class NewtonBase {
+    class NewtonDescent {
         __ private members __
             - const size_t MAX_NO_ITERATIONS = 128
-    }
-
-    class Newton {
-        __ private members __
-
-    }
-
-    class NewtonVector {
-        __ private members __
-
-        __ private methods __
-
+            - const double THRESHOLD = 1.0e-8
         == constructors ==
-            **Newton**(Eigen::VectorXd& x0, Eigen::VectorXd (*f)(), Eigen::MatrixXd (*J)())
+            **Newton**(Eigen::VectorXd& x0, double (*f)(), Eigen::VectorXd (*gradf)())
         __ public methods __
-            + Eigen::VectorXd& **solve**()
+            + double& **solve**()
+    }
+
+
+    class NewtonDescentVector {
+        __ private members __
+            - {static} constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128
+            - {static} const double convergence_threshold = 1.0e-8
+
+            - double converged = false
+
+            - const Eigen::VectorXd& x0
+            - Eigen::VectorXd (*f)(Eigen::VectorXd& x)
+            - Eigen::MatrixXd (*J)(Eigen::VectorXd& x)
+        == constructors ==
+            **NewtonVector**(const Eigen::VectorXd& x0, Eigen::VectorXd (*f)(Eigen::VectorXd& x), Eigen::MatrixXd (*J)(Eigen::VectorXd& x), double convergence_threshold = 1.0e-08)
+        __ public methods __
+            + Eigen::VectorXd **solve**()
     }
 }
-
-
-numopt.Newton <|-- numopt.NewtonBase
-numopt.NewtonVector <|-- numopt.NewtonBase
-
-
 
 @enduml
