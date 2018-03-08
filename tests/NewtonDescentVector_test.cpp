@@ -64,7 +64,8 @@ BOOST_AUTO_TEST_CASE ( norm_squared_function ) {
     // Do the numerical optimization
     Eigen::VectorXd x0 (2);
     x0 << 3, 2;
-    numopt::NewtonDescentVector newton_vector_opt (x0, f, J);
+    numopt::NewtonDescentVector newton_vector_opt (x0, f, J);  // apparently, the compiler can convert Eigen::VectorXd (*f)(const Eigen::VectorXd&)
+                                                               // to std::function<Eigen::VectorXd (const Eigen::VectorXd&)
     Eigen::VectorXd x = newton_vector_opt.solve();
 
 

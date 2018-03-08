@@ -13,11 +13,11 @@ namespace numopt {
 /**
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
-NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, Eigen::VectorXd (*f)(const Eigen::VectorXd& x), Eigen::MatrixXd (*J)(const Eigen::VectorXd& x), double threshold) :
+NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold) :
     x0 (x0),
     f (f),
     J (J),
-    convergence_threshold (threshold)
+    convergence_threshold (convergence_threshold)
 {}
 
 
@@ -37,12 +37,12 @@ Eigen::VectorXd NewtonDescentVector::solve() {
     Eigen::VectorXd x = this->x0;  // start the Newton procedure with the initial guess
     while ((!this->converged)) {
 
-        // 1. Calculate F(x) and J(x)
-        Eigen::VectorXd F = (*this->f)(x);
-        Eigen::MatrixXd J = (*this->J)(x);
+        // 1. Calculate f(x) and J(x)
+        Eigen::VectorXd f = this->f(x);
+        Eigen::MatrixXd J = this->J(x);
 
         // 2. Solve the Newton step
-        Eigen::VectorXd dx = J.colPivHouseholderQr().solve(-F);
+        Eigen::VectorXd dx = J.colPivHouseholderQr().solve(-f);
 
         // 3. Update the geminal coefficients
         x += dx;
