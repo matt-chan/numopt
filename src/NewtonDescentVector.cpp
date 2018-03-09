@@ -1,5 +1,7 @@
 #include "NewtonDescentVector.hpp"
 
+#include <iostream>
+
 
 
 namespace numopt {
@@ -35,7 +37,7 @@ Eigen::VectorXd NewtonDescentVector::solve() {
 
 
     Eigen::VectorXd x = this->x0;  // start the Newton procedure with the initial guess
-    while ((!this->converged)) {
+    while (!(this->converged)) {
 
         // 1. Calculate f(x) and J(x)
         Eigen::VectorXd f = this->f(x);
