@@ -13,7 +13,7 @@ A C++ library for performing numerical optimization.
 To install this library:
 1. clone the master branch
 
-        git clone ttps://github.com/GQCG/numopt.git --branch master --single-branch
+        git clone https://github.com/GQCG/numopt.git --branch master --single-branch
         cd numopt
 
 2. perform an out-of-source cmake build:
