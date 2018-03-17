@@ -32,6 +32,7 @@ namespace numopt {
 
     class DavidsonSolver {
         __ private members __
+            - {static} constexpr size_t maximum_numer_of_iterations = 128
             - const double residue_tolerance
             - const double correction_threshold
             - const size_t maximum_subspace_dimension
@@ -39,13 +40,14 @@ namespace numopt {
             - const Eigen::VectorXd t0
             - const numopt::VectorFunction matrixVectorProduct
 
+            - bool is_solved
             - double eigenvalue
             - Eigen::VectorXd eigenvector
         == constructors ==
             **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
         __ public methods __
-            + **get_eigenvalue**()
-            + **get_eigenvector**()
+            + **get_eigenvalue**() const
+            + **get_eigenvector**() const
 
             + **solve**()
     }
