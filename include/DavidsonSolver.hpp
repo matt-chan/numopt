@@ -40,6 +40,11 @@ public:
      */
     DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t_0, const Eigen::VectorXd& diagonal, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15);
 
+    /**
+     *  Constructor based on a given matrix @param A and an initial guess @param t_0
+     */
+    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15);
+
 
     // GETTERS
     double get_eigenvalue() const;

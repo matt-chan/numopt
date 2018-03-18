@@ -45,6 +45,13 @@ install:
   - sudo tar --bzip2 -xf /tmp/boost/boost_1_65_1.tar.bz2
   - export BOOST_ROOT=/usr/local/boost_1_65_1
 
+  # Install the cpputil library
+  - mkdir /tmp/cpputil && cd /tmp/cpputil
+  - git clone https://github.com/GQCG/cpputil.git --branch master --single-branch
+  - cd cpputil
+  - mkdir build && cd build
+  - cmake .. && make && make test && sudo make install
+
 
 # Run the build script
 script:
