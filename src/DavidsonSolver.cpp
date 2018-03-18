@@ -12,7 +12,7 @@ namespace numopt {
 /**
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct initial guess @param t_0.
  */
-DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15) :
+DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
     t_0 (t_0),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
