@@ -32,7 +32,7 @@ namespace numopt {
 
     class DavidsonSolver {
         __ private members __
-            - {static} constexpr size_t maximum_numer_of_iterations = 128
+            - {static} constexpr size_t maximum_number_of_iterations = 128
             - const double residue_tolerance
             - const double correction_threshold
             - const size_t maximum_subspace_dimension

@@ -188,7 +188,7 @@ double DavidsonSolver::solve() {
             iteration_counter ++;
 
             // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
-            if (iteration_counter >= this->maximum_numer_of_iterations) {
+            if (iteration_counter >= this->maximum_number_of_iterations) {
                 throw std::runtime_error("The Davidson algorithm did not converge.");
             }
         }

@@ -17,7 +17,7 @@ namespace numopt {
  */
 class DavidsonSolver {
 private:
-    static constexpr size_t maximum_numer_of_iterations = 128;
+    static constexpr size_t maximum_number_of_iterations = 128;
 
     const double residue_tolerance;  // the tolerance on the norm of the residual vector
     const double correction_threshold;  // the threshold used in solving the (approximated) residue correction equation
