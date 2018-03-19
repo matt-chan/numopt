@@ -8,4 +8,4 @@ find_package(Boost REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 # Find cpputil
-find_package(cpputil 1.1.1 REQUIRED)
+find_package(cpputil 1.2.0 REQUIRED)

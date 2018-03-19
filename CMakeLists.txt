@@ -35,3 +35,8 @@ add_subdirectory(${PROJECT_SOURCE_FOLDER})
 # Set up testing
 enable_testing()
 add_subdirectory(${PROJECT_TESTS_FOLDER})
+
+
+
+# Create an executable
+add_subdirectory(${PROJECT_EXECUTABLES_FOLDER})

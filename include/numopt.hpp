@@ -5,6 +5,7 @@
 
 // This file acts as a collective include header
 #include "common.hpp"
+#include "DavidsonSolver.hpp"
 #include "NewtonDescentVector.hpp"
 #include "version.hpp"
 
