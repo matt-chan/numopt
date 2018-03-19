@@ -41,8 +41,76 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
     Eigen::VectorXd test_eigenvector = davidson_solver.get_eigenvector();
 
 
-    std::cout << test_eigenvalue << std::endl;
-    std::cout << test_eigenvector << std::endl;
     BOOST_CHECK(std::abs(test_eigenvalue - ref_eigenvalue) < 0.005);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_eigenvector, ref_eigenvector, 0.005));
+}
+
+
+BOOST_AUTO_TEST_CASE( liu_50 ){
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 50;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    double ref_eigenvalue = eigensolver.eigenvalues()(0);
+    Eigen::VectorXd ref_eigenvector = eigensolver.eigenvectors().col(0);
+
+
+    // Solve using the Davidson diagonalization, supplying an initial guess
+    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
+    t_0(0) = 1;
+    numopt::DavidsonSolver davidson_solver (A, t_0);
+    davidson_solver.solve();
+
+    double test_eigenvalue = davidson_solver.get_eigenvalue();
+    Eigen::VectorXd test_eigenvector = davidson_solver.get_eigenvector();
+
+
+    BOOST_CHECK(std::abs(test_eigenvalue - ref_eigenvalue) < 1.0e-08);
+    BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_eigenvector, ref_eigenvector, 1.0e-08));
+}
+
+
+BOOST_AUTO_TEST_CASE( liu_1000 ){
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 1000;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    double ref_eigenvalue = eigensolver.eigenvalues()(0);
+    Eigen::VectorXd ref_eigenvector = eigensolver.eigenvectors().col(0);
+
+
+    // Solve using the Davidson diagonalization, supplying an initial guess
+    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
+    t_0(0) = 1;
+    numopt::DavidsonSolver davidson_solver (A, t_0);
+    davidson_solver.solve();
+
+    double test_eigenvalue = davidson_solver.get_eigenvalue();
+    Eigen::VectorXd test_eigenvector = davidson_solver.get_eigenvector();
+
+
+    BOOST_CHECK(std::abs(test_eigenvalue - ref_eigenvalue) < 1.0e-08);
+    BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_eigenvector, ref_eigenvector, 1.0e-08));
 }

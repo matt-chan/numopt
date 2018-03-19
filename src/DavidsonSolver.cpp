@@ -84,30 +84,23 @@ double DavidsonSolver::solve() {
 
     // Calculate the expensive matrix-vector product
     Eigen::VectorXd vA_1 = this->matrixVectorProduct(v_1);
-//    std::cout << "vA_1: " << std::endl << vA_1 << std::endl << std::endl;
 
 
     // Expand the subspaces V and VA
     Eigen::MatrixXd V = Eigen::MatrixXd::Zero(this->dim, 1);
     V.col(0) = v_1;
-//    std::cout << "V" << std::endl << V << std::endl << std::endl;
 
     Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, 1);
     VA.col(0) = vA_1;
-//    std::cout << "VA" << std::endl << VA << std::endl << std::endl;
 
 
     // Calculate the Rayleigh quotient, i.e. the subspace matrix of size 1
     double theta = v_1.dot(vA_1);
     Eigen::MatrixXd M = Eigen::MatrixXd::Constant(1, 1, theta);
-    std::cout << theta << std::endl << std::endl;
-//    std::cout << "M" << std::endl << M << std::endl << std::endl;
 
 
     // Calculate the associated residual vector
     Eigen::VectorXd r = vA_1 - theta * v_1;
-//    std::cout << "r" << std::endl << r << std::endl << std::endl;
-
 
     // Check for convergence
     if (r.norm() < this->residue_tolerance) {
@@ -121,20 +114,15 @@ double DavidsonSolver::solve() {
     while (!(this->is_solved)) {
         // Approximately solve the residue equation by using coefficient-wise quotients
         Eigen::VectorXd denominator = Eigen::VectorXd::Constant(this->dim, theta) - this->diagonal;
-//        std::cout << "denominator" << std::endl << denominator << std::endl << std::endl;
-//        std::cout << "denominator.array().abs >= correction_threshold" << std::endl << (denominator.array().abs() >= correction_threshold) << std::endl << std::endl;
         Eigen::VectorXd t = (denominator.array().abs() >= correction_threshold).select(r.cwiseQuotient(denominator), Eigen::VectorXd::Zero(this->dim));
-        std::cout << "t" << std::endl << t << std::endl << std::endl;
 
 
         // Project on the orthogonal subspace of V
         Eigen::VectorXd t_orthogonal = t - V * (V.transpose() * t);
-//        std::cout << "t_orthogonal" << std::endl << t_orthogonal << std::endl << std::endl;
 
 
         // Calculate the new subspace vector
         Eigen::VectorXd v = t_orthogonal / t_orthogonal.norm();
-//        std::cout << "v" << std::endl << v << std::endl << std::endl;
 
 
         // Calculate the expensive matrix-vector product
@@ -164,11 +152,9 @@ double DavidsonSolver::solve() {
         // Expand the subspaces V and VA
         V.conservativeResize(Eigen::NoChange, V.cols()+1);
         V.col(V.cols()-1) = v;
-//        std::cout << "V" << std::endl << V << std::endl << std::endl;
 
         VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
         VA.col(VA.cols()-1) = vA;
-//        std::cout << "VA" << std::endl << VA << std::endl << std::endl;
 
 
         // Calculate the subspace matrix

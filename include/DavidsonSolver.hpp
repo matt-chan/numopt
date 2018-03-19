@@ -28,7 +28,7 @@ private:
     const numopt::VectorFunction matrixVectorProduct;
     const size_t dim;  // the dimension of the eigenvalue problem
 
-    bool is_solved;
+    bool is_solved = false;
     double eigenvalue;
     Eigen::VectorXd eigenvector;
 
