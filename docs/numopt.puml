@@ -30,30 +30,89 @@ namespace numopt {
     }
 
 
-    class DavidsonSolver {
-        __ private members __
-            - {static} constexpr size_t maximum_number_of_iterations = 128
-            - const double residue_tolerance
-            - const double correction_threshold
-            - const size_t maximum_subspace_dimension
 
-            - const Eigen::VectorXd diagonal
-            - const Eigen::VectorXd t0
-            - const numopt::VectorFunction matrixVectorProduct
-            - const size_t dim
+    namespace eigenproblem {
 
-            - bool is_solved = false
-            - double eigenvalue
-            - Eigen::VectorXd eigenvector
-        == constructors ==
-            **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t_0, const Eigen::VectorXd& diagonal, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
-            **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
-        __ public methods __
-            + **get_eigenvalue**() const
-            + **get_eigenvector**() const
 
-            + **solve**()
+        abstract class BaseEigenvalueSolver {
+            __ protected members __
+                # const size_t dim
+
+                # bool is_solved = false
+                # double eigenvalue
+                # Eigen::VectorXd eigenvector
+            == protected constructors ==
+                # explicit **BaseEigenvalueSolver**(size_t dim)
+            == destructor ==
+                virtual ~ **BaseEigenvalueSolver**() = default
+            __ public pure virtual methods __
+                + virtual void **solve**() = 0
+            __ public methods __
+                + **get_eigenvalue**() const
+                + **get_eigenvector**() const
+        }
+
+        BaseMatrixSolver --|> BaseEigenvalueSolver
+        abstract class BaseMatrixSolver {
+            == destructor ==
+                virtual ~ **BaseMatrixSolver**() = default
+            __ public pure virtual methods __
+                + virtual void **addToMatrix**(double value, size_t index1, size_t index2) = 0
+        }
+
+
+        DenseSolver --|> BaseMatrixSolver
+        class DenseSolver {
+            __ private members __
+                - Eigen::MatrixXd hamiltonian
+            == constructors ==
+                explicit **DenseSolver**(size_t dim)
+            == destructor ==
+                 **~DenseSolver**() override = default
+            __ public methods __
+                + void **solve**() override
+                + void **addToMatrix**(double value, size_t index1, size_t index2) override
+        }
+
+
+        SparseSolver --|> BaseMatrixSolver
+        class SparseSolver {
+            __ private members __
+                - Eigen::SparseMatrix<double> hamiltonian
+            == constructors ==
+                explicit **SparseSolver**(size_t dim)
+            == destructor ==
+                 **~SparseSolver**() override = default
+            __ public methods __
+                + virtual void **solve**() override
+                + void **addToMatrix**(double value, size_t index1, size_t index2) override
+        }
+
+
+        DavidsonSolver --|> BaseEigenvalueSolver
+        class DavidsonSolver {
+            __ private members __
+                - constexpr size_t maximum_number_of_iterations = 128
+                - const double residue_tolerance
+                - const double correction_threshold
+                - const size_t maximum_subspace_dimension
+
+                - const Eigen::VectorXd diagonal
+                - const Eigen::VectorXd t_0
+                - const numopt::VectorFunction matrixVectorProduct
+            == constructors ==
+                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t_0, const Eigen::VectorXd& diagonal, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
+                **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
+            == destructor ==
+                 **~DavidsonSolver**() override = default
+            __ public methods __
+                + void **solve**() override
+        }
+
+
     }
+
+
 }
 
 @enduml
