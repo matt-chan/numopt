@@ -15,7 +15,7 @@ namespace eigenproblem {
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct initial guess @param t_0.
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(this->t_0.size())),
+    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
     t_0 (t_0),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
@@ -29,7 +29,7 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(this->t_0.size())),
+    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
     t_0 (t_0),
     matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
     diagonal (A.diagonal()),

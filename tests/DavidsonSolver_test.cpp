@@ -34,7 +34,9 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
     // Solve using the Davidson diagonalization, supplying an initial guess
     Eigen::VectorXd t_0 (5);
     t_0 << 1, 0, 0, 0, 0;
+    std::cout << "Did everything before DavidsonSolver instance" << std::endl;
     numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
+    std::cout << "Made a DavidsonSolver instance" << std::endl;
     davidson_solver.solve();
 
     double test_eigenvalue = davidson_solver.get_eigenvalue();

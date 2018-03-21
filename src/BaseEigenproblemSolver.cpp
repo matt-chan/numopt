@@ -1,5 +1,5 @@
 #include "BaseEigenproblemSolver.hpp"
-
+#include <iostream>
 
 
 namespace numopt {
@@ -17,7 +17,9 @@ BaseEigenproblemSolver::BaseEigenproblemSolver(size_t dim) :
     dim (dim),
     eigenvalue (0.0),
     eigenvector (Eigen::VectorXd::Zero(this->dim))
-{}
+{
+    std::cout << "In BaseEigenproblemSolver" << std::endl;
+}
 
 
 
