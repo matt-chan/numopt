@@ -34,7 +34,7 @@ namespace numopt {
     namespace eigenproblem {
 
 
-        abstract class BaseEigenvalueSolver {
+        abstract class BaseEigenproblemSolver {
             __ protected members __
                 # const size_t dim
 
@@ -42,9 +42,9 @@ namespace numopt {
                 # double eigenvalue
                 # Eigen::VectorXd eigenvector
             == protected constructors ==
-                # explicit **BaseEigenvalueSolver**(size_t dim)
+                # explicit **BaseEigenproblemSolver**(size_t dim)
             == destructor ==
-                virtual ~ **BaseEigenvalueSolver**() = default
+                virtual ~ **BaseEigenproblemSolver**() = default
             __ public pure virtual methods __
                 + virtual void **solve**() = 0
             __ public methods __
@@ -52,10 +52,10 @@ namespace numopt {
                 + **get_eigenvector**() const
         }
 
-        BaseMatrixSolver --|> BaseEigenvalueSolver
+        BaseMatrixSolver --|> BaseEigenproblemSolver
         abstract class BaseMatrixSolver {
             == destructor ==
-                virtual ~ **BaseMatrixSolver**() = default
+                **~BaseMatrixSolver**() override = default
             __ public pure virtual methods __
                 + virtual void **addToMatrix**(double value, size_t index1, size_t index2) = 0
         }
@@ -64,7 +64,7 @@ namespace numopt {
         DenseSolver --|> BaseMatrixSolver
         class DenseSolver {
             __ private members __
-                - Eigen::MatrixXd hamiltonian
+                - Eigen::MatrixXd matrix
             == constructors ==
                 explicit **DenseSolver**(size_t dim)
             == destructor ==
@@ -78,7 +78,7 @@ namespace numopt {
         SparseSolver --|> BaseMatrixSolver
         class SparseSolver {
             __ private members __
-                - Eigen::SparseMatrix<double> hamiltonian
+                - Eigen::SparseMatrix<double> matrix
             == constructors ==
                 explicit **SparseSolver**(size_t dim)
             == destructor ==
@@ -89,7 +89,7 @@ namespace numopt {
         }
 
 
-        DavidsonSolver --|> BaseEigenvalueSolver
+        DavidsonSolver --|> BaseEigenproblemSolver
         class DavidsonSolver {
             __ private members __
                 - constexpr size_t maximum_number_of_iterations = 128

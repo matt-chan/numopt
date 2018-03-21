@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
     // Solve using the Davidson diagonalization, supplying an initial guess
     Eigen::VectorXd t_0 (5);
     t_0 << 1, 0, 0, 0, 0;
-    numopt::DavidsonSolver davidson_solver (A, t_0);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
     davidson_solver.solve();
 
     double test_eigenvalue = davidson_solver.get_eigenvalue();
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE( liu_50 ){
     // Solve using the Davidson diagonalization, supplying an initial guess
     Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
     t_0(0) = 1;
-    numopt::DavidsonSolver davidson_solver (A, t_0);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
     davidson_solver.solve();
 
     double test_eigenvalue = davidson_solver.get_eigenvalue();
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE( liu_1000 ){
     // Solve using the Davidson diagonalization, supplying an initial guess
     Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
     t_0(0) = 1;
-    numopt::DavidsonSolver davidson_solver (A, t_0);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
     davidson_solver.solve();
 
     double test_eigenvalue = davidson_solver.get_eigenvalue();

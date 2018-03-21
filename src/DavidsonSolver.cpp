@@ -4,6 +4,7 @@
 
 
 namespace numopt {
+namespace eigenproblem {
 
 
 /*
@@ -14,10 +15,10 @@ namespace numopt {
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct initial guess @param t_0.
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
+    BaseEigenproblemSolver(static_cast<size_t>(this->t_0.size())),
     t_0 (t_0),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
-    dim (static_cast<size_t>(this->t_0.size())),
     residue_tolerance (residue_tolerance),
     correction_threshold (correction_threshold),
     maximum_subspace_dimension (maximum_subspace_dimension)
@@ -28,39 +29,14 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
+    BaseEigenproblemSolver(static_cast<size_t>(this->t_0.size())),
     t_0 (t_0),
     matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
     diagonal (A.diagonal()),
-    dim (static_cast<size_t>(this->t_0.size())),
     residue_tolerance (residue_tolerance),
     correction_threshold (correction_threshold),
     maximum_subspace_dimension (maximum_subspace_dimension)
 {}
-
-
-
-/*
- *  GETTERS
- */
-
-double DavidsonSolver::get_eigenvalue() const {
-
-    if (this->is_solved) {
-        return this->eigenvalue;
-    } else {
-        throw std::runtime_error("You are trying to get an eigenvalue but the solution hasn't been found yet.");
-    }
-}
-
-
-Eigen::VectorXd DavidsonSolver::get_eigenvector() const {
-
-    if (this->is_solved) {
-        return this->eigenvector;
-    } else {
-        throw std::runtime_error("You are trying to get an eigenvector but the solution hasn't been found yet.");
-    }
-}
 
 
 
@@ -76,7 +52,7 @@ Eigen::VectorXd DavidsonSolver::get_eigenvector() const {
  *      - @member eigenvalue to the calculated eigenvalue
  *      - @member eigenvector to the calculated eigenvector
  */
-double DavidsonSolver::solve() {
+void DavidsonSolver::solve() {
 
     // Calculate a new subspace vector
     Eigen::VectorXd v_1 = this->t_0 / this->t_0.norm();
@@ -197,4 +173,5 @@ double DavidsonSolver::solve() {
 }
 
 
+}  // namespace eigenproblem
 }  // namespace numopt

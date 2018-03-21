@@ -51,7 +51,7 @@ void solveEigenvalueProblemWithDavidson(const Eigen::MatrixXd& A) {
 
     Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(A.cols());
     t_0(0) = 1;
-    numopt::DavidsonSolver davidson_solver (A, t_0);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
     davidson_solver.solve();
 }
 

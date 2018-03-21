@@ -22,6 +22,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 include(${CMAKE_SOURCE_DIR}/cmake/SetCMakeEnvironment.cmake)
 
 
+
+# Install FindSpectra.cmake. This is done before FindPackages.cmake, since we are using find_package(Spectra)
+# CMake looks for Find<package>.cmake files in its ${CMAKE_MODULE_PATH}. By default, this is empty. Since we don't want to bother with installing our custom-made FindSpectra.cmake, we will set the ${CMAKE_MODULE_PATH} accordingly
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+
 # Find all required packages
 include(${CMAKE_SOURCE_DIR}/cmake/FindPackages.cmake)
 
