@@ -39,7 +39,7 @@ void SparseSolver::solve() {
 
     // Solve the Sparse eigenvalue problem of the Hamiltonian matrix.
     Spectra::SparseSymMatProd<double> matrixVectorProduct (this->matrix);
-    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, 1, 128);
+    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, 1, 3);  // request 1 eigenpair, and use 3 Ritz pairs for the solution (need at least 2 more Ritz pairs than requested eigenvalues)
     spectra_sparse_eigensolver.init();
     spectra_sparse_eigensolver.compute();
 
@@ -49,7 +49,7 @@ void SparseSolver::solve() {
     if (spectra_sparse_eigensolver.info() == Spectra::SUCCESSFUL) {
         this->is_solved = true;
         this->eigenvalue = spectra_sparse_eigensolver.eigenvalues()(0);
-        this->eigenvector = spectra_sparse_eigensolver.eigenvectors(0);
+        this->eigenvector = spectra_sparse_eigensolver.eigenvectors().col(0);
     }
 }
 

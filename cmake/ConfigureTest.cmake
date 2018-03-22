@@ -14,4 +14,4 @@ target_include_directories(${TEST_NAME} PRIVATE ${cpputil_INCLUDE_DIRS})
 target_link_libraries(${TEST_NAME} PRIVATE cpputil)
 
 # ... add Spectra ...
-target_include_directories(${TEST_NAME} PUBLIC ${Spectra_INCLUDE_DIRS})
+target_include_directories(${TEST_NAME} PRIVATE ${spectra_INCLUDE_DIRS})
