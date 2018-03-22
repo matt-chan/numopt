@@ -46,6 +46,20 @@ install:
   - export BOOST_ROOT=/usr/local/boost_1_65_1
 
 
+  # Install the cpputil library
+  - mkdir /tmp/cpputil && cd /tmp/cpputil
+  - git clone https://github.com/GQCG/cpputil.git --branch master --single-branch
+  - cd cpputil
+  - mkdir build && cd build
+  - cmake .. && make && make test && sudo make install
+
+
+  # Install Spectra
+  - cd /usr/local/
+  - sudo git clone https://github.com/yixuan/spectra.git
+
+
+
 # Run the build script
 script:
   - cd /home/travis/build/GQCG/numopt

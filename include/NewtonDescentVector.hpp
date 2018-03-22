@@ -3,6 +3,8 @@
 
 #include <Eigen/Dense>
 
+#include "common.hpp"
+
 
 
 namespace numopt {
@@ -17,17 +19,20 @@ private:
     double converged = false;
 
     const Eigen::VectorXd& x0;  // initial guess
-    Eigen::VectorXd (*f)(Eigen::VectorXd& x);  // a pointer to the callable 'function'
-    Eigen::MatrixXd (*J)(Eigen::VectorXd& x);  // a pointer to the callable Jacobian
+    const VectorFunction f;  // function wrapper for the 'function'
+    const Jacobian J;  // function wrapper for the Jacobian
+
+
+//    Eigen::VectorXd (*f)(const Eigen::VectorXd& x);  // a pointer to the callable 'function'
+//    Eigen::MatrixXd (*J)(const Eigen::VectorXd& x);  // a pointer to the callable Jacobian
 
 
 public:
     // Constructor
     /**
-     *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
+     *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function wrapper for the Jacobian @param J.
      */
-    NewtonDescentVector(const Eigen::VectorXd& x0, Eigen::VectorXd (*f)(Eigen::VectorXd& x), Eigen::MatrixXd (*J)(Eigen::VectorXd& x), double threshold = 1.0e-08);
-
+    NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold = 1.0e-08);
 
     // Methods
     /**

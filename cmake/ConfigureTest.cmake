@@ -8,3 +8,10 @@ target_include_directories(${TEST_NAME} PRIVATE ${PROJECT_INCLUDE_FOLDER})
 
 # ... link to this project's library ...
 target_link_libraries(${TEST_NAME} PRIVATE ${LIBRARY_NAME})
+
+# ... include cpputil ...
+target_include_directories(${TEST_NAME} PRIVATE ${cpputil_INCLUDE_DIRS})
+target_link_libraries(${TEST_NAME} PRIVATE cpputil)
+
+# ... add Spectra ...
+target_include_directories(${TEST_NAME} PRIVATE ${spectra_INCLUDE_DIRS})

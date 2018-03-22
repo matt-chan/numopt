@@ -14,7 +14,7 @@
 /**
  *  Implement a simple vector function that returns (x.x, 2x.x)
  */
-Eigen::VectorXd f(Eigen::VectorXd& x) {
+Eigen::VectorXd f(const Eigen::VectorXd& x) {
 
     Eigen::VectorXd f (2);
 
@@ -28,7 +28,7 @@ Eigen::VectorXd f(Eigen::VectorXd& x) {
 /**
  *  Implement the Jacobian of the previous function
  */
-Eigen::MatrixXd J(Eigen::VectorXd& x) {
+Eigen::MatrixXd J(const Eigen::VectorXd& x) {
 
     Eigen::MatrixXd J (2, 2);
 
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE ( norm_squared_function ) {
     // Do the numerical optimization
     Eigen::VectorXd x0 (2);
     x0 << 3, 2;
-    numopt::NewtonDescentVector newton_vector_opt (x0, f, J);
+    numopt::NewtonDescentVector newton_vector_opt (x0, f, J);  // apparently, the compiler can convert to numopt::VectorFunction and numopt::Jacobian
     Eigen::VectorXd x = newton_vector_opt.solve();
 
 
