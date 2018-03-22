@@ -18,9 +18,7 @@ namespace eigenproblem {
 DenseSolver::DenseSolver(size_t dim) :
     BaseMatrixSolver(dim),
     matrix (Eigen::MatrixXd::Zero(this->dim, this->dim))
-{
-    std::cout << "Made a dense solver with dimension " << dim << std::endl;
-}
+{}
 
 
 
@@ -49,11 +47,6 @@ void DenseSolver::solve() {
  *  Add @param value to the matrix at (@param index1, @param index2).
  */
 void DenseSolver::addToMatrix(double value, size_t index1, size_t index2) {
-
-    std::cout << "Adding to dense matrix: "
-              << "value " << value
-              << "\tindex1:" << index1
-              << "\tindex2:" << index2 << std::endl;
     this->matrix(index1, index2) += value;
 }
 
