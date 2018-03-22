@@ -1,10 +1,11 @@
-#ifndef CI_SOLVERTYPE_HPP
-#define CI_SOLVERTYPE_HPP
+#ifndef NUMOPT_SOLVERTYPE_HPP
+#define NUMOPT_SOLVERTYPE_HPP
 
 
 
-namespace ci {
-namespace solver {
+namespace numopt {
+namespace eigenproblem {
+
 
 /**
  *  An enum class for the implemented solver types.
@@ -16,9 +17,9 @@ enum class SolverType {
 };
 
 
-}  // namespace solver
-}  // namespace ci
+}  // namespace eigenproblem
+}  // namespace numopt
 
 
 
-#endif  // CI_SOLVERTYPE_HPP
+#endif  // NUMOPT_SOLVERTYPE_HPP
