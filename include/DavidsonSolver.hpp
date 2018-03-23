@@ -45,6 +45,10 @@ public:
                    double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15);
 
 
+    // DESTRUCTOR
+    ~DavidsonSolver() override = default;
+
+
     // PUBLIC METHODS
     /**
      *  Solve the eigenvalue problem related to the given matrix-vector product.

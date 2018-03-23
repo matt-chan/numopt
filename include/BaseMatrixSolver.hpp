@@ -23,7 +23,7 @@ public:
     ~BaseMatrixSolver() override = default;
 
 
-    // PURE VIRTUAL METHODS
+    // PUBLIC PURE VIRTUAL METHODS
     /**
      *  Add @param value to the matrix at (@param index1, @param index2).
      */
