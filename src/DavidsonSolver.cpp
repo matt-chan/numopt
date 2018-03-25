@@ -105,23 +105,19 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd vA = this->matrixVectorProduct(v);
 
 
-        // If needed, collapse the subspace to 2 dimensions
-        //      The final collapsed subspace should be spanned by the guess vector from the previous iteration and
-        //      the one calculated in this iteration.
+        // If needed, collapse the subspace to 2 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
 
-            // Eigen's conservativeResize only keeps the values in the top-left corner, so swap the last and the first
-            // column and afterwards to the resize
-            V.col(0).swap(V.col(V.cols() - 1));
-            VA.col(0).swap(VA.col(VA.cols() - 1));
+            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
+            theta = eigensolver.eigenvalues()(0);
+            Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
-            V.conservativeResize(Eigen::NoChange, 1);
-            VA.conservativeResize(Eigen::NoChange, 1);
+            Eigen::MatrixXd two_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension, 2);
 
-
-            // The subspace matrix should now again be a matrix of dimension (1,1)
-            const double last_diagonal_element = M(M.rows() - 1,M.cols() - 1);
-            M = Eigen::MatrixXd::Constant(1, 1, last_diagonal_element);
+            Eigen::MatrixXd V_collapsed = V * two_lowest_eigenvectors;
+            V = V_collapsed;
+            Eigen::MatrixXd VA_collapsed = VA * two_lowest_eigenvectors;
+            VA = VA_collapsed;
         }
 
 

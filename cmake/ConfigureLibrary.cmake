@@ -8,4 +8,4 @@ target_include_directories(${LIBRARY_NAME} PRIVATE ${PROJECT_INCLUDE_FOLDER})
 target_link_libraries(${LIBRARY_NAME} PUBLIC Eigen3::Eigen)
 
 # Include Spectra
-target_include_directories(${LIBRARY_NAME} PRIVATE ${spectra_INCLUDE_DIRS})
+target_include_directories(${LIBRARY_NAME} PRIVATE ${Spectra_INCLUDE_DIRS})
