@@ -107,17 +107,17 @@ void DavidsonSolver::solve() {
 
         // If needed, collapse the subspace to 2 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
-
             Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
             theta = eigensolver.eigenvalues()(0);
             Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
             Eigen::MatrixXd two_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension, 2);
 
-            Eigen::MatrixXd V_collapsed = V * two_lowest_eigenvectors;
-            V = V_collapsed;
-            Eigen::MatrixXd VA_collapsed = VA * two_lowest_eigenvectors;
-            VA = VA_collapsed;
+            V = V * two_lowest_eigenvectors;
+            VA = VA * two_lowest_eigenvectors;
+
+            // The subspace matrix should now again be a 2x2-matrix.
+            M = V.transpose() * VA;
         }
 
 
@@ -131,6 +131,7 @@ void DavidsonSolver::solve() {
 
         // Calculate the subspace matrix
         M.conservativeResize(M.rows()+1, M.cols()+1);
+
         Eigen::VectorXd m_k = V.transpose() * vA;
         M.col(M.cols()-1) = m_k;
         M.row(M.rows()-1) = m_k;
@@ -147,7 +148,6 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd uA = VA * s;
 
         r = uA - theta * u;
-
 
         // Check for convergence
         if (r.norm() < this->residue_tolerance) {
