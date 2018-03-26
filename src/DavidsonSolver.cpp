@@ -3,6 +3,10 @@
 
 
 
+#include <chrono>
+
+
+
 namespace numopt {
 namespace eigenproblem {
 
@@ -88,6 +92,11 @@ void DavidsonSolver::solve() {
 
     size_t iteration_counter = 1;
     while (!(this->is_solved)) {
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+
+
         // Approximately solve the residue equation by using coefficient-wise quotients
         Eigen::VectorXd denominator = Eigen::VectorXd::Constant(this->dim, theta) - this->diagonal;
         Eigen::VectorXd t = (denominator.array().abs() >= correction_threshold).select(r.cwiseQuotient(denominator), Eigen::VectorXd::Zero(this->dim));
@@ -148,6 +157,14 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd uA = VA * s;
 
         r = uA - theta * u;
+
+        auto stop = std::chrono::high_resolution_clock::now();
+
+
+        std::cout << "Davidson iteration number " << iteration_counter << " took "
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
+                  << " milliseconds to complete." << std::endl;
+
 
         // Check for convergence
         if (r.norm() < this->residue_tolerance) {
