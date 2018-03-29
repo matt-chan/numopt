@@ -3,6 +3,10 @@
 
 
 
+#include <chrono>
+
+
+
 namespace numopt {
 namespace eigenproblem {
 
@@ -88,6 +92,11 @@ void DavidsonSolver::solve() {
 
     size_t iteration_counter = 1;
     while (!(this->is_solved)) {
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+
+
         // Approximately solve the residue equation by using coefficient-wise quotients
         Eigen::VectorXd denominator = Eigen::VectorXd::Constant(this->dim, theta) - this->diagonal;
         Eigen::VectorXd t = (denominator.array().abs() >= correction_threshold).select(r.cwiseQuotient(denominator), Eigen::VectorXd::Zero(this->dim));
@@ -105,23 +114,19 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd vA = this->matrixVectorProduct(v);
 
 
-        // If needed, collapse the subspace to 2 dimensions
-        //      The final collapsed subspace should be spanned by the guess vector from the previous iteration and
-        //      the one calculated in this iteration.
+        // If needed, collapse the subspace to 2 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
+            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
+            theta = eigensolver.eigenvalues()(0);
+            Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
-            // Eigen's conservativeResize only keeps the values in the top-left corner, so swap the last and the first
-            // column and afterwards to the resize
-            V.col(0).swap(V.col(V.cols() - 1));
-            VA.col(0).swap(VA.col(VA.cols() - 1));
+            Eigen::MatrixXd two_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension, 2);
 
-            V.conservativeResize(Eigen::NoChange, 1);
-            VA.conservativeResize(Eigen::NoChange, 1);
+            V = V * two_lowest_eigenvectors;
+            VA = VA * two_lowest_eigenvectors;
 
-
-            // The subspace matrix should now again be a matrix of dimension (1,1)
-            const double last_diagonal_element = M(M.rows() - 1,M.cols() - 1);
-            M = Eigen::MatrixXd::Constant(1, 1, last_diagonal_element);
+            // The subspace matrix should now again be a 2x2-matrix.
+            M = V.transpose() * VA;
         }
 
 
@@ -135,6 +140,7 @@ void DavidsonSolver::solve() {
 
         // Calculate the subspace matrix
         M.conservativeResize(M.rows()+1, M.cols()+1);
+
         Eigen::VectorXd m_k = V.transpose() * vA;
         M.col(M.cols()-1) = m_k;
         M.row(M.rows()-1) = m_k;
@@ -151,6 +157,13 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd uA = VA * s;
 
         r = uA - theta * u;
+
+        auto stop = std::chrono::high_resolution_clock::now();
+
+
+        std::cout << "Davidson iteration number " << iteration_counter << " took "
+                  << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count()
+                  << " microseconds to complete." << std::endl;
 
 
         // Check for convergence
