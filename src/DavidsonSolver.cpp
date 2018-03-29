@@ -162,8 +162,8 @@ void DavidsonSolver::solve() {
 
 
         std::cout << "Davidson iteration number " << iteration_counter << " took "
-                  << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
-                  << " milliseconds to complete." << std::endl;
+                  << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count()
+                  << " microseconds to complete." << std::endl;
 
 
         // Check for convergence
