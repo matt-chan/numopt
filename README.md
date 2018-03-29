@@ -8,7 +8,7 @@ A C++ library for performing numerical optimization.
 
 ## Dependencies
 [![Boost Dependency](https://img.shields.io/badge/Boost-1.65.1+-000000.svg)](www.boost.org)
-[![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.44+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+[![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.4+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 [![Spectra Dependency](https://img.shields.io/badge/Spectra-0.6.1+-000000.svg)](https://github.com/yixuan/spectra/)
 
 [![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.2+-blue.svg)](https://github.com/GQCG/cpputil)
