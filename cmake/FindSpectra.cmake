@@ -4,8 +4,8 @@
 
 # Try to find Spectra
 # Once done, this will define
-#  spectra_FOUND            spectra is available on the system
-#  spectra_INCLUDE_DIRS     the spectra include directories
+#  Spectra_FOUND            spectra is available on the system
+#  Spectra_INCLUDE_DIRS     the spectra include directories
 
 # Since it's a header-only library, the include directories are enough.
 
@@ -20,8 +20,8 @@ else()
     message(STATUS "Spectra was found in /usr/local/spectra")
 
     # Set FOUND.
-    set(spectra_FOUND TRUE)
+    set(Spectra_FOUND TRUE)
 
     # Set the INCLUDE_DIRS.
-    set(spectra_INCLUDE_DIRS "/usr/local/spectra/include")
+    set(Spectra_INCLUDE_DIRS "/usr/local/spectra/include")
 endif()

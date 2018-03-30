@@ -1,19 +1,23 @@
-# numopt v1.0.0
+# numopt v1.1.0
+
 [![Build Status](https://travis-ci.org/GQCG/numopt.svg?branch=master)](https://travis-ci.org/GQCG/numopt)
 
 A C++ library for performing numerical optimization.
 
 
+
 ## Dependencies
-[![Boost Dependency](https://img.shields.io/badge/Boost-1.65.1+-blue.svg)](www.boost.org)
-[![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.4+-blue.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-[![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.1+-blue.svg)](https://github.com/GQCG/cpputil)
-[![Spectra Dependency](https://img.shields.io/badge/Spectra-0.6.1+-blue.svg)](https://github.com/yixuan/spectra/)
+[![Boost Dependency](https://img.shields.io/badge/Boost-1.65.1+-000000.svg)](www.boost.org)
+[![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.4+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+[![Spectra Dependency](https://img.shields.io/badge/Spectra-0.6.1+-000000.svg)](https://github.com/yixuan/spectra/)
+
+[![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.2+-blue.svg)](https://github.com/GQCG/cpputil)
+
 
 
 ## Installation
 To install this library:
-1. clone the master branch, which contains the latest release
+1. clone the master branch, which contains the latest release:
 
         git clone https://github.com/GQCG/numopt.git --branch master --single-branch
         cd numopt
@@ -30,9 +34,10 @@ To install this library:
         * the header files (and cmake files, see Usage) will be installed in `prefix/numopt/include`
 
 
+
 ## Usage
 Basic usage of this library can be found in the `tests` directory. If you use CMake in other projects, you can add the following CMake command to the CMakeLists.txt-file:
 
-    find_package(numopt x.y.z)
+    find_package(numopt 1.1.0)
 
-where `x.y.z` is the version number. CMake then provides the commands `numopt_INCLUDE_DIRS` to be used in your `target_include_directories` and the library `numopt` to be used in your `target_link_libraries`.
+CMake then provides the commands `numopt_INCLUDE_DIRS` to be used in your `target_include_directories` and the library `numopt` to be used in your `target_link_libraries`.

@@ -1,14 +1,14 @@
-# In this CMake file, we will find all required packages
+# In this CMake file, we will find all required packages.
 
 
-# Find the boost package - needed for unittests
+# Find Boost
 find_package(Boost REQUIRED)
 
-# Find eigen
+# Find Eigen
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
+# Find Spectra through our own FindSpectra.cmake file
+find_package(Spectra REQUIRED)
 
 # Find cpputil
 find_package(cpputil 1.2.1 REQUIRED)
-
-# We will use our custom FindSpectra.cmake-file, so that we can use find_package(Spectra)
-find_package(Spectra REQUIRED)

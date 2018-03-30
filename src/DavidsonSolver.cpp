@@ -3,6 +3,10 @@
 
 
 
+#include <chrono>
+
+
+
 namespace numopt {
 namespace eigenproblem {
 
@@ -12,30 +16,36 @@ namespace eigenproblem {
  */
 
 /**
- *  Constructor based on a given matrix-vector product function @param matrixVectorProduct initial guess @param t_0.
+ *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
+ *  initial guess @param t_0.
  */
-DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
+DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+                               const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
+                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
     BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-    t_0 (t_0),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
-    residue_tolerance (residue_tolerance),
+    t_0 (t_0),
+    convergence_threshold (residue_tolerance),
     correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
-{}
+    maximum_subspace_dimension (maximum_subspace_dimension),
+    collapsed_subspace_dimension (collapsed_subspace_dimension)
+{
+    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
+        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
+    }
+}
 
 
 /**
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
-DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-    t_0 (t_0),
-    matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
-    diagonal (A.diagonal()),
-    residue_tolerance (residue_tolerance),
-    correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
+DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
+                               double correction_threshold, size_t maximum_subspace_dimension,
+                               size_t collapsed_subspace_dimension) :
+    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
+                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
+                   collapsed_subspace_dimension)
 {}
 
 
@@ -79,7 +89,7 @@ void DavidsonSolver::solve() {
     Eigen::VectorXd r = vA_1 - theta * v_1;
 
     // Check for convergence
-    if (r.norm() < this->residue_tolerance) {
+    if (r.norm() < this->convergence_threshold) {
         this->is_solved = true;
         this->eigenvalue = theta;
         this->eigenvector = v_1;
@@ -88,9 +98,12 @@ void DavidsonSolver::solve() {
 
     size_t iteration_counter = 1;
     while (!(this->is_solved)) {
+
         // Approximately solve the residue equation by using coefficient-wise quotients
-        Eigen::VectorXd denominator = Eigen::VectorXd::Constant(this->dim, theta) - this->diagonal;
-        Eigen::VectorXd t = (denominator.array().abs() >= correction_threshold).select(r.cwiseQuotient(denominator), Eigen::VectorXd::Zero(this->dim));
+        // This implementation was adapted from Klaas' DOCI code: (https://github.com/klgunst/doci)
+        Eigen::VectorXd denominator = this->diagonal - Eigen::VectorXd::Constant(this->dim, theta);
+        Eigen::VectorXd t = (denominator.array().abs() > this->correction_threshold).select(r.array() / denominator.array().abs(),
+                                                                                            r / this->correction_threshold);
 
 
         // Project on the orthogonal subspace of V
@@ -105,23 +118,20 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd vA = this->matrixVectorProduct(v);
 
 
-        // If needed, collapse the subspace to 2 dimensions
-        //      The final collapsed subspace should be spanned by the guess vector from the previous iteration and
-        //      the one calculated in this iteration.
+        // If needed, collapse the subspace to this->collapsed_subspace_dimension 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
+            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
+            theta = eigensolver.eigenvalues()(0);
+            Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
-            // Eigen's conservativeResize only keeps the values in the top-left corner, so swap the last and the first
-            // column and afterwards to the resize
-            V.col(0).swap(V.col(V.cols() - 1));
-            VA.col(0).swap(VA.col(VA.cols() - 1));
+            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension,
+                                                                                           this->collapsed_subspace_dimension);
 
-            V.conservativeResize(Eigen::NoChange, 1);
-            VA.conservativeResize(Eigen::NoChange, 1);
+            V = V * lowest_eigenvectors;
+            VA = VA * lowest_eigenvectors;
 
-
-            // The subspace matrix should now again be a matrix of dimension (1,1)
-            const double last_diagonal_element = M(M.rows() - 1,M.cols() - 1);
-            M = Eigen::MatrixXd::Constant(1, 1, last_diagonal_element);
+            // The subspace matrix should now again be a (this->collapsed_subspace_dimension)x(this->collapsed_subspace_dimension)-matrix
+            M = V.transpose() * VA;
         }
 
 
@@ -135,6 +145,7 @@ void DavidsonSolver::solve() {
 
         // Calculate the subspace matrix
         M.conservativeResize(M.rows()+1, M.cols()+1);
+
         Eigen::VectorXd m_k = V.transpose() * vA;
         M.col(M.cols()-1) = m_k;
         M.row(M.rows()-1) = m_k;
@@ -154,7 +165,7 @@ void DavidsonSolver::solve() {
 
 
         // Check for convergence
-        if (r.norm() < this->residue_tolerance) {
+        if (r.norm() < this->convergence_threshold) {
             this->is_solved = true;
             this->eigenvalue = theta;
             this->eigenvector = u;

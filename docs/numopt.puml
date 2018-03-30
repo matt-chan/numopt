@@ -2,27 +2,17 @@
 
 namespace numopt {
 
-    class NewtonDescent {
-        __ private members __
-            - const size_t MAX_NO_ITERATIONS = 128
-            - const double THRESHOLD = 1.0e-8
-        == constructors ==
-            **Newton**(Eigen::VectorXd& x0, double (*f)(), Eigen::VectorXd (*gradf)())
-        __ public methods __
-            + double& **solve**()
-    }
-
 
     class NewtonDescentVector {
         __ private members __
             - {static} constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128
-            - {static} const double convergence_threshold = 1.0e-8
+            - const double convergence_threshold = 1.0e-8
 
             - double converged = false
 
             - const Eigen::VectorXd& x0
-            - Eigen::VectorXd (*f)(Eigen::VectorXd& x)
-            - Eigen::MatrixXd (*J)(Eigen::VectorXd& x)
+            - const VectorFunction f
+            - const Jacobian J
         == constructors ==
             **NewtonDescentVector**(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold = 1.0e-08);
         __ public methods __
@@ -54,6 +44,8 @@ namespace numopt {
 
         BaseMatrixSolver --|> BaseEigenproblemSolver
         abstract class BaseMatrixSolver {
+            == constructor ==
+                explicit BaseMatrixSolver(size_t dim)
             == destructor ==
                 **~BaseMatrixSolver**() override = default
             __ public pure virtual methods __
@@ -93,16 +85,21 @@ namespace numopt {
         class DavidsonSolver {
             __ private members __
                 - constexpr size_t maximum_number_of_iterations = 128
-                - const double residue_tolerance
+                - const double convergence_threshold
                 - const double correction_threshold
                 - const size_t maximum_subspace_dimension
+                - const size_t collapsed_subspace_dimension
 
                 - const Eigen::VectorXd diagonal
                 - const Eigen::VectorXd t_0
                 - const numopt::VectorFunction matrixVectorProduct
             == constructors ==
-                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t_0, const Eigen::VectorXd& diagonal, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
-                **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
+                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
+                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                size_t collapsed_subspace_dimension = 2)
+                **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0,
+                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                size_t collapsed_subspace_dimension = 2)
             == destructor ==
                  **~DavidsonSolver**() override = default
             __ public methods __
