@@ -98,7 +98,6 @@ void DavidsonSolver::solve() {
 
     size_t iteration_counter = 1;
     while (!(this->is_solved)) {
-        auto start = std::chrono::high_resolution_clock::now();
 
         // Approximately solve the residue equation by using coefficient-wise quotients
         // This implementation was adapted from Klaas' DOCI code: (https://github.com/klgunst/doci)
@@ -163,12 +162,6 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd uA = VA * s;
 
         r = uA - theta * u;
-
-
-        auto stop = std::chrono::high_resolution_clock::now();
-        std::cout << "Davidson iteration number " << iteration_counter << " took "
-                  << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count()
-                  << " microseconds to complete." << std::endl;
 
 
         // Check for convergence
