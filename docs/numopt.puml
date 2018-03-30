@@ -88,15 +88,18 @@ namespace numopt {
                 - const double convergence_threshold
                 - const double correction_threshold
                 - const size_t maximum_subspace_dimension
+                - const size_t collapsed_subspace_dimension
 
                 - const Eigen::VectorXd diagonal
                 - const Eigen::VectorXd t_0
                 - const numopt::VectorFunction matrixVectorProduct
             == constructors ==
                 **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
-                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15)
+                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                size_t collapsed_subspace_dimension = 2)
                 **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0,
-                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15)
+                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                size_t collapsed_subspace_dimension = 2)
             == destructor ==
                  **~DavidsonSolver**() override = default
             __ public methods __

@@ -21,14 +21,15 @@ namespace eigenproblem {
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
                                const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
-                               size_t maximum_subspace_dimension) :
+                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
     BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
     t_0 (t_0),
     convergence_threshold (residue_tolerance),
     correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
+    maximum_subspace_dimension (maximum_subspace_dimension),
+    collapsed_subspace_dimension (collapsed_subspace_dimension)
 {}
 
 
@@ -36,14 +37,16 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
-                               double correction_threshold, size_t maximum_subspace_dimension) :
+                               double correction_threshold, size_t maximum_subspace_dimension,
+                               size_t collapsed_subspace_dimension) :
     BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
     matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
     diagonal (A.diagonal()),
     t_0 (t_0),
     convergence_threshold (residue_tolerance),
     correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
+    maximum_subspace_dimension (maximum_subspace_dimension),
+    collapsed_subspace_dimension (collapsed_subspace_dimension)
 {}
 
 
@@ -117,18 +120,19 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd vA = this->matrixVectorProduct(v);
 
 
-        // If needed, collapse the subspace to 2 'best' eigenvectors
+        // If needed, collapse the subspace to this->collapsed_subspace_dimension 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
             Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
             theta = eigensolver.eigenvalues()(0);
             Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
-            Eigen::MatrixXd two_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension, 2);
+            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension,
+                                                                                           this->collapsed_subspace_dimension);
 
-            V = V * two_lowest_eigenvectors;
-            VA = VA * two_lowest_eigenvectors;
+            V = V * lowest_eigenvectors;
+            VA = VA * lowest_eigenvectors;
 
-            // The subspace matrix should now again be a 2x2-matrix.
+            // The subspace matrix should now again be a (this->collapsed_subspace_dimension)x(this->collapsed_subspace_dimension)-matrix
             M = V.transpose() * VA;
         }
 

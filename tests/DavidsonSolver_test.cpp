@@ -116,3 +116,38 @@ BOOST_AUTO_TEST_CASE( liu_1000 ){
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_eigenvalue) < 1.0e-08);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_eigenvector, 1.0e-08));
 }
+
+
+BOOST_AUTO_TEST_CASE( liu_1000_collapse ){
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 1000;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    double ref_eigenvalue = eigensolver.eigenvalues()(0);
+    Eigen::VectorXd ref_eigenvector = eigensolver.eigenvectors().col(0);
+
+
+    // Solve using the Davidson diagonalization, supplying an initial guess
+    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
+    t_0(0) = 1;
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
+    davidson_solver.solve();
+
+    double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
+    Eigen::VectorXd test_lowest_eigenvector = davidson_solver.get_eigenvector();
+
+
+    BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_eigenvalue) < 1.0e-08);
+    BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_eigenvector, 1.0e-08));
+}

@@ -22,6 +22,7 @@ private:
     const double convergence_threshold;  // the tolerance on the norm of the residual vector
     const double correction_threshold;  // the threshold used in solving the (approximated) residue correction equation
     const size_t maximum_subspace_dimension;
+    const size_t collapsed_subspace_dimension;
 
     const numopt::VectorFunction matrixVectorProduct;
     const Eigen::VectorXd diagonal;  // the diagonal of the matrix in question
@@ -37,13 +38,15 @@ public:
      */
     DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
                    const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15);
+                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                   size_t collapsed_subspace_dimension = 2);
 
     /**
      *  Constructor based on a given matrix @param A and an initial guess @param t_0
      */
     DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15);
+                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
+                   size_t collapsed_subspace_dimension = 2);
 
 
     // DESTRUCTOR
