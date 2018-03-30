@@ -93,7 +93,7 @@ namespace numopt {
                 - const Eigen::VectorXd t_0
                 - const numopt::VectorFunction matrixVectorProduct
             == constructors ==
-                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& t_0, const Eigen::VectorXd& diagonal,
+                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
                 double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
                 **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0,
                 double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-03, size_t maximum_subspace_dimension = 15)
