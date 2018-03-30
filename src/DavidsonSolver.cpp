@@ -30,7 +30,11 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
     correction_threshold (correction_threshold),
     maximum_subspace_dimension (maximum_subspace_dimension),
     collapsed_subspace_dimension (collapsed_subspace_dimension)
-{}
+{
+    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
+        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
+    }
+}
 
 
 /**
@@ -39,14 +43,9 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
                                double correction_threshold, size_t maximum_subspace_dimension,
                                size_t collapsed_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-    matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
-    diagonal (A.diagonal()),
-    t_0 (t_0),
-    convergence_threshold (residue_tolerance),
-    correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension),
-    collapsed_subspace_dimension (collapsed_subspace_dimension)
+    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
+                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
+                   collapsed_subspace_dimension)
 {}
 
 

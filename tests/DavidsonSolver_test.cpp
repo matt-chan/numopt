@@ -10,6 +10,17 @@
 
 
 
+BOOST_AUTO_TEST_CASE ( constructor ) {
+
+    // Create an example matrix and initial guess vector
+    Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd t_0 = Eigen::VectorXd::Constant(2, 1);
+
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);
+    BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0));
+}
+
+
 BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 
     // We can find the following example at (http://www.esqc.org/static/lectures/Malmqvist_2B.pdf)
