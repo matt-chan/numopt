@@ -16,31 +16,36 @@ namespace eigenproblem {
  */
 
 /**
- *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and initial guess @param t_0
+ *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
+ *  initial guess @param t_0.
  */
-DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
-                               double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
+DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+                               const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
+                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
     BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
     matrixVectorProduct (matrixVectorProduct),
     diagonal (diagonal),
     t_0 (t_0),
-    residue_tolerance (residue_tolerance),
+    convergence_threshold (residue_tolerance),
     correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
-{}
+    maximum_subspace_dimension (maximum_subspace_dimension),
+    collapsed_subspace_dimension (collapsed_subspace_dimension)
+{
+    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
+        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
+    }
+}
 
 
 /**
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
-DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-    matrixVectorProduct ([A](const Eigen::VectorXd& x) { return A * x; }),  // lambda matrix-vector product function created from the given matrix A
-    diagonal (A.diagonal()),
-    t_0 (t_0),
-    residue_tolerance (residue_tolerance),
-    correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension)
+DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
+                               double correction_threshold, size_t maximum_subspace_dimension,
+                               size_t collapsed_subspace_dimension) :
+    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
+                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
+                   collapsed_subspace_dimension)
 {}
 
 
@@ -58,10 +63,6 @@ DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& 
  *      - @member eigenvector to the calculated eigenvector
  */
 void DavidsonSolver::solve() {
-
-//    std::cout << "Diagonal: " << std::endl << this->diagonal << std::endl << std::endl;
-//
-//    std::cout << "Initial guess for Davidson: " << std::endl << this->t_0 << std::endl << std::endl;
 
     // Calculate a new subspace vector
     Eigen::VectorXd v_1 = this->t_0 / this->t_0.norm();
@@ -88,7 +89,7 @@ void DavidsonSolver::solve() {
     Eigen::VectorXd r = vA_1 - theta * v_1;
 
     // Check for convergence
-    if (r.norm() < this->residue_tolerance) {
+    if (r.norm() < this->convergence_threshold) {
         this->is_solved = true;
         this->eigenvalue = theta;
         this->eigenvector = v_1;
@@ -98,13 +99,11 @@ void DavidsonSolver::solve() {
     size_t iteration_counter = 1;
     while (!(this->is_solved)) {
 
-        auto start = std::chrono::high_resolution_clock::now();
-
-
-
         // Approximately solve the residue equation by using coefficient-wise quotients
-        Eigen::VectorXd denominator = Eigen::VectorXd::Constant(this->dim, theta) - this->diagonal;
-        Eigen::VectorXd t = (denominator.array().abs() >= correction_threshold).select(r.cwiseQuotient(denominator), Eigen::VectorXd::Zero(this->dim));
+        // This implementation was adapted from Klaas' DOCI code: (https://github.com/klgunst/doci)
+        Eigen::VectorXd denominator = this->diagonal - Eigen::VectorXd::Constant(this->dim, theta);
+        Eigen::VectorXd t = (denominator.array().abs() > this->correction_threshold).select(r.array() / denominator.array().abs(),
+                                                                                            r / this->correction_threshold);
 
 
         // Project on the orthogonal subspace of V
@@ -119,18 +118,19 @@ void DavidsonSolver::solve() {
         Eigen::VectorXd vA = this->matrixVectorProduct(v);
 
 
-        // If needed, collapse the subspace to 2 'best' eigenvectors
+        // If needed, collapse the subspace to this->collapsed_subspace_dimension 'best' eigenvectors
         if (V.cols() == this->maximum_subspace_dimension) {
             Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
             theta = eigensolver.eigenvalues()(0);
             Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
 
-            Eigen::MatrixXd two_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension, 2);
+            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension,
+                                                                                           this->collapsed_subspace_dimension);
 
-            V = V * two_lowest_eigenvectors;
-            VA = VA * two_lowest_eigenvectors;
+            V = V * lowest_eigenvectors;
+            VA = VA * lowest_eigenvectors;
 
-            // The subspace matrix should now again be a 2x2-matrix.
+            // The subspace matrix should now again be a (this->collapsed_subspace_dimension)x(this->collapsed_subspace_dimension)-matrix
             M = V.transpose() * VA;
         }
 
@@ -164,19 +164,8 @@ void DavidsonSolver::solve() {
         r = uA - theta * u;
 
 
-//        std::cout << "Next Davidson guess vector " << std::endl << u << std::endl << std::endl;
-
-
-        auto stop = std::chrono::high_resolution_clock::now();
-
-
-        std::cout << "Davidson iteration number " << iteration_counter << " took "
-                  << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count()
-                  << " microseconds to complete." << std::endl;
-
-
         // Check for convergence
-        if (r.norm() < this->residue_tolerance) {
+        if (r.norm() < this->convergence_threshold) {
             this->is_solved = true;
             this->eigenvalue = theta;
             this->eigenvector = u;
