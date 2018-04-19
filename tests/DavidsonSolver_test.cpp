@@ -56,10 +56,14 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_lowest_eigenvalue) < 0.005);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_lowest_eigenvector, 0.005));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
 
 
-BOOST_AUTO_TEST_CASE( liu_50 ){
+BOOST_AUTO_TEST_CASE ( liu_50 ) {
 
     // Let's prepare the Liu reference test (liu1978)
     size_t N = 50;
@@ -91,10 +95,14 @@ BOOST_AUTO_TEST_CASE( liu_50 ){
 
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_lowest_eigenvalue) < 1.0e-08);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_lowest_eigenvector, 1.0e-08));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
 
 
-BOOST_AUTO_TEST_CASE( liu_1000 ){
+BOOST_AUTO_TEST_CASE ( liu_1000 ) {
 
     // Let's prepare the Liu reference test (liu1978)
     size_t N = 1000;
@@ -126,10 +134,14 @@ BOOST_AUTO_TEST_CASE( liu_1000 ){
 
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_eigenvalue) < 1.0e-08);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_eigenvector, 1.0e-08));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
 
 
-BOOST_AUTO_TEST_CASE( liu_1000_collapse ){
+BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
 
     // Let's prepare the Liu reference test (liu1978)
     size_t N = 1000;
@@ -161,4 +173,8 @@ BOOST_AUTO_TEST_CASE( liu_1000_collapse ){
 
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_eigenvalue) < 1.0e-08);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_eigenvector, 1.0e-08));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
