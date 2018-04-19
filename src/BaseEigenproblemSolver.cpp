@@ -30,7 +30,7 @@ double BaseEigenproblemSolver::get_eigenvalue() const {
     if (this->is_solved) {
         return this->eigenvalue;
     } else {
-        throw std::runtime_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenvalue.");
+        throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenvalue.");
     }
 }
 
@@ -39,9 +39,20 @@ Eigen::VectorXd BaseEigenproblemSolver::get_eigenvector() const {
     if (this->is_solved) {
         return this->eigenvector;
     } else {
-        throw std::runtime_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenvector.");
+        throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenvector.");
     }
 }
+
+
+double BaseEigenproblemSolver::get_eigenvector(size_t index) const {
+
+    if (this->is_solved) {
+        return this->eigenvector(index);
+    } else {
+        throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenvector.");
+    }
+}
+
 
 
 }  // namespace eigenproblem

@@ -48,6 +48,7 @@ public:
     // GETTERS
     double get_eigenvalue() const;
     Eigen::VectorXd get_eigenvector() const;
+    double get_eigenvector(size_t index) const;
 };
 
 
