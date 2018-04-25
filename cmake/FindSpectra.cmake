@@ -16,9 +16,10 @@ find_path(SPECTRA_PREFIX README.md HINTS /usr/local/spectra)
 if("${SPECTRA_PREFIX}" STREQUAL "SPECTRA_PREFIX-NOTFOUND")
     message(WARNING "Spectra was not found in location /usr/local/.")
 else()
+    # If found, we let the user know that Spectra was found
     message(STATUS "Spectra was found at ${SPECTRA_PREFIX}")
 
-    # Set FOUND.
+    # Set Spectra_FOUND
     set(Spectra_FOUND TRUE)
 
     # Set the INCLUDE_DIRS
