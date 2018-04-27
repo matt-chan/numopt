@@ -15,7 +15,6 @@
 
 BOOST_AUTO_TEST_CASE ( simple_sparse ) {
 
-
     // Create a random sparse symmetric matrix (adapted from https://stackoverflow.com/a/30742847/7930415).
     // Also, put it in the sparse matrix solver.
     std::default_random_engine gen;
@@ -65,4 +64,8 @@ BOOST_AUTO_TEST_CASE ( simple_sparse ) {
 
     BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_lowest_eigenvalue) < 1.0e-08);
     BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_lowest_eigenvector, 1.0e-08));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(sparse_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
