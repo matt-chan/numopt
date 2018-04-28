@@ -45,7 +45,7 @@ public:
 
 
     // GETTERS
-    Eigen::MatrixXd get_matrix(){return this->matrix;};
+    Eigen::MatrixXd get_matrix() { return this->matrix; };
 
 
     // PUBLIC OVERRIDDEN METHODS
