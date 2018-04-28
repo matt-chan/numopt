@@ -44,6 +44,10 @@ public:
     ~DenseSolver() override = default;
 
 
+    // GETTERS
+    Eigen::MatrixXd get_matrix() { return this->matrix; };
+
+
     // PUBLIC OVERRIDDEN METHODS
     /**
      *  Solve the full dense eigenvalue problem of @member matrix.
