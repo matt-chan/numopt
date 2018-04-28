@@ -71,6 +71,7 @@ public:
 };
 
 
+
 }  // namespace eigenproblem
 }  // namespace numopt
 
