@@ -63,11 +63,6 @@ public:
      *  Add @param value to the matrix at (@param index1, @param index2).
      */
     void addToMatrix(double value, size_t index1, size_t index2) override;
-
-
-    // GETTERS
-    Eigen::MatrixXd get_matrix(){return this->matrix;};
-
 };
 
 
