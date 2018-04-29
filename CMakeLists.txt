@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 # Specify the project, its version and the used language
 project(numopt
-        VERSION 1.2.0
+        VERSION 1.2.1
         LANGUAGES CXX)
 
 # To enable the C++11 standard, we have to add flags like -std=gnu+11 or so. CMake can take care of this:
@@ -27,9 +27,8 @@ message(STATUS "Building ${LIBRARY_NAME} for ${CMAKE_BUILD_TYPE}")
 
 
 
-# Install FindSpectra.cmake. This is done before FindPackages.cmake, since we are using find_package(Spectra)
-# CMake looks for Find<package>.cmake files in its ${CMAKE_MODULE_PATH}. By default, this is empty. Since we don't want to bother with installing our custom-made FindSpectra.cmake, we will set the ${CMAKE_MODULE_PATH} accordingly
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
+# We're supplying custom FindXXX.cmake files, so we must update CMAKE_MODULE_PATH accordingly
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
 # Find all required packages
 include(${CMAKE_SOURCE_DIR}/cmake/FindPackages.cmake)
