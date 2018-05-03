@@ -46,6 +46,10 @@ public:
     ~SparseSolver() override = default;
 
 
+    // GETTERS
+    Eigen::VectorXd get_diagonal() override { return this->matrix.diagonal(); };
+
+
     // PUBLIC OVERRIDDEN METHODS
     /**
      *  Solve the sparse eigenvalue problem of @member matrix.

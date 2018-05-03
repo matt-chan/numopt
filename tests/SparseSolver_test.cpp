@@ -13,6 +13,23 @@
 
 
 
+BOOST_AUTO_TEST_CASE ( diagonal_getter_sparse ) {
+
+    // Test the diagonal getter for a sparse matrix
+    Eigen::VectorXd ref_diagonal (100);
+
+    numopt::eigenproblem::SparseSolver sparse_solver (100);
+
+    for (size_t i = 0; i < 100; i++) {
+        sparse_solver.addToMatrix(2*i, i, i);
+        ref_diagonal(i) = 2*i;
+    }
+
+
+    BOOST_CHECK(ref_diagonal.isApprox(sparse_solver.get_diagonal(), 1.0e-12));
+}
+
+
 BOOST_AUTO_TEST_CASE ( simple_sparse ) {
 
     // Create a random sparse symmetric matrix (adapted from https://stackoverflow.com/a/30742847/7930415).

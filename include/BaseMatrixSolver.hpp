@@ -35,6 +35,7 @@ public:
      */
     explicit BaseMatrixSolver(size_t dim);
 
+
     // DESTRUCTOR
     ~BaseMatrixSolver() override = default;
 

@@ -21,6 +21,19 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
 }
 
 
+BOOST_AUTO_TEST_CASE ( diagonal_getter_Davidson ) {
+
+    // Test the diagonal getter for Davidson
+    Eigen::MatrixXd A = Eigen::MatrixXd::Identity(2, 2);
+    Eigen::VectorXd t_0 = Eigen::VectorXd::Constant(2, 1);
+
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
+
+
+    BOOST_CHECK(A.diagonal().isApprox(davidson_solver.get_diagonal(), 1.0e-12));
+}
+
+
 BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 
     // We can find the following example at (http://www.esqc.org/static/lectures/Malmqvist_2B.pdf)

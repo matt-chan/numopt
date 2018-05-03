@@ -69,6 +69,10 @@ public:
     ~DavidsonSolver() override = default;
 
 
+    // GETTERS
+    Eigen::VectorXd get_diagonal() override { return this->diagonal; };
+
+
     // PUBLIC METHODS
     /**
      *  Solve the eigenvalue problem related to the given matrix-vector product.

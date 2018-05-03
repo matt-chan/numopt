@@ -10,6 +10,23 @@
 
 
 
+BOOST_AUTO_TEST_CASE ( diagonal_getter_dense ) {
+
+    // Test the diagonal getter for a dense matrix
+    Eigen::VectorXd ref_diagonal (100);
+
+    numopt::eigenproblem::DenseSolver dense_solver (100);
+
+    for (size_t i = 0; i < 100; i++) {
+        dense_solver.addToMatrix(2*i, i, i);
+        ref_diagonal(i) = 2*i;
+    }
+
+
+    BOOST_CHECK(ref_diagonal.isApprox(dense_solver.get_diagonal(), 1.0e-12));
+}
+
+
 BOOST_AUTO_TEST_CASE ( simple_dense ) {
 
     // Construct a random symmetric matrix and diagonalize it
