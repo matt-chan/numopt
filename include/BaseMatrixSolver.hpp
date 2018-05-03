@@ -41,8 +41,6 @@ public:
 
 
     // PUBLIC PURE VIRTUAL METHODS
-//    virtual Eigen::MatrixXd get_diagonal() = 0;
-
     /**
      *  Add @param value to the matrix at (@param index1, @param index2).
      */
