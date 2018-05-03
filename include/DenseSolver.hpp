@@ -46,6 +46,7 @@ public:
 
     // GETTERS
     Eigen::MatrixXd get_matrix() { return this->matrix; };
+    Eigen::VectorXd get_diagonal() override { return this->matrix.diagonal(); };
 
 
     // PUBLIC OVERRIDDEN METHODS
@@ -58,6 +59,7 @@ public:
      *      - @member eigenvector to the associated eigenvector
      */
     void solve() override;
+
 
     /**
      *  Add @param value to the matrix at (@param index1, @param index2).

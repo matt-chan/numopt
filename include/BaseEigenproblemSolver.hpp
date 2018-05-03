@@ -49,6 +49,15 @@ public:
     virtual ~BaseEigenproblemSolver() = default;
 
 
+    // GETTERS
+    virtual Eigen::VectorXd get_diagonal() = 0;
+
+    double get_eigenvalue() const;
+
+    Eigen::VectorXd get_eigenvector() const;
+    double get_eigenvector(size_t index) const;
+
+
     // PUBLIC PURE VIRTUAL METHODS
     /**
      *  Solve the eigenvalue problem associated to the eigenproblem solver.
@@ -59,12 +68,6 @@ public:
      *      - @member eigenvector to the associated eigenvector
      */
     virtual void solve() = 0;
-
-
-    // GETTERS
-    double get_eigenvalue() const;
-    Eigen::VectorXd get_eigenvector() const;
-    double get_eigenvector(size_t index) const;
 };
 
 
