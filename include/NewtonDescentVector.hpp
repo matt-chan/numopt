@@ -36,7 +36,7 @@ private:
 
     const Eigen::VectorXd& x0;  // initial guess
     const VectorFunction f;  // function wrapper for the 'function'
-    const Jacobian J;  // function wrapper for the Jacobian
+    const JacobianFunction J;  // function wrapper for the JacobianFunction
 
 
 public:
@@ -44,7 +44,7 @@ public:
     /**
      *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function wrapper for the Jacobian @param J.
      */
-    NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold = 1.0e-08);
+    NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold = 1.0e-08);
 
     // PUBLIC METHODS
     /**

@@ -2,19 +2,43 @@
 
 namespace numopt {
 
+    abstract class BaseNewtonDescent {
+        __ protected members __
+            # constexpr size_t maximum_number_of_iterations = 128
+            # const double convergence_threshold = 1.0e-8
 
-    class NewtonDescentVector {
-        __ private members __
-            - {static} constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128
-            - const double convergence_threshold = 1.0e-8
+            # double converged = false
 
-            - double converged = false
-
-            - const Eigen::VectorXd& x0
-            - const VectorFunction f
-            - const Jacobian J
+            # const Eigen::VectorXd x0
+            # const Eigen::VectorXd x
         == constructors ==
-            **NewtonDescentVector**(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold = 1.0e-08);
+            **BaseNewtonDescent**(const Eigen::VectorXd& x0, double convergence_threshold)
+        __ public pure virtual methods __
+            + virtual void **solve**() = 0
+        __ public methods __
+            + Eigen::VectorXd **get_solution**()
+    }
+
+
+    ScalarNewtonDescent --|> BaseNewtonDescent
+    class ScalarNewtonDescent {
+        __ private members __
+            - const VectorFunction grad
+            - const HessianFunction H
+        == constructors ==
+            **ScalarNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& grad, const HessianFunction& H,
+            double convergence_threshold = 1.0e-08)
+    }
+
+
+    VectorNewtonDescent --|> BaseNewtonDescent
+    class VectorNewtonDescent {
+        __ private members __
+            - const VectorFunction f
+            - const JacobianFunction J
+        == constructors ==
+            **NewtonDescentVector**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+            double convergence_threshold = 1.0e-08)
         __ public methods __
             + Eigen::VectorXd **solve**()
     }
