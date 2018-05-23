@@ -14,59 +14,50 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_BASEDESCENT_HPP
-#define NUMOPT_BASEDESCENT_HPP
-
-
+#ifndef NUMOPT_NEWTONSYSTEMOFEQUATIONSSOLVER_HPP
+#define NUMOPT_NEWTONSYSTEMOFEQUATIONSSOLVER_HPP
 
 #include <Eigen/Dense>
+
+#include "BaseSystemOfEquationsSolver.hpp"
+#include "common.hpp"
 
 
 
 namespace numopt {
+namespace syseq {
 
 
-class BaseDescent {
-protected:
-    constexpr static size_t maximum_number_of_iterations = 128;
-    const double convergence_threshold = 1.0e-08;
-
-    double is_solved = false;
-
-    const Eigen::VectorXd x0;  // initial guess to the problem
-    Eigen::VectorXd x;  // current guess or final solution to the problem
+class NewtonSystemOfEquationsSolver : public BaseSystemOfEquationsSolver {
+private:
+    const VectorFunction f;  // function wrapper for the vector 'function'
+    const JacobianFunction J;  // function wrapper for the JacobianFunction
 
 
 public:
-    // CONSTRUCTORS
+    // CONSTRUCTOR
     /**
-     *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
+     *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function 
+     *  wrapper for the Jacobian @param J.
      */
-    BaseDescent(const Eigen::VectorXd& x0, double convergence_threshold);
+    NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+                                  double convergence_threshold = 1.0e-08);
 
 
-    // DESTRUCTOR
-    virtual ~BaseDescent() = default;
-
-
-    // GETTERS
-    Eigen::VectorXd get_solution() const;
-
-
-    // PUBLIC PURE VIRTUAL METHODS
+    // OVERRIDDEN PUBLIC METHODS
     /**
-     *  Solve the problem associated to the numerical minimization method
+     *  Find a solution to the problem f(x) = 0
      *
      *  If successful, it sets
      *      - @member is_solved to true
      *      - @member x to the found solution
      */
-    virtual void solve() = 0;
+    void solve() override;
 };
 
 
+}  // namespace syseq
 }  // namespace numopt
 
 
-
-#endif  // NUMOPT_BASEDESCENT_HPP
+#endif // NUMOPT_NEWTONSYSTEMOFEQUATIONSSOLVER_HPP

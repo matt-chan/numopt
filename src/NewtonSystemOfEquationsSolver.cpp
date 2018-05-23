@@ -14,13 +14,14 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#include "VectorNewtonDescent.hpp"
+#include "NewtonSystemOfEquationsSolver.hpp"
 
 #include <iostream>
 
 
 
 namespace numopt {
+namespace syseq {
 
 
 
@@ -31,8 +32,9 @@ namespace numopt {
 /**
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
-VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold) :
-    BaseDescent(x0, convergence_threshold),
+NewtonSystemOfEquationsSolver::NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f,
+                                                             const JacobianFunction& J, double convergence_threshold) :
+    BaseSystemOfEquationsSolver(x0, convergence_threshold),
     f (f),
     J (J)
 {}
@@ -50,7 +52,7 @@ VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const Vector
  *      - @member is_solved to true
  *      - @member x to the found solution
  */
-void VectorNewtonDescent::solve() {
+void NewtonSystemOfEquationsSolver::solve() {
 
     size_t iteration_counter = 0;
 
@@ -71,10 +73,8 @@ void VectorNewtonDescent::solve() {
         // 4. Check for convergence
         if (dx.norm() <= this->convergence_threshold) {
             this->is_solved = true;
-        }
-
-        else {  // not is_solved yet
-            iteration_counter ++;
+        } else {  // not is_solved yet
+            iteration_counter++;
 
             // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
             if (iteration_counter >= this->maximum_number_of_iterations) {
@@ -85,5 +85,5 @@ void VectorNewtonDescent::solve() {
 }
 
 
-
+}  // namespace syseq
 }  // namespace numopt

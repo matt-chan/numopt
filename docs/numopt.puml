@@ -30,7 +30,7 @@ namespace numopt {
                 - const VectorFunction f
                 - const JacobianFunction J
             == constructors ==
-                **VectorNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+                **NewtonSystemOfEquationsSolver**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
                 double convergence_threshold = 1.0e-08)
             == destructor ==
                 **~NewtonSystemOfEquationsSolver**() override = default
@@ -53,9 +53,9 @@ namespace numopt {
                 # const Eigen::VectorXd x0
                 # const Eigen::VectorXd x
             == constructors ==
-                **BaseDescent**(const Eigen::VectorXd& x0, double convergence_threshold)
+                **BaseMinimizer**(const Eigen::VectorXd& x0, double convergence_threshold)
             == destructor ==
-                virtual ~ **BaseDescent()** = default
+                virtual ~ **BaseMinimizer()** = default
             __ public pure virtual methods __
                 + virtual void **solve**() = 0
             __ public methods __

@@ -1,6 +1,6 @@
-#define BOOST_TEST_MODULE "NewtonDescentVector"
+#define BOOST_TEST_MODULE "NewtonSystemOfEquations"
 
-#include "VectorNewtonDescent.hpp"
+#include "NewtonSystemOfEquationsSolver.hpp"
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/included/unit_test.hpp>  // include this to get main(), otherwise the compiler will complain
@@ -64,10 +64,10 @@ BOOST_AUTO_TEST_CASE ( norm_squared_function ) {
     // Do the numerical optimization
     Eigen::VectorXd x0 (2);
     x0 << 3, 2;
-    numopt::VectorNewtonDescent newton_vector_opt (x0, f, J);  // apparently, the compiler can convert to numopt::VectorFunction and numopt::JacobianFunction
+    numopt::syseq::NewtonSystemOfEquationsSolver newton_vector_opt (x0, f, J);  // apparently, the compiler can convert to numopt::VectorFunction and numopt::JacobianFunction
     newton_vector_opt.solve();
     Eigen::VectorXd solution = newton_vector_opt.get_solution();
 
 
-    BOOST_CHECK(solution.isZero(1.0e-08));  // the analytical minimum of this function is at (0,0)
+    BOOST_CHECK(solution.isZero(1.0e-08));  // the analytical solution of f(x) = (0,0) is x=(0,0)
 }

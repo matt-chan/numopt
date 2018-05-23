@@ -22,11 +22,12 @@
 // This file acts as a collective include header
 #include "BaseEigenproblemSolver.hpp"
 #include "BaseMatrixSolver.hpp"
-#include "BaseDescent.hpp"
+#include "BaseMinimizer.hpp"
+#include "BaseSystemOfEquationsSolver.hpp"
 #include "common.hpp"
 #include "DavidsonSolver.hpp"
 #include "DenseSolver.hpp"
-#include "VectorNewtonDescent.hpp"
+#include "NewtonSystemOfEquationsSolver.hpp"
 #include "SolverType.hpp"
 #include "SparseSolver.hpp"
 

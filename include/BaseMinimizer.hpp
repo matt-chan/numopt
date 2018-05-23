@@ -14,48 +14,61 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_VECTORNEWTONDESCENT_HPP
-#define NUMOPT_VECTORNEWTONDESCENT_HPP
+#ifndef NUMOPT_BASEMINIMIZER_HPP
+#define NUMOPT_BASEMINIMIZER_HPP
+
+
 
 #include <Eigen/Dense>
-
-#include "common.hpp"
-#include "BaseDescent.hpp"
 
 
 
 namespace numopt {
+namespace minimization {
 
 
+class BaseMinimizer {
+protected:
+    constexpr static size_t maximum_number_of_iterations = 128;
+    const double convergence_threshold = 1.0e-08;
 
-class VectorNewtonDescent : public BaseDescent {
-private:
-    const VectorFunction f;  // function wrapper for the vector 'function'
-    const JacobianFunction J;  // function wrapper for the JacobianFunction
+    double is_solved = false;
+
+    const Eigen::VectorXd x0;  // initial guess to the problem
+    Eigen::VectorXd x;  // current guess or final solution to the problem
 
 
 public:
-    // CONSTRUCTOR
+    // CONSTRUCTORS
     /**
-     *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function wrapper for the Jacobian @param J.
+     *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
      */
-    VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold = 1.0e-08);
+    BaseMinimizer(const Eigen::VectorXd& x0, double convergence_threshold);
 
 
-    // OVERRIDDEN PUBLIC METHODS
+    // DESTRUCTOR
+    virtual ~BaseMinimizer() = default;
+
+
+    // GETTERS
+    Eigen::VectorXd get_solution() const;
+
+
+    // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Find a solution to the problem f(x) = 0
+     *  Solve the problem associated to the numerical minimization method
      *
      *  If successful, it sets
      *      - @member is_solved to true
      *      - @member x to the found solution
      */
-    void solve() override;
+    virtual void solve() = 0;
 };
 
 
-
+}  // namespace minimization
 }  // namespace numopt
 
 
-#endif // NUMOPT_VECTORNEWTONDESCENT_HPP
+
+#endif  // NUMOPT_BASEMINIMIZER_HPP
