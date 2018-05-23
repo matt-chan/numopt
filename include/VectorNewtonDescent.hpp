@@ -20,7 +20,7 @@
 #include <Eigen/Dense>
 
 #include "common.hpp"
-#include "BaseNewtonDescent.hpp"
+#include "BaseDescent.hpp"
 
 
 
@@ -28,7 +28,7 @@ namespace numopt {
 
 
 
-class VectorNewtonDescent : public BaseNewtonDescent {
+class VectorNewtonDescent : public BaseDescent {
 private:
     const VectorFunction f;  // function wrapper for the vector 'function'
     const JacobianFunction J;  // function wrapper for the JacobianFunction

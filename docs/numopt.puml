@@ -2,51 +2,78 @@
 
 namespace numopt {
 
-    abstract class BaseNewtonDescent {
-        __ protected members __
-            # constexpr {static} size_t maximum_number_of_iterations = 128
-            # const double convergence_threshold = 1.0e-8
+    namespace syseq {
 
-            # double is_solved = false
+        abstract class BaseSystemOfEquationsSolver {
+            __ protected members __
+                # constexpr {static} size_t maximum_number_of_iterations = 128
+                # const double convergence_threshold = 1.0e-8
 
-            # const Eigen::VectorXd x0
-            # const Eigen::VectorXd x
-        == constructors ==
-            **BaseNewtonDescent**(const Eigen::VectorXd& x0, double convergence_threshold)
-        == destructor ==
-            virtual ~ **BaseNewtonDescent()** = default
-        __ public pure virtual methods __
-            + virtual void **solve**() = 0
-        __ public methods __
-            + Eigen::VectorXd **get_solution**() const
+                # double is_solved = false
+
+                # const Eigen::VectorXd x0
+                # const Eigen::VectorXd x
+            == constructors ==
+                **BaseSystemOfEquationsSolver**(const Eigen::VectorXd& x0, double convergence_threshold)
+            == destructor ==
+                virtual ~ **BaseSystemOfEquationsSolver()** = default
+            __ public pure virtual methods __
+                + virtual void **solve**() = 0
+            __ public methods __
+                + Eigen::VectorXd **get_solution**() const
+       }
+
+
+        NewtonSystemOfEquationsSolver --|> BaseSystemOfEquationsSolver
+        class NewtonSystemOfEquationsSolver {
+            __ private members __
+                - const VectorFunction f
+                - const JacobianFunction J
+            == constructors ==
+                **VectorNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+                double convergence_threshold = 1.0e-08)
+            == destructor ==
+                **~NewtonSystemOfEquationsSolver**() override = default
+            __ public methods __
+                + void **solve**()
+        }
+
     }
 
 
-    ScalarNewtonDescent --|> BaseNewtonDescent
-    class ScalarNewtonDescent {
-        __ private members __
-            - const VectorFunction grad
-            - const HessianFunction H
-        == constructors ==
-            **ScalarNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& grad, const HessianFunction& H,
-            double convergence_threshold = 1.0e-08)
-        __ public methods __
-            + void **solve**()
+    namespace minimization {
+
+        abstract class BaseMinimizer {
+            __ protected members __
+                # constexpr {static} size_t maximum_number_of_iterations = 128
+                # const double convergence_threshold = 1.0e-8
+
+                # double is_solved = false
+
+                # const Eigen::VectorXd x0
+                # const Eigen::VectorXd x
+            == constructors ==
+                **BaseDescent**(const Eigen::VectorXd& x0, double convergence_threshold)
+            == destructor ==
+                virtual ~ **BaseDescent()** = default
+            __ public pure virtual methods __
+                + virtual void **solve**() = 0
+            __ public methods __
+                + Eigen::VectorXd **get_solution**() const
+        }
+
+
+        NewtonMinimizer --|> BaseMinimizer
+        class NewtonMinimizer {
+            __ private members __
+                - const GradientFunction grad
+                - const HessianFunction H
+            == constructors ==
+                **NewtonMinimizer**(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H)
+            == destructor ==
+                **~NewtonMinimizer**() override = default
+        }
     }
-
-
-    VectorNewtonDescent --|> BaseNewtonDescent
-    class VectorNewtonDescent {
-        __ private members __
-            - const VectorFunction f
-            - const JacobianFunction J
-        == constructors ==
-            **VectorNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
-            double convergence_threshold = 1.0e-08)
-        __ public methods __
-            + void **solve**()
-    }
-
 
 
     namespace eigenproblem {

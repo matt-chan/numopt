@@ -14,8 +14,8 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_BASENEWTONDESCENT_HPP
-#define NUMOPT_BASENEWTONDESCENT_HPP
+#ifndef NUMOPT_BASEDESCENT_HPP
+#define NUMOPT_BASEDESCENT_HPP
 
 
 
@@ -26,7 +26,7 @@
 namespace numopt {
 
 
-class BaseNewtonDescent {
+class BaseDescent {
 protected:
     constexpr static size_t maximum_number_of_iterations = 128;
     const double convergence_threshold = 1.0e-08;
@@ -42,11 +42,11 @@ public:
     /**
      *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
      */
-    BaseNewtonDescent(const Eigen::VectorXd& x0, double convergence_threshold);
+    BaseDescent(const Eigen::VectorXd& x0, double convergence_threshold);
 
 
     // DESTRUCTOR
-    virtual ~BaseNewtonDescent() = default;
+    virtual ~BaseDescent() = default;
 
 
     // GETTERS
@@ -55,7 +55,7 @@ public:
 
     // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Solve the problem associated to the numerical optimization method
+     *  Solve the problem associated to the numerical minimization method
      *
      *  If successful, it sets
      *      - @member is_solved to true
@@ -69,4 +69,4 @@ public:
 
 
 
-#endif  // NUMOPT_BASENEWTONDESCENT_HPP
+#endif  // NUMOPT_BASEDESCENT_HPP

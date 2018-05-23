@@ -22,7 +22,7 @@
 // This file acts as a collective include header
 #include "BaseEigenproblemSolver.hpp"
 #include "BaseMatrixSolver.hpp"
-#include "BaseNewtonDescent.hpp"
+#include "BaseDescent.hpp"
 #include "common.hpp"
 #include "DavidsonSolver.hpp"
 #include "DenseSolver.hpp"

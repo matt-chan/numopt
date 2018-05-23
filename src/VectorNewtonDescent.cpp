@@ -32,7 +32,7 @@ namespace numopt {
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
 VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold) :
-    BaseNewtonDescent(x0, convergence_threshold),
+    BaseDescent(x0, convergence_threshold),
     f (f),
     J (J)
 {}
