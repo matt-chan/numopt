@@ -14,8 +14,8 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_NEWTONDESCENTVECTOR_HPP
-#define NUMOPT_NEWTONDESCENTVECTOR_HPP
+#ifndef NUMOPT_VECTORNEWTONDESCENT_HPP
+#define NUMOPT_VECTORNEWTONDESCENT_HPP
 
 #include <Eigen/Dense>
 
@@ -27,7 +27,7 @@ namespace numopt {
 
 
 
-class NewtonDescentVector {
+class VectorNewtonDescent {
 private:
     static constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128;
     double convergence_threshold;
@@ -44,7 +44,7 @@ public:
     /**
      *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function wrapper for the Jacobian @param J.
      */
-    NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold = 1.0e-08);
+    VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold = 1.0e-08);
 
     // PUBLIC METHODS
     /**
@@ -58,4 +58,4 @@ public:
 }  // namespace numopt
 
 
-#endif // NUMOPT_NEWTONDESCENTVECTOR_HPP
+#endif // NUMOPT_VECTORNEWTONDESCENT_HPP

@@ -25,7 +25,7 @@
 #include "common.hpp"
 #include "DavidsonSolver.hpp"
 #include "DenseSolver.hpp"
-#include "NewtonDescentVector.hpp"
+#include "VectorNewtonDescent.hpp"
 #include "SolverType.hpp"
 #include "SparseSolver.hpp"
 

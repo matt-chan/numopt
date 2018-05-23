@@ -37,7 +37,7 @@ namespace numopt {
             - const VectorFunction f
             - const JacobianFunction J
         == constructors ==
-            **NewtonDescentVector**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+            **VectorNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
             double convergence_threshold = 1.0e-08)
         __ public methods __
             + Eigen::VectorXd **solve**()

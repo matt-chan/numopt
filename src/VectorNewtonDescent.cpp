@@ -14,7 +14,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#include "NewtonDescentVector.hpp"
+#include "VectorNewtonDescent.hpp"
 
 #include <iostream>
 
@@ -31,7 +31,7 @@ namespace numopt {
 /**
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
-NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold) :
+VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold) :
     x0 (x0),
     f (f),
     J (J),
@@ -47,7 +47,7 @@ NewtonDescentVector::NewtonDescentVector(const Eigen::VectorXd& x0, const Vector
 /**
  *  Find and return a minimizer
  */
-Eigen::VectorXd NewtonDescentVector::solve() {
+Eigen::VectorXd VectorNewtonDescent::solve() {
 
     size_t iteration_counter = 0;
 
