@@ -20,6 +20,7 @@
 #include <Eigen/Dense>
 
 #include "common.hpp"
+#include "BaseNewtonDescent.hpp"
 
 
 
@@ -27,15 +28,9 @@ namespace numopt {
 
 
 
-class VectorNewtonDescent {
+class VectorNewtonDescent : public BaseNewtonDescent {
 private:
-    static constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128;
-    double convergence_threshold;
-
-    double converged = false;
-
-    const Eigen::VectorXd& x0;  // initial guess
-    const VectorFunction f;  // function wrapper for the 'function'
+    const VectorFunction f;  // function wrapper for the vector 'function'
     const JacobianFunction J;  // function wrapper for the JacobianFunction
 
 
@@ -46,11 +41,16 @@ public:
      */
     VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold = 1.0e-08);
 
-    // PUBLIC METHODS
+
+    // OVERRIDDEN PUBLIC METHODS
     /**
-     *  Find and return a minimizer
+     *  Find a solution to the problem f(x) = 0
+     *
+     *  If successful, it sets
+     *      - @member is_solved to true
+     *      - @member x to the found solution
      */
-    Eigen::VectorXd solve();
+    void solve() override;
 };
 
 

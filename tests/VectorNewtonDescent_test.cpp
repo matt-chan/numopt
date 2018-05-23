@@ -65,8 +65,9 @@ BOOST_AUTO_TEST_CASE ( norm_squared_function ) {
     Eigen::VectorXd x0 (2);
     x0 << 3, 2;
     numopt::VectorNewtonDescent newton_vector_opt (x0, f, J);  // apparently, the compiler can convert to numopt::VectorFunction and numopt::JacobianFunction
-    Eigen::VectorXd x = newton_vector_opt.solve();
+    newton_vector_opt.solve();
+    Eigen::VectorXd solution = newton_vector_opt.get_solution();
 
 
-    BOOST_CHECK(x.isZero(1.0e-08));  // the analytical minimum of this function is at (0,0)
+    BOOST_CHECK(solution.isZero(1.0e-08));  // the analytical minimum of this function is at (0,0)
 }

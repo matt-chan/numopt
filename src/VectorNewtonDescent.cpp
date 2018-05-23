@@ -32,10 +32,9 @@ namespace numopt {
  *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
  */
 VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J, double convergence_threshold) :
-    x0 (x0),
+    BaseNewtonDescent(x0, convergence_threshold),
     f (f),
-    J (J),
-    convergence_threshold (convergence_threshold)
+    J (J)
 {}
 
 
@@ -45,15 +44,19 @@ VectorNewtonDescent::VectorNewtonDescent(const Eigen::VectorXd& x0, const Vector
  */
 
 /**
- *  Find and return a minimizer
+ *  Find a solution to the problem f(x) = 0
+ *
+ *  If successful, it sets
+ *      - @member is_solved to true
+ *      - @member x to the found solution
  */
-Eigen::VectorXd VectorNewtonDescent::solve() {
+void VectorNewtonDescent::solve() {
 
     size_t iteration_counter = 0;
 
 
     Eigen::VectorXd x = this->x0;  // start the Newton procedure with the initial guess
-    while (!(this->converged)) {
+    while (!(this->is_solved)) {
 
         // 1. Calculate f(x) and J(x)
         Eigen::VectorXd f = this->f(x);
@@ -62,20 +65,19 @@ Eigen::VectorXd VectorNewtonDescent::solve() {
         // 2. Solve the Newton step
         Eigen::VectorXd dx = J.colPivHouseholderQr().solve(-f);
 
-        // 3. Update the geminal coefficients
+        // 3. Update the current coefficients
         x += dx;
 
         // 4. Check for convergence
         if (dx.norm() <= this->convergence_threshold) {
-            this->converged = true;
-            return x;
+            this->is_solved = true;
         }
 
         else {  // not is_solved yet
             iteration_counter ++;
 
-            // If we reach more than this->MAX_NUMBER_OF_ITERATIONS, the system is considered not to be converging
-            if (iteration_counter >= this->MAX_NUMBER_OF_ITERATIONS) {
+            // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
+            if (iteration_counter >= this->maximum_number_of_iterations) {
                 throw std::runtime_error("The Newton procedure did not converge.");
             }
         }
