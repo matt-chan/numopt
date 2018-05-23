@@ -4,19 +4,21 @@ namespace numopt {
 
     abstract class BaseNewtonDescent {
         __ protected members __
-            # constexpr size_t maximum_number_of_iterations = 128
+            # constexpr {static} size_t maximum_number_of_iterations = 128
             # const double convergence_threshold = 1.0e-8
 
-            # double converged = false
+            # double is_solved = false
 
             # const Eigen::VectorXd x0
             # const Eigen::VectorXd x
         == constructors ==
             **BaseNewtonDescent**(const Eigen::VectorXd& x0, double convergence_threshold)
+        == destructor ==
+            virtual ~ **BaseNewtonDescent()** = default
         __ public pure virtual methods __
             + virtual void **solve**() = 0
         __ public methods __
-            + Eigen::VectorXd **get_solution**()
+            + Eigen::VectorXd **get_solution**() const
     }
 
 
@@ -28,6 +30,8 @@ namespace numopt {
         == constructors ==
             **ScalarNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& grad, const HessianFunction& H,
             double convergence_threshold = 1.0e-08)
+        __ public methods __
+            + void **solve**()
     }
 
 
@@ -40,7 +44,7 @@ namespace numopt {
             **VectorNewtonDescent**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
             double convergence_threshold = 1.0e-08)
         __ public methods __
-            + Eigen::VectorXd **solve**()
+            + void **solve**()
     }
 
 

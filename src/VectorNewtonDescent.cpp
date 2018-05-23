@@ -71,7 +71,7 @@ Eigen::VectorXd VectorNewtonDescent::solve() {
             return x;
         }
 
-        else {  // not converged yet
+        else {  // not is_solved yet
             iteration_counter ++;
 
             // If we reach more than this->MAX_NUMBER_OF_ITERATIONS, the system is considered not to be converging
@@ -79,7 +79,7 @@ Eigen::VectorXd VectorNewtonDescent::solve() {
                 throw std::runtime_error("The Newton procedure did not converge.");
             }
         }
-    }  // while not converged loop
+    }  // while not is_solved loop
 }
 
 
