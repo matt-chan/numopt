@@ -44,7 +44,7 @@ Eigen::MatrixXd J(const Eigen::VectorXd& x) {
  *  BOOST UNIT TESTS
  */
 
-BOOST_AUTO_TEST_CASE ( norm_squared_function ) {
+BOOST_AUTO_TEST_CASE ( norm_squared_function_syseq ) {
 
     // Test that the previous implementations actually work by checking the values at x=(1,1)
     Eigen::VectorXd f_test (2);

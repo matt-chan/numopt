@@ -55,20 +55,19 @@ NewtonSystemOfEquationsSolver::NewtonSystemOfEquationsSolver(const Eigen::Vector
 void NewtonSystemOfEquationsSolver::solve() {
 
     size_t iteration_counter = 0;
+    this->x = this->x0;  // start the Newton procedure with the initial guess
 
-
-    Eigen::VectorXd x = this->x0;  // start the Newton procedure with the initial guess
     while (!(this->is_solved)) {
 
         // 1. Calculate f(x) and J(x)
-        Eigen::VectorXd f = this->f(x);
-        Eigen::MatrixXd J = this->J(x);
+        Eigen::VectorXd f = this->f(this->x);
+        Eigen::MatrixXd J = this->J(this->x);
 
         // 2. Solve the Newton step
         Eigen::VectorXd dx = J.colPivHouseholderQr().solve(-f);
 
         // 3. Update the current coefficients
-        x += dx;
+        this->x += dx;
 
         // 4. Check for convergence
         if (dx.norm() <= this->convergence_threshold) {

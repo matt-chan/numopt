@@ -14,7 +14,8 @@ namespace syseq {
  */
 BaseSystemOfEquationsSolver::BaseSystemOfEquationsSolver(const Eigen::VectorXd& x0, double convergence_threshold) :
     x0 (x0),
-    convergence_threshold (convergence_threshold) {}
+    convergence_threshold (convergence_threshold)
+{}
 
 
 /*

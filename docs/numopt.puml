@@ -14,7 +14,8 @@ namespace numopt {
                 # const Eigen::VectorXd x0
                 # const Eigen::VectorXd x
             == constructors ==
-                **BaseSystemOfEquationsSolver**(const Eigen::VectorXd& x0, double convergence_threshold)
+                **BaseSystemOfEquationsSolver**(const Eigen::VectorXd& x0, double convergence_threshold,
+                double convergence_threshold = 1.0e-08)
             == destructor ==
                 virtual ~ **BaseSystemOfEquationsSolver()** = default
             __ public pure virtual methods __
