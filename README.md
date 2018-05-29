@@ -1,4 +1,4 @@
-# numopt v1.2.1
+# numopt v1.3.0
 
 [![Build Status](https://travis-ci.org/GQCG/numopt.svg?branch=master)](https://travis-ci.org/GQCG/numopt)
 
@@ -38,6 +38,6 @@ To install this library:
 ## Usage
 Basic usage of this library can be found in the `tests` directory. If you use CMake in other projects, you can add the following CMake command to the CMakeLists.txt-file:
 
-    find_package(numopt 1.2.1)
+    find_package(numopt 1.3.0)
 
 CMake then provides the commands `numopt_INCLUDE_DIRS` to be used in your `target_include_directories` and the library `numopt` to be used in your `target_link_libraries`.
