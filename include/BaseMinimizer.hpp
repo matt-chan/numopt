@@ -14,68 +14,61 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_BASEEIGENVALUESOLVER_HPP
-#define NUMOPT_BASEEIGENVALUESOLVER_HPP
+#ifndef NUMOPT_BASEMINIMIZER_HPP
+#define NUMOPT_BASEMINIMIZER_HPP
 
 
 
-#include <cstddef>
 #include <Eigen/Dense>
 
 
 
 namespace numopt {
-namespace eigenproblem {
+namespace minimization {
 
 
-class BaseEigenproblemSolver {
+class BaseMinimizer {
 protected:
-    const size_t dim;  // the dimension of the vector space associated to the eigenvalue problem
+    constexpr static size_t maximum_number_of_iterations = 128;
+    const double convergence_threshold = 1.0e-08;
 
-    bool is_solved = false;
-    double eigenvalue;
-    Eigen::VectorXd eigenvector;
+    double is_solved = false;
 
-
-    // PROTECTED CONSTRUCTORS
-    /**
-     *  Protected constructor to initialize the const @member dim by @param dim.
-     */
-    explicit BaseEigenproblemSolver(size_t dim);
+    const Eigen::VectorXd x0;  // initial guess to the problem
+    Eigen::VectorXd x;  // current guess or final solution to the problem
 
 
 public:
+    // CONSTRUCTORS
+    /**
+     *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
+     */
+    BaseMinimizer(const Eigen::VectorXd& x0, double convergence_threshold);
+
+
     // DESTRUCTOR
-    virtual ~BaseEigenproblemSolver() = default;
+    virtual ~BaseMinimizer() = default;
 
 
     // GETTERS
-    virtual Eigen::VectorXd get_diagonal() = 0;
-
-    double get_eigenvalue() const;
-
-    Eigen::VectorXd get_eigenvector() const;
-    double get_eigenvector(size_t index) const;
+    Eigen::VectorXd get_solution() const;
 
 
     // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Solve the eigenvalue problem associated to the eigenproblem solver.
+     *  Solve the problem associated to the numerical minimization method
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - @member x to the found solution
      */
     virtual void solve() = 0;
 };
 
 
-}  // namespace eigenproblem
+}  // namespace minimization
 }  // namespace numopt
 
 
 
-
-
-#endif  // NUMOPT_BASEEIGENVALUESOLVER_HPP
+#endif  // NUMOPT_BASEMINIMIZER_HPP

@@ -2,23 +2,79 @@
 
 namespace numopt {
 
+    namespace syseq {
 
-    class NewtonDescentVector {
-        __ private members __
-            - {static} constexpr size_t MAX_NUMBER_OF_ITERATIONS = 128
-            - const double convergence_threshold = 1.0e-8
+        abstract class BaseSystemOfEquationsSolver {
+            __ protected members __
+                # constexpr {static} size_t maximum_number_of_iterations = 128
+                # const double convergence_threshold = 1.0e-8
 
-            - double converged = false
+                # double is_solved = false
 
-            - const Eigen::VectorXd& x0
-            - const VectorFunction f
-            - const Jacobian J
-        == constructors ==
-            **NewtonDescentVector**(const Eigen::VectorXd& x0, const VectorFunction& f, const Jacobian& J, double convergence_threshold = 1.0e-08);
-        __ public methods __
-            + Eigen::VectorXd **solve**()
+                # const Eigen::VectorXd x0
+                # const Eigen::VectorXd x
+            == constructors ==
+                **BaseSystemOfEquationsSolver**(const Eigen::VectorXd& x0, double convergence_threshold,
+                double convergence_threshold = 1.0e-08)
+            == destructor ==
+                virtual ~ **BaseSystemOfEquationsSolver()** = default
+            __ public pure virtual methods __
+                + virtual void **solve**() = 0
+            __ public methods __
+                + Eigen::VectorXd **get_solution**() const
+       }
+
+
+        NewtonSystemOfEquationsSolver --|> BaseSystemOfEquationsSolver
+        class NewtonSystemOfEquationsSolver {
+            __ private members __
+                - const VectorFunction f
+                - const JacobianFunction J
+            == constructors ==
+                **NewtonSystemOfEquationsSolver**(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+                double convergence_threshold = 1.0e-08)
+            == destructor ==
+                **~NewtonSystemOfEquationsSolver**() override = default
+            __ public methods __
+                + void **solve**()
+        }
+
     }
 
+
+    namespace minimization {
+
+        abstract class BaseMinimizer {
+            __ protected members __
+                # constexpr {static} size_t maximum_number_of_iterations = 128
+                # const double convergence_threshold = 1.0e-8
+
+                # double is_solved = false
+
+                # const Eigen::VectorXd x0
+                # const Eigen::VectorXd x
+            == constructors ==
+                **BaseMinimizer**(const Eigen::VectorXd& x0, double convergence_threshold)
+            == destructor ==
+                virtual ~ **BaseMinimizer()** = default
+            __ public pure virtual methods __
+                + virtual void **solve**() = 0
+            __ public methods __
+                + Eigen::VectorXd **get_solution**() const
+        }
+
+
+        NewtonMinimizer --|> BaseMinimizer
+        class NewtonMinimizer {
+            __ private members __
+                - const GradientFunction grad
+                - const HessianFunction H
+            == constructors ==
+                **NewtonMinimizer**(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H)
+            == destructor ==
+                **~NewtonMinimizer**() override = default
+        }
+    }
 
 
     namespace eigenproblem {
