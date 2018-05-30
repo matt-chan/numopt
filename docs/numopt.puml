@@ -166,6 +166,11 @@ namespace numopt {
     }
 
 
+    class global {
+        Eigen::VectorXd **newtonStep**(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J)
+    }
+
+
 }
 
 @enduml
