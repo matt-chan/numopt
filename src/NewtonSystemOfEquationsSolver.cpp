@@ -16,6 +16,8 @@
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #include "NewtonSystemOfEquationsSolver.hpp"
 
+#include "step.hpp"
+
 #include <iostream>
 
 
@@ -59,17 +61,14 @@ void NewtonSystemOfEquationsSolver::solve() {
 
     while (!(this->is_solved)) {
 
-        // 1. Calculate f(x) and J(x)
-        Eigen::VectorXd f = this->f(this->x);
-        Eigen::MatrixXd J = this->J(this->x);
+        // Calculate the Newton step
+        Eigen::VectorXd dx = numopt::newtonStep(this->x, this->f, this->J);
 
-        // 2. Solve the Newton step
-        Eigen::VectorXd dx = J.colPivHouseholderQr().solve(-f);
-
-        // 3. Update the current coefficients
+        // Update the current coefficients, using the Newton step
         this->x += dx;
 
-        // 4. Check for convergence
+
+        // Check for convergence
         if (dx.norm() <= this->convergence_threshold) {
             this->is_solved = true;
         } else {  // not is_solved yet
