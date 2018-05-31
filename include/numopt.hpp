@@ -31,6 +31,7 @@
 #include "NewtonSystemOfEquationsSolver.hpp"
 #include "SolverType.hpp"
 #include "SparseSolver.hpp"
+#include "step.hpp"
 
 #include "version.hpp"
 
