@@ -27,7 +27,7 @@ public:
      *      - set @member eigenvalue to 0.0
      *      - set @member eigenvector to an @param dimensional Eigen::VectorXd::Zero
      */
-    Eigenpair(size_t dimension = 1);
+    explicit Eigenpair(size_t dimension = 1);
 
     /**
      *  Constructor based on a given @param eigenvalue and @param eigenvector

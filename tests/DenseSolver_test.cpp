@@ -59,3 +59,8 @@ BOOST_AUTO_TEST_CASE ( simple_dense ) {
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(dense_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
+
+
+BOOST_AUTO_TEST_CASE ( simple_dense_number_of_requested_eigenpairs ) {
+    BOOST_CHECK(false);
+}

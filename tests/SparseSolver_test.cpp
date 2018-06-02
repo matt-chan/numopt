@@ -86,3 +86,8 @@ BOOST_AUTO_TEST_CASE ( simple_sparse ) {
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(sparse_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
+
+
+BOOST_AUTO_TEST_CASE ( simple_sparse_number_of_requested_eigenpairs ) {
+    BOOST_CHECK(false);
+}

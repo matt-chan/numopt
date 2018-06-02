@@ -53,20 +53,28 @@ SparseSolver::SparseSolver(size_t dim) :
  */
 void SparseSolver::solve() {
 
-    // Solve the Sparse eigenvalue problem of the Hamiltonian matrix.
+    // Solve the sparse eigenvalue problem of the Hamiltonian matrix
     Spectra::SparseSymMatProd<double> matrixVectorProduct (this->matrix);
-    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, 1, 3);  // request 1 eigenpair, and use 3 Ritz pairs for the solution (need at least 2 more Ritz pairs than requested eigenvalues)
+
+    // Request the number of eigenpairs, and use at least 2 more Ritz pairs than requested eigenvalues)
+    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, static_cast<int>(this->number_of_requested_eigenpairs), static_cast<int>(this->number_of_requested_eigenpairs) + 2);
     spectra_sparse_eigensolver.init();
     spectra_sparse_eigensolver.compute();
 
-    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use index 0 because
-    // we have specified Spectra::SMALLEST_ALGE, which selects eigenvalues with smallest algebraic value. Furthermore,
-    // we have only requested 1 eigenpair.
+    // Set number of requested eigenpairs
+
+    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use increasing indices because
+    // we have specified Spectra::SMALLEST_ALGE, which selects eigenvalues with smallest algebraic value
     if (spectra_sparse_eigensolver.info() == Spectra::SUCCESSFUL) {
         this->is_solved = true;
-        this->eigenvalue = spectra_sparse_eigensolver.eigenvalues()(0);
-        this->eigenvector = spectra_sparse_eigensolver.eigenvectors().col(0);
-    }
+
+        for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+            double eigenvalue = spectra_sparse_eigensolver.eigenvalues()(i);
+            Eigen::VectorXd eigenvector = spectra_sparse_eigensolver.eigenvectors().col(i);
+
+            this->eigenpairs[i] = Eigenpair(eigenvalue, eigenvector);
+        }
+    }  // if successful
 }
 
 

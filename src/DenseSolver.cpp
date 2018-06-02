@@ -48,14 +48,17 @@ DenseSolver::DenseSolver(size_t dim) :
 void DenseSolver::solve() {
 
     // Solve the dense eigenvalue problem of the Hamiltonian matrix.
-    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> self_adjoint_eigensolver (this->matrix);
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> self_adjoint_eigensolver (this->matrix);  // gives the eigenvalues (and corresponding eigenvectors) in ascending order
 
 
-    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use index 0 because
-    // SelfAdjointEigenSolver gives the eigenvalues (and corresponding eigenvalues) in ascending order.
+    // Set number of requested eigenpairs
     this->is_solved = true;
-    this->eigenvalue = self_adjoint_eigensolver.eigenvalues()(0);
-    this->eigenvector = self_adjoint_eigensolver.eigenvectors().col(0);
+    for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+        double eigenvalue = self_adjoint_eigensolver.eigenvalues()(i);
+        Eigen::VectorXd eigenvector = self_adjoint_eigensolver.eigenvectors().col(i);
+
+        this->eigenpairs[i] = Eigenpair(eigenvalue, eigenvector);
+    }
 }
 
 
