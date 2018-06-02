@@ -95,6 +95,7 @@ namespace numopt {
         abstract class BaseEigenproblemSolver {
             __ protected members __
                 # const size_t dim
+                # const size_t number_of_requested_eigenpairs
 
                 # bool is_solved = false
                 # std::vector<numopt::eigenproblem::Eigenpair> eigenpairs

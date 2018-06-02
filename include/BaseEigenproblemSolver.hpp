@@ -18,10 +18,11 @@
 #define NUMOPT_BASEEIGENVALUESOLVER_HPP
 
 
+#include "Eigenpair.hpp"
 
 #include <cstddef>
 #include <Eigen/Dense>
-
+#include <vector>
 
 
 namespace numopt {
@@ -31,17 +32,21 @@ namespace eigenproblem {
 class BaseEigenproblemSolver {
 protected:
     const size_t dim;  // the dimension of the vector space associated to the eigenvalue problem
+    const size_t number_of_requested_eigenpairs;
 
     bool is_solved = false;
-    double eigenvalue;
-    Eigen::VectorXd eigenvector;
+    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs;  // a collection of the eigenpairs of the eigenproblem
+                                                              // the eigenpairs are sorted with increasing eigenvalue
+
+//    double eigenvalue;
+//    Eigen::VectorXd eigenvector;
 
 
     // PROTECTED CONSTRUCTORS
     /**
-     *  Protected constructor to initialize the const @member dim by @param dim.
+     *  Protected constructor to initialize the const @member dim by @param dim
      */
-    explicit BaseEigenproblemSolver(size_t dim);
+    explicit BaseEigenproblemSolver(size_t dim, size_t number_of_requested_eigenpairs = 0);
 
 
 public:
@@ -52,20 +57,42 @@ public:
     // GETTERS
     virtual Eigen::VectorXd get_diagonal() = 0;
 
+    // GETTERS - EIGENPAIR
+    std::vector<numopt::eigenproblem::Eigenpair> get_eigenpairs() const;
+
+    numopt::eigenproblem::Eigenpair get_lowest_eigenpair() const;
+    /**
+     *  Return the i-th lowest eigenpair
+     */
+    numopt::eigenproblem::Eigenpair get_eigenpair(size_t i) const;
+
+    // GETTERS - EIGENVALUE
+    double get_lowest_eigenvalue() const;
+    /**
+     *  Special shortcut getter for the lowest eigenvalue: will be deprecated in the next major release
+     */
     double get_eigenvalue() const;
 
+    // GETTERS - EIGENVECTOR
+    Eigen::VectorXd get_lowest_eigenvector() const;
+    double get_lowest_eigenvector(size_t index) const;
+    /**
+     *  Special shortcut getter for the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
+     */
     Eigen::VectorXd get_eigenvector() const;
+    /**
+     *  Special shortcut getter for the value at @param index of the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
+     */
     double get_eigenvector(size_t index) const;
 
 
     // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Solve the eigenvalue problem associated to the eigenproblem solver.
+     *  Solve the eigenvalue problem associated to the eigenproblem solver
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - @member eigenpairs to the found eigenpairs
      */
     virtual void solve() = 0;
 };

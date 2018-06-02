@@ -26,6 +26,7 @@
 #include "BaseSystemOfEquationsSolver.hpp"
 #include "common.hpp"
 #include "DavidsonSolver.hpp"
+#include "Eigenpair.hpp"
 #include "DenseSolver.hpp"
 #include "NewtonMinimizer.hpp"
 #include "NewtonSystemOfEquationsSolver.hpp"
