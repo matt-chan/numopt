@@ -79,14 +79,24 @@ namespace numopt {
 
     namespace eigenproblem {
 
+        class Eigenpair {
+            __ private members __
+                - double eigenvalue
+                - Eigen::MatrixXd eigenvector
+            == constructors ==
+                **Eigenpair**(double eigenvalue, const Eigen::MatrixXd& eigenvector)
+            __ public methods __
+                + **get_eigenvalue**()
+                + **get_eigenvector**()
+        }
 
+        BaseEigenproblemSolver o--> "1.." Eigenpair
         abstract class BaseEigenproblemSolver {
             __ protected members __
                 # const size_t dim
 
                 # bool is_solved = false
-                # double eigenvalue
-                # Eigen::VectorXd eigenvector
+                # std::vector<numopt::eigenproblem::Eigenpair> eigenpairs
             == protected constructors ==
                 # explicit **BaseEigenproblemSolver**(size_t dim)
             == destructor ==
