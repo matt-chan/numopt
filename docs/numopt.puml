@@ -24,8 +24,8 @@ namespace numopt {
                 + Eigen::VectorXd **get_solution**() const
        }
 
-
         NewtonSystemOfEquationsSolver --|> BaseSystemOfEquationsSolver
+        NewtonSystemOfEquationsSolver --> numopt.global
         class NewtonSystemOfEquationsSolver {
             __ private members __
                 - const VectorFunction f
@@ -65,6 +65,7 @@ namespace numopt {
 
 
         NewtonMinimizer --|> BaseMinimizer
+        NewtonMinimizer o--> numopt.syseq.NewtonSystemOfEquationsSolver
         class NewtonMinimizer {
             __ private members __
                 - const GradientFunction grad
@@ -90,7 +91,7 @@ namespace numopt {
                 + **get_eigenvector**()
         }
 
-        BaseEigenproblemSolver o--> "1.." Eigenpair
+        BaseEigenproblemSolver *--> "1.." Eigenpair
         abstract class BaseEigenproblemSolver {
             __ protected members __
                 # const size_t dim
