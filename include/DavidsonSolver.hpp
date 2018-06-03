@@ -33,7 +33,7 @@ namespace eigenproblem {
  */
 class DavidsonSolver : public numopt::eigenproblem::BaseEigenproblemSolver {
 private:
-    static constexpr size_t maximum_number_of_iterations = 128;
+    static constexpr size_t maximum_number_of_iterations = 5;
 
     const double convergence_threshold;  // the tolerance on the norm of the residual vector
     const double correction_threshold;  // the threshold used in solving the (approximated) residue correction equation

@@ -88,68 +88,68 @@ DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& 
  */
 void DavidsonSolver::solve() {
 
-    // Calculate the initial subspace matrix S
-    Eigen::MatrixXd S = Eigen::MatrixXd::Zero(this->V_0.cols(), this->V_0.cols());
-    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->V_0.cols(), this->V_0.cols());  // stores already calculated matrix-vector products Av
+    // Calculate the expensive matrix-vector products for all given initial guesses
+    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, this->V_0.cols());  // stores calculated matrix-vector products Av in its columns
+    std::cout << "VA: " << std::endl << VA << std::endl << std::endl;
 
-    // Calculate the necessary matrix-vector products
     for (size_t j = 0; j < this->V_0.cols(); j++) {
         Eigen::VectorXd v_j = this->V_0.col(j);
         Eigen::VectorXd vA_j = this->matrixVectorProduct(v_j);
         VA.col(j) = vA_j;
     }
 
+    std::cout << "VA after first matvec products: " << std::endl << VA << std::endl << std::endl;
+
+    // Calculate the initial subspace matrix S
     Eigen::MatrixXd V = this->V_0;
-    S = V.transpose() * VA;
+    Eigen::MatrixXd S = V.transpose() * VA;
+    std::cout << "S: " << std::endl << S << std::endl << std::endl;
 
 
     size_t iteration_counter = 0;
     while (!(this->is_solved)) {
 
-        // Calculate the subspace matrix
-        // After an iteration, we are dimension_difference = V.cols() - S.cols() short in dimension of S
-        auto dimension_difference = static_cast<size_t>(V.cols() - S.cols());
-        S.conservativeResize(S.rows()+dimension_difference, S.cols()+dimension_difference);
-
-        for (size_t j = static_cast<size_t>(S.cols()); j < V.cols(); j++) {
-            Eigen::VectorXd v_j = V.col(j);
-            Eigen::VectorXd vA_j = this->matrixVectorProduct(v_j);
-            VA.col(j) = vA_j;
-
-            Eigen::VectorXd s_j = V.transpose() * vA_j;  // s_j = V^T vA_j
-            S.col(j) = s_j;
-            S.row(j) = s_j;
-        }
-
-
         // Diagonalize the subspace matrix and find the r (this->number_of_requested_eigenpairs) lowest eigenpairs
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (S);
+        std::cout << "eigensolver eigenvalues: " << std::endl << eigensolver.eigenvalues() << std::endl << std::endl;
+        std::cout << "eigensolver eigenvectors: " << std::endl << eigensolver.eigenvectors() << std::endl << std::endl;
+
+
         Eigen::VectorXd Lambda = eigensolver.eigenvalues().head(this->number_of_requested_eigenpairs);
-        Eigen::MatrixXd Z = eigensolver.eigenvectors().topLeftCorner(this->dim, this->number_of_requested_eigenpairs);
+        std::cout << "Lambda: " << std::endl << Lambda << std::endl << std::endl;
+        Eigen::MatrixXd Z = eigensolver.eigenvectors().topLeftCorner(S.cols(), this->number_of_requested_eigenpairs);
+        std::cout << "Z: " << std::endl << Z << std::endl << std::endl;
 
 
         // Calculate current estimates
         Eigen::MatrixXd X = V * Z;
+        std::cout << "X: " << std::endl << Lambda << std::endl << std::endl;
 
 
         // Calculate the residual vectors
-        Eigen::MatrixXd R = VA * Z - Lambda.asDiagonal() * X;
-
-
+        Eigen::MatrixXd R = Eigen::MatrixXd::Zero(this->dim, this->number_of_requested_eigenpairs);
         Eigen::MatrixXd Delta = Eigen::MatrixXd::Zero(this->dim, this->number_of_requested_eigenpairs);
         for (size_t column_index = 0; column_index < R.cols(); column_index++) {
+
+            R.col(column_index) = VA * Z.col(column_index) - Lambda(column_index) * X.col(column_index);
+            std::cout << "r: " << std::endl << R.col(column_index) << std::endl << std::endl;
+
 
             // Solve the residual equations
             Eigen::VectorXd denominator = this->diagonal - Eigen::VectorXd::Constant(this->dim, Lambda(column_index));
             Delta.col(column_index) = (denominator.array().abs() > this->correction_threshold).select(R.col(column_index).array() / denominator.array().abs(),
                                                                                                       R.col(column_index) / this->correction_threshold);
             Delta.col(column_index).normalize();
+            std::cout << "delta: " << std::endl << Delta.col(column_index) << std::endl << std::endl;
+
 
 
             // Project the correction vectors on the orthogonal complement of V
             Eigen::VectorXd v = Delta.col(column_index) - V * (V.transpose() * Delta.col(column_index));
             double norm = v.norm();  // calculate the norm before normalizing
             v.normalize();
+            std::cout << "v: " << std::endl << v << std::endl << std::endl;
+
 
             if (norm > 1.0e-03) {  // include in the new subspace
                 V.conservativeResize(Eigen::NoChange, V.cols()+1);
@@ -159,11 +159,18 @@ void DavidsonSolver::solve() {
                 VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
                 VA.col(VA.cols()-1) = vA;
             }
+
+            std::cout << "V after possible new inclusion: " << std::endl << V << std::endl << std::endl;
+            std::cout << "VA after possible new inclusion: " << std::endl << VA << std::endl << std::endl;
+
         }
 
 
         // Check for convergence
-        if (!((Delta.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
+        std::cout << "R before checking convergence: " << std::endl << R << std::endl << std::endl;
+        // If all residual norms are smaller than the threshold, the algorithm is considered converging
+        // We us !any() because it's possibly smaller than all()
+        if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
             this->is_solved = true;
 
             for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
@@ -190,6 +197,28 @@ void DavidsonSolver::solve() {
             VA = VA * lowest_eigenvectors;
             S = V.transpose() * VA;
         }
+
+
+        // Calculate the new subspace matrix
+        //  After an iteration, we have enlarged V with new guess vectors, so our subspace matrix S should also increase
+        //  S's dimension is too short by (V.cols - S.cols)
+        auto previous_subspace_dimension = static_cast<size_t>(S.cols());
+        auto current_subspace_dimension = static_cast<size_t>(V.cols());
+        auto dimension_difference = current_subspace_dimension - previous_subspace_dimension;
+        std::cout << "dimension_difference: " << dimension_difference << std::endl << std::endl;
+        S.conservativeResize(S.rows()+dimension_difference, S.cols()+dimension_difference);
+        std::cout << "S after conservativeResize " << std::endl << S << std::endl << std::endl;
+
+        std::cout << "S.cols(): " << S.cols() << std::endl;
+        std::cout << "V.cols(): " << V.cols() << std::endl;
+        for (auto j = previous_subspace_dimension-1; j < current_subspace_dimension; j++) {  // -1 because of computers
+            // Only calculate the rows of S that haven't been calculated yet
+            Eigen::VectorXd s_j = V.transpose() * VA.col(j);  // s_j = V^T vA_j
+            S.col(j) = s_j;
+            S.row(j) = s_j;
+        }
+
+        std::cout << "S after adding new elements: " << std::endl << S << std::endl << std::endl;
     }
 }
 
