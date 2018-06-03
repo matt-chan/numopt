@@ -35,35 +35,61 @@ namespace eigenproblem {
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
  *  initial guess @param t_0.
  */
-DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                               const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
-                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
-    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-    matrixVectorProduct (matrixVectorProduct),
-    diagonal (diagonal),
-    t_0 (t_0),
-    convergence_threshold (residue_tolerance),
-    correction_threshold (correction_threshold),
-    maximum_subspace_dimension (maximum_subspace_dimension),
-    collapsed_subspace_dimension (collapsed_subspace_dimension)
-{
-    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
-        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
-    }
-}
+//DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+//                               const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
+//                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
+//    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
+//    matrixVectorProduct (matrixVectorProduct),
+//    diagonal (diagonal),
+//    t_0 (t_0),
+//    convergence_threshold (residue_tolerance),
+//    correction_threshold (correction_threshold),
+//    maximum_subspace_dimension (maximum_subspace_dimension),
+//    collapsed_subspace_dimension (collapsed_subspace_dimension)
+//{
+//    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
+//        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
+//    }
+//}
 
 
 /**
  *  Constructor based on a given matrix @param A and an initial guess @param t_0
  */
-DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
-                               double correction_threshold, size_t maximum_subspace_dimension,
-                               size_t collapsed_subspace_dimension) :
-    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
-                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
-                   collapsed_subspace_dimension)
-{}
+//DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
+//                               double correction_threshold, size_t maximum_subspace_dimension,
+//                               size_t collapsed_subspace_dimension) :
+//    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
+//                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
+//                   collapsed_subspace_dimension)
+//{}
 
+
+/**
+ *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
+ *  and a set of initial guesses @param V_0
+ */
+DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+                               const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                               double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                               size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2) :
+   BaseEigenproblemSolver(static_cast<size_t>(V_0.rows()), number_of_requested_eigenpairs),
+   matrixVectorProduct (matrixVectorProduct),
+   diagonal (diagonal),
+   V_0 (V_0),
+   convergence_threshold (residue_tolerance),
+   correction_threshold (correction_threshold),
+   maximum_subspace_dimension (maximum_subspace_dimension),
+   collapsed_subspace_dimension (collapsed_subspace_dimension)
+{
+    if (V_0.cols() < this->number_of_requested_eigenpairs) {
+        throw std::invalid_argument("You have to specify at least as many initial guesses as number of requested eigenpairs.");
+    }
+
+    if (this->collapsed_subspace_dimension < this->number_of_requested_eigenpairs) {
+        throw::std::invalid_argument("The collapsed subspace dimension must be at least the number of requested eigenpairs.");
+    }
+}
 
 
 /*
@@ -80,115 +106,92 @@ DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& 
  */
 void DavidsonSolver::solve() {
 
-    // Calculate a new subspace vector
-    Eigen::VectorXd v_1 = this->t_0 / this->t_0.norm();
+    // Calculate the initial subspace matrix S
+    Eigen::MatrixXd S = Eigen::MatrixXd::Zero(this->V_0.cols(), this->V_0.cols());
+    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->V_0.cols(), this->V_0.cols());  // stores already calculated matrix-vector products Av
 
-
-    // Calculate the expensive matrix-vector product
-    Eigen::VectorXd vA_1 = this->matrixVectorProduct(v_1);
-
-
-    // Expand the subspaces V and VA
-    Eigen::MatrixXd V = Eigen::MatrixXd::Zero(this->dim, 1);
-    V.col(0) = v_1;
-
-    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, 1);
-    VA.col(0) = vA_1;
-
-
-    // Calculate the Rayleigh quotient, i.e. the subspace matrix of size 1
-    double theta = v_1.dot(vA_1);
-    Eigen::MatrixXd M = Eigen::MatrixXd::Constant(1, 1, theta);
-
-
-    // Calculate the associated residual vector
-    Eigen::VectorXd r = vA_1 - theta * v_1;
-
-    // Check for convergence
-    if (r.norm() < this->convergence_threshold) {
-        this->is_solved = true;
-        this->eigenvalue = theta;
-        this->eigenvector = v_1;
+    // Calculate the necessary matrix-vector products
+    for (size_t j = 0; j < this->V_0.cols(); j++) {
+        Eigen::VectorXd v_j = this->V_0.col(j);
+        Eigen::VectorXd vA_j = this->matrixVectorProduct(v_j);
+        VA.col(j) = vA_j;
     }
 
+    Eigen::MatrixXd V = this->V_0;
+    S = V.transpose() * VA;
 
-    size_t iteration_counter = 1;
+
+    size_t iteration_counter = 0;
     while (!(this->is_solved)) {
 
-        // Approximately solve the residue equation by using coefficient-wise quotients
-        // This implementation was adapted from Klaas' DOCI code: (https://github.com/klgunst/doci)
-        Eigen::VectorXd denominator = this->diagonal - Eigen::VectorXd::Constant(this->dim, theta);
-        Eigen::VectorXd t = (denominator.array().abs() > this->correction_threshold).select(r.array() / denominator.array().abs(),
-                                                                                            r / this->correction_threshold);
+        // Calculate the subspace matrix
+        // After an iteration, we are dimension_difference = V.cols() - S.cols() short in dimension of S
+        auto dimension_difference = static_cast<size_t>(V.cols() - S.cols());
+        S.conservativeResize(S.rows()+dimension_difference, S.cols()+dimension_difference);
 
+        for (size_t j = static_cast<size_t>(S.cols()); j < V.cols(); j++) {
+            Eigen::VectorXd v_j = V.col(j);
+            Eigen::VectorXd vA_j = this->matrixVectorProduct(v_j);
+            VA.col(j) = vA_j;
 
-        // Project on the orthogonal subspace of V
-        Eigen::VectorXd t_orthogonal = t - V * (V.transpose() * t);
-
-
-        // Calculate the new subspace vector
-        Eigen::VectorXd v = t_orthogonal / t_orthogonal.norm();
-
-
-        // Calculate the expensive matrix-vector product
-        Eigen::VectorXd vA = this->matrixVectorProduct(v);
-
-
-        // If needed, collapse the subspace to this->collapsed_subspace_dimension 'best' eigenvectors
-        if (V.cols() == this->maximum_subspace_dimension) {
-            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
-            theta = eigensolver.eigenvalues()(0);
-            Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
-
-            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->maximum_subspace_dimension,
-                                                                                           this->collapsed_subspace_dimension);
-
-            V = V * lowest_eigenvectors;
-            VA = VA * lowest_eigenvectors;
-
-            // The subspace matrix should now again be a (this->collapsed_subspace_dimension)x(this->collapsed_subspace_dimension)-matrix
-            M = V.transpose() * VA;
+            Eigen::VectorXd s_j = V.transpose() * vA_j;  // s_j = V^T vA_j
+            S.col(j) = s_j;
+            S.row(j) = s_j;
         }
 
 
-        // Expand the subspaces V and VA
-        V.conservativeResize(Eigen::NoChange, V.cols()+1);
-        V.col(V.cols()-1) = v;
-
-        VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
-        VA.col(VA.cols()-1) = vA;
+        // Diagonalize the subspace matrix and find the r (this->number_of_requested_eigenpairs) lowest eigenpairs
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (S);
+        Eigen::VectorXd Lambda = eigensolver.eigenvalues().head(this->number_of_requested_eigenpairs);
+        Eigen::MatrixXd Z = eigensolver.eigenvectors().topLeftCorner(this->dim, this->number_of_requested_eigenpairs);
 
 
-        // Calculate the subspace matrix
-        M.conservativeResize(M.rows()+1, M.cols()+1);
-
-        Eigen::VectorXd m_k = V.transpose() * vA;
-        M.col(M.cols()-1) = m_k;
-        M.row(M.rows()-1) = m_k;
+        // Calculate current estimates
+        Eigen::MatrixXd X = V * Z;
 
 
-        // Solve the subspace eigenvalue problem
-        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (M);
-        theta = eigensolver.eigenvalues()(0);
-        Eigen::VectorXd s = eigensolver.eigenvectors().col(0);
+        // Calculate the residual vectors
+        Eigen::MatrixXd R = VA * Z - Lambda.asDiagonal() * X;
 
 
-        // Calculate the new residual vector
-        Eigen::VectorXd u = V * s;
-        Eigen::VectorXd uA = VA * s;
+        Eigen::MatrixXd Delta = Eigen::MatrixXd::Zero(this->dim, this->number_of_requested_eigenpairs);
+        for (size_t column_index = 0; column_index < R.cols(); column_index++) {
 
-        r = uA - theta * u;
+            // Solve the residual equations
+            Eigen::VectorXd denominator = this->diagonal - Eigen::VectorXd::Constant(this->dim, Lambda(column_index));
+            Delta.col(column_index) = (denominator.array().abs() > this->correction_threshold).select(R.col(column_index).array() / denominator.array().abs(),
+                                                                                                      R.col(column_index) / this->correction_threshold);
+            Delta.col(column_index).normalize();
+
+
+            // Project the correction vectors on the orthogonal complement of V
+            Eigen::VectorXd v = Delta.col(column_index) - V * (V.transpose() * Delta.col(column_index));
+            double norm = v.norm();  // calculate the norm before normalizing
+            v.normalize();
+
+            if (norm > 1.0e-03) {  // include in the new subspace
+                V.conservativeResize(Eigen::NoChange, V.cols()+1);
+                V.col(V.cols()-1) = v;
+
+                Eigen::VectorXd vA = this->matrixVectorProduct(v);
+                VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
+                VA.col(VA.cols()-1) = vA;
+            }
+        }
 
 
         // Check for convergence
-        if (r.norm() < this->convergence_threshold) {
+        if (!(Delta.colwise().norm() >= this->convergence_threshold).any()) {
             this->is_solved = true;
-            this->eigenvalue = theta;
-            this->eigenvector = u;
-        }
 
-        else {  // not converged yet
-            iteration_counter ++;
+            for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+                double eigenvalue = Lambda(i);
+                Eigen::VectorXd eigenvector = X.col(i);
+
+                this->eigenpairs[i] = numopt::eigenproblem::Eigenpair(eigenvalue, eigenvector);
+            }
+        } else {
+            iteration_counter++;
 
             // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
             if (iteration_counter >= this->maximum_number_of_iterations) {
@@ -196,7 +199,16 @@ void DavidsonSolver::solve() {
             }
         }
 
-    }  // while loop
+
+        // Do a subspace collapse if necessary
+        if (V.cols() > this->maximum_subspace_dimension) {
+            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->dim, this->collapsed_subspace_dimension);
+
+            V = V * lowest_eigenvectors;
+            VA = VA * lowest_eigenvectors;
+            S = V.transpose() * VA;
+        }
+    }
 }
 
 
