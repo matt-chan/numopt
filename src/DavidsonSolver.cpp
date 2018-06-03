@@ -103,7 +103,6 @@ void DavidsonSolver::solve() {
 
     // Calculate the expensive matrix-vector products for all given initial guesses
     Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, this->V_0.cols());  // stores calculated matrix-vector products Av in its columns
-    std::cout << "VA: " << std::endl << VA << std::endl << std::endl;
 
     for (size_t j = 0; j < this->V_0.cols(); j++) {
         Eigen::VectorXd v_j = this->V_0.col(j);
@@ -159,6 +158,7 @@ void DavidsonSolver::solve() {
 
             // Project the correction vectors on the orthogonal complement of V
             Eigen::VectorXd v = Delta.col(column_index) - V * (V.transpose() * Delta.col(column_index));
+
             double norm = v.norm();  // calculate the norm before normalizing
             v.normalize();
             std::cout << "v: " << std::endl << v << std::endl << std::endl;
@@ -172,6 +172,7 @@ void DavidsonSolver::solve() {
                 VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
                 VA.col(VA.cols()-1) = vA;
             }
+            std::cout << "V.t() * V: " << std::endl << V.transpose() * V << std::endl << std::endl;
 
             std::cout << "V after possible new inclusion: " << std::endl << V << std::endl << std::endl;
             std::cout << "VA after possible new inclusion: " << std::endl << VA << std::endl << std::endl;
@@ -180,7 +181,7 @@ void DavidsonSolver::solve() {
 
 
         // Check for convergence
-        std::cout << "R before checking convergence: " << std::endl << R << std::endl << std::endl;
+        std::cout << "R.colwise().norm() before checking convergence: " << std::endl << R.colwise().norm() << std::endl << std::endl;
         // If all residual norms are smaller than the threshold, the algorithm is considered converging
         // We us !any() because it's possibly smaller than all()
         if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
