@@ -66,5 +66,5 @@ script:
   - mkdir build && cd build
   - cmake ..
   - make
-  - build/tests/SparseSolver_test
+  - ./tests/SparseSolver_test
 #  - make && make test && sudo make install
