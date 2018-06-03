@@ -48,8 +48,7 @@ SparseSolver::SparseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
  *
  *  If successful, it sets
  *      - @member is_solved to true
- *      - @member eigenvalue to the lowest calculated eigenvalue
- *      - @member eigenvector to the associated eigenvector
+ *      - the number of requested eigenpairs in @member eigenpairs
  */
 void SparseSolver::solve() {
 

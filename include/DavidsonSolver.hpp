@@ -79,12 +79,11 @@ public:
 
     // PUBLIC METHODS
     /**
-     *  Solve the eigenvalue problem related to the given matrix-vector product.
+     *  Solve the eigenvalue problem related to the given matrix-vector product
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     void solve() override;
 };

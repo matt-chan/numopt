@@ -44,6 +44,10 @@ DenseSolver::DenseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
 
 /**
  *  Solve the full dense eigenvalue problem of @member matrix.
+ *
+ *  If successful, it sets
+ *      - @member is_solved to true
+ *      - the number of requested eigenpairs in @member eigenpairs
  */
 void DenseSolver::solve() {
 

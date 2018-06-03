@@ -92,7 +92,7 @@ public:
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenpairs to the found eigenpairs
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     virtual void solve() = 0;
 };

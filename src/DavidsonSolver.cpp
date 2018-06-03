@@ -92,44 +92,36 @@ size_t DavidsonSolver::get_number_of_iterations() const {
  */
 
 /**
- *  Solve the eigenvalue problem related to the given matrix-vector product.
+ *  Solve the eigenvalue problem related to the given matrix-vector product
  *
- *  If successful, sets
+ *  If successful, it sets
  *      - @member is_solved to true
- *      - @member eigenvalue to the calculated eigenvalue
- *      - @member eigenvector to the calculated eigenvector
+ *      - the number of requested eigenpairs in @member eigenpairs
  */
 void DavidsonSolver::solve() {
 
-    // Calculate the expensive matrix-vector products for all given initial guesses
-    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, this->V_0.cols());  // stores calculated matrix-vector products Av in its columns
+    // Calculate the expensive matrix-vector products for all given initial guesses, and store them in VA
+    Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, this->V_0.cols());
 
     for (size_t j = 0; j < this->V_0.cols(); j++) {
-        Eigen::VectorXd v_j = this->V_0.col(j);
-        Eigen::VectorXd vA_j = this->matrixVectorProduct(v_j);
-        VA.col(j) = vA_j;
+        VA.col(j) = this->matrixVectorProduct(this->V_0.col(j));
     }
-
-    std::cout << "VA after first matvec products: " << std::endl << VA << std::endl << std::endl;
 
     // Calculate the initial subspace matrix S
     Eigen::MatrixXd V = this->V_0;
     Eigen::MatrixXd S = V.transpose() * VA;
-    std::cout << "S: " << std::endl << S << std::endl << std::endl;
 
 
     // this->number_of_iterations starts at 0
     while (!(this->is_solved)) {
 
         // Diagonalize the subspace matrix and find the r (this->number_of_requested_eigenpairs) lowest eigenpairs
+        // Lambda contains the requested number of eigenvalues, Z contains the corresponding eigenvectors
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (S);
-        std::cout << "eigensolver eigenvalues: " << std::endl << eigensolver.eigenvalues() << std::endl << std::endl;
-        std::cout << "eigensolver eigenvectors: " << std::endl << eigensolver.eigenvectors() << std::endl << std::endl;
-
-
         Eigen::VectorXd Lambda = eigensolver.eigenvalues().head(this->number_of_requested_eigenpairs);
-        std::cout << "Lambda: " << std::endl << Lambda << std::endl << std::endl;
         Eigen::MatrixXd Z = eigensolver.eigenvectors().topLeftCorner(S.cols(), this->number_of_requested_eigenpairs);
+
+        std::cout << "Lambda: " << std::endl << Lambda << std::endl << std::endl;
         std::cout << "Z: " << std::endl << Z << std::endl << std::endl;
 
 
