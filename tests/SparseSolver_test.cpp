@@ -141,12 +141,12 @@ BOOST_AUTO_TEST_CASE ( simple_sparse_number_of_requested_eigenpairs ) {
 
     // Find the lowest eigenpairs using our sparse solver
     sparse_solver.solve();
-//    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = sparse_solver.get_eigenpairs();
+    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = sparse_solver.get_eigenpairs();
 
 
 
-//    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
-//        BOOST_CHECK(eigenpairs[i].isEqual(ref_eigenpairs[i]));  // check if the found eigenpairs are equal to the reference eigenpairs
-//        // BOOST_CHECK(std::abs(eigenpairs[i].get_eigenvector().norm() - 1) < 1.0e-11);  // check if the found eigenpairs are normalized
-//    }
+    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+        BOOST_CHECK(eigenpairs[i].isEqual(ref_eigenpairs[i], 1.0e-04));  // check if the found eigenpairs are equal to the reference eigenpairs
+        // BOOST_CHECK(std::abs(eigenpairs[i].get_eigenvector().norm() - 1) < 1.0e-11);  // check if the found eigenpairs are normalized
+    }
 }
