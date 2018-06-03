@@ -37,9 +37,9 @@ private:
 public:
     // CONSTRUCTORS
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem.
+     *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit SparseSolver(size_t dim);
+    explicit SparseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR
