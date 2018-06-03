@@ -46,7 +46,7 @@ protected:
     /**
      *  Protected constructor to initialize the const @member dim by @param dim
      */
-    explicit BaseEigenproblemSolver(size_t dim, size_t number_of_requested_eigenpairs = 0);
+    BaseEigenproblemSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
 public:
