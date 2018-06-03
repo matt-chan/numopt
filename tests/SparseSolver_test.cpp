@@ -132,16 +132,16 @@ BOOST_AUTO_TEST_CASE ( simple_sparse_number_of_requested_eigenpairs ) {
     Eigen::VectorXd ref_lowest_eigenvalues = spectra_sparse_eigensolver.eigenvalues().head(number_of_requested_eigenpairs);
     Eigen::MatrixXd ref_lowest_eigenvectors = spectra_sparse_eigensolver.eigenvectors().topLeftCorner(rows, number_of_requested_eigenpairs);
 
-    // Create eigenpairs for the reference eigenpairs
-    std::vector<numopt::eigenproblem::Eigenpair> ref_eigenpairs (number_of_requested_eigenpairs);
-    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
-        ref_eigenpairs[i] = numopt::eigenproblem::Eigenpair(ref_lowest_eigenvalues(i), ref_lowest_eigenvectors.col(i));
-    }
-
-
-    // Find the lowest eigenpairs using our sparse solver
-    sparse_solver.solve();
-    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = sparse_solver.get_eigenpairs();
+//    // Create eigenpairs for the reference eigenpairs
+//    std::vector<numopt::eigenproblem::Eigenpair> ref_eigenpairs (number_of_requested_eigenpairs);
+//    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+//        ref_eigenpairs[i] = numopt::eigenproblem::Eigenpair(ref_lowest_eigenvalues(i), ref_lowest_eigenvectors.col(i));
+//    }
+//
+//
+//    // Find the lowest eigenpairs using our sparse solver
+//    sparse_solver.solve();
+//    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = sparse_solver.get_eigenpairs();
 
 
 
