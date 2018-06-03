@@ -1,5 +1,8 @@
 #include "Eigenpair.hpp"
 
+#include <cpputil.hpp>
+
+
 
 namespace numopt {
 namespace eigenproblem {
@@ -44,7 +47,7 @@ bool Eigenpair::isEqual(const numopt::eigenproblem::Eigenpair& other, double tol
     }
 
     if (std::abs(this->eigenvalue - other.eigenvalue) < tolerance) {
-        if (this->eigenvector.isApprox(other.get_eigenvector())) {
+        if (cpputil::linalg::areEqualEigenvectors(this->eigenvector, other.get_eigenvector(), tolerance)) {
             return true;
         }
     }
