@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2, 2);
     Eigen::VectorXd t_0 = Eigen::VectorXd::Constant(2, 1);
 
-    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);
     BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0));
 }
 
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
     // Solve using the Davidson diagonalization, supplying an initial guess
     Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
     t_0(0) = 1;
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
     davidson_solver.solve();
 
     double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();

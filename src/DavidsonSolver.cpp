@@ -32,47 +32,13 @@ namespace eigenproblem {
  */
 
 /**
- *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
- *  initial guess @param t_0.
- */
-//DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-//                               const Eigen::VectorXd& t_0, double residue_tolerance, double correction_threshold,
-//                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
-//    BaseEigenproblemSolver(static_cast<size_t>(t_0.size())),
-//    matrixVectorProduct (matrixVectorProduct),
-//    diagonal (diagonal),
-//    t_0 (t_0),
-//    convergence_threshold (residue_tolerance),
-//    correction_threshold (correction_threshold),
-//    maximum_subspace_dimension (maximum_subspace_dimension),
-//    collapsed_subspace_dimension (collapsed_subspace_dimension)
-//{
-//    if (maximum_subspace_dimension <= collapsed_subspace_dimension) {
-//        throw std::invalid_argument("maximum_subspace_dimension should be at least larger than collapsed_subspace_dimension");
-//    }
-//}
-
-
-/**
- *  Constructor based on a given matrix @param A and an initial guess @param t_0
- */
-//DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance,
-//                               double correction_threshold, size_t maximum_subspace_dimension,
-//                               size_t collapsed_subspace_dimension) :
-//    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
-//                   A.diagonal(), t_0, residue_tolerance, correction_threshold, maximum_subspace_dimension,
-//                   collapsed_subspace_dimension)
-//{}
-
-
-/**
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
  *  and a set of initial guesses @param V_0
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                               const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
-                               double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
-                               size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2) :
+                               const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs,
+                               double residue_tolerance, double correction_threshold,
+                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
    BaseEigenproblemSolver(static_cast<size_t>(V_0.rows()), number_of_requested_eigenpairs),
    matrixVectorProduct (matrixVectorProduct),
    diagonal (diagonal),
@@ -90,6 +56,32 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
         throw::std::invalid_argument("The collapsed subspace dimension must be at least the number of requested eigenpairs.");
     }
 }
+
+
+/**
+ *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
+ *  one initial guess @param x_0
+ */
+//DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+//                               const Eigen::VectorXd& x_0, size_t number_of_requested_eigenpairs, double residue_tolerance,
+//                               double correction_threshold, size_t maximum_subspace_dimension,
+//                               size_t collapsed_subspace_dimension) :
+//    DavidsonSolver(matrixVectorProduct, diagonal, Eigen::Map<const Eigen::MatrixXd>(x_0.data(), x_0.size(), 1),
+//                   number_of_requested_eigenpairs, residue_tolerance, correction_threshold, maximum_subspace_dimension,
+//                   collapsed_subspace_dimension)
+//{}
+
+
+/**
+ *  Constructor based on a given matrix @param A and an initial guess @param x_0
+ */
+DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& x_0, size_t number_of_requested_eigenpairs,
+                               double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension,
+                               size_t collapsed_subspace_dimension) :
+    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; }, // lambda matrix-vector product function created from the given matrix A
+                   A.diagonal(), x_0, number_of_requested_eigenpairs, residue_tolerance, correction_threshold,
+                   maximum_subspace_dimension, collapsed_subspace_dimension)
+{}
 
 
 /*
@@ -181,7 +173,7 @@ void DavidsonSolver::solve() {
 
 
         // Check for convergence
-        if (!(Delta.colwise().norm() >= this->convergence_threshold).any()) {
+        if (!((Delta.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
             this->is_solved = true;
 
             for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {

@@ -52,29 +52,28 @@ public:
     // CONSTRUCTORS
     /**
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
-     *  and initial guess @param t_0.
-     */
-//    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-//                   const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-//                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-//                   size_t collapsed_subspace_dimension = 2);
-
-    /**
-     *  Constructor based on a given matrix @param A and an initial guess @param t_0
-     */
-//    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-//                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-//                   size_t collapsed_subspace_dimension = 2);
-
-
-    /**
-     *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
      *  and a set of initial guesses @param V_0
      */
-     DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                    const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
-                    double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
-                    size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension);
+    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+                   const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+
+    /**
+     *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal, and
+     *  one initial guess @param x_0
+     */
+//    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+//                   const Eigen::VectorXd& x_0, size_t number_of_requested_eigenpairs = 1,
+//                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+//                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+
+    /**
+     *  Constructor based on a given matrix @param A and an initial guess @param x_0
+     */
+    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& x_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
 
 
     // DESTRUCTOR
