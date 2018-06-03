@@ -14,10 +14,16 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
 
     // Create an example matrix and initial guess vector
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2, 2);
-    Eigen::VectorXd t_0 = Eigen::VectorXd::Constant(2, 1);
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Constant(2, 1);
+    Eigen::MatrixXd X_0 = Eigen::Map<Eigen::MatrixXd> (x_0.data(), 2, 1);  // we can't provide just the VectorXd x_0 to our function because Eigen::VectorXd and Eigen::MatrixXd are templated to be the same, so we can't use these differences in for example different constructors
 
-    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);
-    BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0));
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0, 3, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);  // 3 requested eigenpairs: not enough initial guesses
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0, 1, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);  // collapsed subspace dimension (8) cannot be larger than maximum subspace dimension (4)
+
+    Eigen::MatrixXd Y_0 = Eigen::MatrixXd::Identity(2, 2);
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, Y_0, 2, 1.0e-08, 1.0e-12, 1, 8), std::invalid_argument);  // collapsed subspace dimension (1) cannot be smaller number of requested eigenpairs (2)
+
+    BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0));
 }
 
 
@@ -25,9 +31,9 @@ BOOST_AUTO_TEST_CASE ( diagonal_getter_Davidson ) {
 
     // Test the diagonal getter for Davidson
     Eigen::MatrixXd A = Eigen::MatrixXd::Identity(2, 2);
-    Eigen::VectorXd t_0 = Eigen::VectorXd::Constant(2, 1);
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Constant(2, 1);
 
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0);
 
 
     BOOST_CHECK(A.diagonal().isApprox(davidson_solver.get_diagonal(), 1.0e-12));
@@ -56,11 +62,11 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 
 
     // Solve using the Davidson diagonalization, supplying an initial guess
-    Eigen::VectorXd t_0 (5);
-    t_0 << 1, 0, 0, 0, 0;
-    std::cout << "Did everything before DavidsonSolver instance" << std::endl;
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
-    std::cout << "Made a DavidsonSolver instance" << std::endl;
+    Eigen::VectorXd x_0 (5);
+    x_0 << 1, 0, 0, 0, 0;
+    Eigen::MatrixXd X_0 = Eigen::Map<Eigen::MatrixXd> (x_0.data(), x_0.size(), 1);  // we must provide a MatrixXd instead of a VectorXd
+
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0);
     davidson_solver.solve();
 
     double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
@@ -73,6 +79,12 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
+}
+
+
+BOOST_AUTO_TEST_CASE ( esqc_number_of_requested_eigenpairs ) {
+
+    BOOST_CHECK(false);
 }
 
 
@@ -97,9 +109,9 @@ BOOST_AUTO_TEST_CASE ( liu_50 ) {
 
 
     // Solve using the Davidson diagonalization, supplying an initial guess
-    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
-    t_0(0) = 1;
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Zero(N);
+    x_0(0) = 1;
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0);
     davidson_solver.solve();
 
     double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
@@ -112,6 +124,12 @@ BOOST_AUTO_TEST_CASE ( liu_50 ) {
 
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
+}
+
+
+BOOST_AUTO_TEST_CASE ( liu_50_number_of_requested_eigenpairs ) {
+
+    BOOST_CHECK(false);
 }
 
 
@@ -136,9 +154,9 @@ BOOST_AUTO_TEST_CASE ( liu_1000 ) {
 
 
     // Solve using the Davidson diagonalization, supplying an initial guess
-    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
-    t_0(0) = 1;
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0);
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Zero(N);
+    x_0(0) = 1;
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0);
     davidson_solver.solve();
 
     double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
@@ -175,9 +193,9 @@ BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
 
 
     // Solve using the Davidson diagonalization, supplying an initial guess
-    Eigen::VectorXd t_0 = Eigen::VectorXd::Zero(N);
-    t_0(0) = 1;
-    numopt::eigenproblem::DavidsonSolver davidson_solver (A, t_0, 1, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Zero(N);
+    x_0(0) = 1;
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0, 1, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
     davidson_solver.solve();
 
     double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
@@ -191,3 +209,6 @@ BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
+
+
+
