@@ -127,13 +127,53 @@ BOOST_AUTO_TEST_CASE ( liu_50 ) {
 }
 
 
+// Test a forced subspace collapse for small dimensions (maximum subspace dimension < 12)
+BOOST_AUTO_TEST_CASE ( liu_50_collapse ) {
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 50;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    double ref_eigenvalue = eigensolver.eigenvalues()(0);
+    Eigen::VectorXd ref_eigenvector = eigensolver.eigenvectors().col(0);
+
+
+    // Solve using the Davidson diagonalization, supplying an initial guess
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Zero(N);
+    x_0(0) = 1;
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0, 1, 1.0e-08, 1.0e-12, 10, 5);  // maximum subspace dimension = 10, collapsed subspace dimension = 5
+    davidson_solver.solve();
+
+    double test_lowest_eigenvalue = davidson_solver.get_eigenvalue();
+    Eigen::VectorXd test_lowest_eigenvector = davidson_solver.get_eigenvector();
+
+
+    BOOST_CHECK(std::abs(test_lowest_eigenvalue - ref_eigenvalue) < 1.0e-08);
+    BOOST_CHECK(cpputil::linalg::areEqualEigenvectors(test_lowest_eigenvector, ref_eigenvector, 1.0e-08));
+
+
+    // Check if the eigenvector is normalized
+    BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
+}
+
+
 BOOST_AUTO_TEST_CASE ( liu_50_number_of_requested_eigenpairs ) {
 
     BOOST_CHECK(false);
 }
 
 
-// 12 iterations
+// 12 iterations for large dimensions
 BOOST_AUTO_TEST_CASE ( liu_1000 ) {
 
     // Let's prepare the Liu reference test (liu1978)
@@ -173,7 +213,7 @@ BOOST_AUTO_TEST_CASE ( liu_1000 ) {
 }
 
 
-// Test a forced subspace collapse (maximum subspace dimension < 12)
+// Test a forced subspace collapse for large dimensions (maximum subspace dimension < 12)
 BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
 
     // Let's prepare the Liu reference test (liu1978)
@@ -211,6 +251,3 @@ BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
 }
-
-
-

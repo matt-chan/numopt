@@ -165,6 +165,21 @@ void DavidsonSolver::solve() {
 
 
             if (norm > 1.0e-03) {  // include in the new subspace
+                // Do a subspace collapse if necessary
+                if (V.cols() == this->maximum_subspace_dimension) {
+                    std::cout << "WE HAD TO DO A SUBSPACE COLLAPSE!" << std::endl;
+                    Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(S.cols(), this->collapsed_subspace_dimension);
+                    std::cout << "lowest eigenvectors: " << std::endl << lowest_eigenvectors << std::endl << std::endl;
+
+
+                    V = V * lowest_eigenvectors;
+                    VA = VA * lowest_eigenvectors;
+                    std::cout << "V after subspace collapse: " << std::endl << V << std::endl << std::endl;
+                    std::cout << "VA after subspace collapse: " << std::endl << VA << std::endl << std::endl;
+                    S = V.transpose() * VA;
+                    std::cout << "S after subspace collapse: " << std::endl << S << std::endl << std::endl;
+                }
+
                 V.conservativeResize(Eigen::NoChange, V.cols()+1);
                 V.col(V.cols()-1) = v;
 
@@ -201,17 +216,6 @@ void DavidsonSolver::solve() {
                 throw std::runtime_error("The Davidson algorithm did not converge.");
             }
         }
-
-
-        // Do a subspace collapse if necessary
-        if (V.cols() > this->maximum_subspace_dimension) {
-            Eigen::MatrixXd lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(this->dim, this->collapsed_subspace_dimension);
-
-            V = V * lowest_eigenvectors;
-            VA = VA * lowest_eigenvectors;
-            S = V.transpose() * VA;
-        }
-
 
         // Calculate the new subspace matrix
         //  After an iteration, we have enlarged V with new guess vectors, so our subspace matrix S should also increase
