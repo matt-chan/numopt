@@ -154,8 +154,34 @@ void DavidsonSolver::solve() {
             Delta.col(column_index).normalize();
             std::cout << "delta: " << std::endl << Delta.col(column_index) << std::endl << std::endl;
 
+        }
 
 
+        // Check for convergence
+        std::cout << "R.colwise().norm() before checking convergence: " << std::endl << R.colwise().norm() << std::endl << std::endl;
+        // If all residual norms are smaller than the threshold, the algorithm is considered converging
+        // We us !any() because it's possibly smaller than all()
+        if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
+            this->is_solved = true;
+
+            for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+                double eigenvalue = Lambda(i);
+                Eigen::VectorXd eigenvector = X.col(i);
+
+                this->eigenpairs[i] = numopt::eigenproblem::Eigenpair(eigenvalue, eigenvector);
+            }
+        } else {
+            this->number_of_iterations++;
+
+            // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
+            if (this->number_of_iterations >= this->maximum_number_of_iterations) {
+                throw std::runtime_error("The Davidson algorithm did not converge.");
+            }
+        }
+
+
+        for (size_t column_index = 0; column_index < R.cols(); column_index++) {
+            // Calculate the orthonormalized correction vectors
             // Project the correction vectors on the orthogonal complement of V
             Eigen::VectorXd v = Delta.col(column_index) - V * (V.transpose() * Delta.col(column_index));
 
@@ -191,30 +217,6 @@ void DavidsonSolver::solve() {
 
             std::cout << "V after possible new inclusion: " << std::endl << V << std::endl << std::endl;
             std::cout << "VA after possible new inclusion: " << std::endl << VA << std::endl << std::endl;
-
-        }
-
-
-        // Check for convergence
-        std::cout << "R.colwise().norm() before checking convergence: " << std::endl << R.colwise().norm() << std::endl << std::endl;
-        // If all residual norms are smaller than the threshold, the algorithm is considered converging
-        // We us !any() because it's possibly smaller than all()
-        if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
-            this->is_solved = true;
-
-            for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
-                double eigenvalue = Lambda(i);
-                Eigen::VectorXd eigenvector = X.col(i);
-
-                this->eigenpairs[i] = numopt::eigenproblem::Eigenpair(eigenvalue, eigenvector);
-            }
-        } else {
-            this->number_of_iterations++;
-
-            // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
-            if (this->number_of_iterations >= this->maximum_number_of_iterations) {
-                throw std::runtime_error("The Davidson algorithm did not converge.");
-            }
         }
 
         // Calculate the new subspace matrix

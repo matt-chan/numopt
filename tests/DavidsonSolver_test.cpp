@@ -81,12 +81,6 @@ BOOST_AUTO_TEST_CASE ( esqc_example_solver ) {
 }
 
 
-BOOST_AUTO_TEST_CASE ( esqc_number_of_requested_eigenpairs ) {
-
-    BOOST_CHECK(false);
-}
-
-
 // 12 iterations
 BOOST_AUTO_TEST_CASE ( liu_50 ) {
 
@@ -169,7 +163,44 @@ BOOST_AUTO_TEST_CASE ( liu_50_collapse ) {
 
 BOOST_AUTO_TEST_CASE ( liu_50_number_of_requested_eigenpairs ) {
 
-    BOOST_CHECK(false);
+    size_t number_of_requested_eigenpairs = 3;
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 50;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    Eigen::VectorXd ref_lowest_eigenvalues = eigensolver.eigenvalues().head(number_of_requested_eigenpairs);
+    Eigen::MatrixXd ref_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(N, number_of_requested_eigenpairs);
+
+    // Create eigenpairs for the reference eigenpairs
+    std::vector<numopt::eigenproblem::Eigenpair> ref_eigenpairs (number_of_requested_eigenpairs);
+    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+        ref_eigenpairs[i] = numopt::eigenproblem::Eigenpair(ref_lowest_eigenvalues(i), ref_lowest_eigenvectors.col(i));
+    }
+
+    // Solve using the Davidson diagonalization, supplying the requested amount of  initial guesses
+    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N,N).topLeftCorner(N, number_of_requested_eigenpairs);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0, number_of_requested_eigenpairs, 1.0e-08, 1.0e-12, 15, number_of_requested_eigenpairs);
+    davidson_solver.solve();
+
+    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = davidson_solver.get_eigenpairs();
+
+
+
+    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+        BOOST_CHECK(eigenpairs[i].isEqual(ref_eigenpairs[i]));  // check if the found eigenpairs are equal to the reference eigenpairs
+        BOOST_CHECK(std::abs(eigenpairs[i].get_eigenvector().norm() - 1) < 1.0e-12);  // check if the found eigenpairs are normalized
+    }
 }
 
 
@@ -250,4 +281,47 @@ BOOST_AUTO_TEST_CASE ( liu_1000_collapse ) {
 
     // Check if the eigenvector is normalized
     BOOST_CHECK(std::abs(davidson_solver.get_eigenvector().norm() - 1) < 1.0e-12);
+}
+
+
+BOOST_AUTO_TEST_CASE ( liu_1000_number_of_requested_eigenpairs ) {
+
+    size_t number_of_requested_eigenpairs = 3;
+
+    // Let's prepare the Liu reference test (liu1978)
+    size_t N = 1000;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(N, N);
+    for (size_t i = 0; i < N; i++) {
+        if (i < 5) {
+            A(i, i) = 1 + 0.1 * i;
+        } else {
+            A(i, i) = 2 * (i + 1) - 1;
+        }
+    }
+
+
+    // Solve the eigenvalue problem with Eigen
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver (A);
+    Eigen::VectorXd ref_lowest_eigenvalues = eigensolver.eigenvalues().head(number_of_requested_eigenpairs);
+    Eigen::MatrixXd ref_lowest_eigenvectors = eigensolver.eigenvectors().topLeftCorner(N, number_of_requested_eigenpairs);
+
+    // Create eigenpairs for the reference eigenpairs
+    std::vector<numopt::eigenproblem::Eigenpair> ref_eigenpairs (number_of_requested_eigenpairs);
+    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+        ref_eigenpairs[i] = numopt::eigenproblem::Eigenpair(ref_lowest_eigenvalues(i), ref_lowest_eigenvectors.col(i));
+    }
+
+    // Solve using the Davidson diagonalization, supplying the requested amount of  initial guesses
+    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N,N).topLeftCorner(N, number_of_requested_eigenpairs);
+    numopt::eigenproblem::DavidsonSolver davidson_solver (A, X_0, number_of_requested_eigenpairs, 1.0e-08, 1.0e-12, 15, number_of_requested_eigenpairs);
+    davidson_solver.solve();
+
+    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs = davidson_solver.get_eigenpairs();
+
+
+
+    for (size_t i = 0; i < number_of_requested_eigenpairs; i++) {
+        BOOST_CHECK(eigenpairs[i].isEqual(ref_eigenpairs[i]));  // check if the found eigenpairs are equal to the reference eigenpairs
+        BOOST_CHECK(std::abs(eigenpairs[i].get_eigenvector().norm() - 1) < 1.0e-12);  // check if the found eigenpairs are normalized
+    }
 }
