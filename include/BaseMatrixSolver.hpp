@@ -33,7 +33,7 @@ public:
     /**
      *   Constructor based on the dimension @param dim of the eigenvalue problem and the @param number_of_requested_eigenpairs
      */
-    BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
+    explicit BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR

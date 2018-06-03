@@ -85,10 +85,13 @@ namespace numopt {
                 - double eigenvalue
                 - Eigen::MatrixXd eigenvector
             == constructors ==
+                explicit **Eigenpair**(size_t dimension = 1)
                 **Eigenpair**(double eigenvalue, const Eigen::MatrixXd& eigenvector)
             __ public methods __
                 + **get_eigenvalue**()
                 + **get_eigenvector**()
+
+                + bool **isEqual**(const numopt::eigenproblem::Eigenpair& other, double tolerance = 1.0e-08) const
         }
 
         BaseEigenproblemSolver *--> "1.." Eigenpair
@@ -100,20 +103,28 @@ namespace numopt {
                 # bool is_solved = false
                 # std::vector<numopt::eigenproblem::Eigenpair> eigenpairs
             == protected constructors ==
-                # explicit **BaseEigenproblemSolver**(size_t dim)
+                # explicit **BaseEigenproblemSolver**(size_t dim, size_t number_of_requested_eigenpairs = 1)
             == destructor ==
                 virtual ~ **BaseEigenproblemSolver**() = default
             __ public pure virtual methods __
                 + virtual void **solve**() = 0
             __ public methods __
-                + **get_eigenvalue**() const
-                + **get_eigenvector**() const
+                + std::vector<numopt::eigenproblem::Eigenpair> **get_eigenpairs**() const
+                + numopt::eigenproblem::Eigenpair **get_lowest_eigenpair**() const
+                + numopt::eigenproblem::Eigenpair **get_eigenpair**(size_t i) const
+                + double **get_lowest_eigenvalue**() const
+                + Eigen::VectorXd **get_lowest_eigenvector**() const
+                + double **get_lowest_eigenvector**(size_t index) const
+
+                + double **get_eigenvalue**() const
+                + Eigen::VectorXd **get_eigenvector**() const
+                + double **get_eigenvector**(size_t index) const
         }
 
         BaseMatrixSolver --|> BaseEigenproblemSolver
         abstract class BaseMatrixSolver {
             == constructor ==
-                explicit BaseMatrixSolver(size_t dim)
+                explicit **BaseMatrixSolver**(size_t dim, size_t number_of_requested_eigenpairs = 1)
             == destructor ==
                 **~BaseMatrixSolver**() override = default
             __ public pure virtual methods __
@@ -126,7 +137,7 @@ namespace numopt {
             __ private members __
                 - Eigen::MatrixXd matrix
             == constructors ==
-                explicit **DenseSolver**(size_t dim)
+                explicit **DenseSolver**(size_t dim, size_t number_of_requested_eigenpairs = 1)
             == destructor ==
                  **~DenseSolver**() override = default
             __ public methods __
@@ -140,7 +151,7 @@ namespace numopt {
             __ private members __
                 - Eigen::SparseMatrix<double> matrix
             == constructors ==
-                explicit **SparseSolver**(size_t dim)
+                explicit **SparseSolver**(size_t dim, size_t number_of_requested_eigenpairs = 1)
             == destructor ==
                  **~SparseSolver**() override = default
             __ public methods __
@@ -158,18 +169,19 @@ namespace numopt {
                 - const size_t maximum_subspace_dimension
                 - const size_t collapsed_subspace_dimension
 
-                - const Eigen::VectorXd diagonal
-                - const Eigen::VectorXd t_0
                 - const numopt::VectorFunction matrixVectorProduct
+                - const Eigen::VectorXd diagonal
+                - const Eigen::MatrixXd V_0
 
-                - size_t number_of_iterations
+                - size_t number_of_iterations = 0
             == constructors ==
-                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
-                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                size_t collapsed_subspace_dimension = 2)
-                **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0,
-                double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                size_t collapsed_subspace_dimension = 2)
+                **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
+                                   const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2)
+                **DavidsonSolver**(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2)
             == destructor ==
                  **~DavidsonSolver**() override = default
             __ public methods __

@@ -63,9 +63,9 @@ public:
     /**
      *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
      */
-    explicit DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
-                            double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
-                            size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
 
 
     // DESTRUCTOR
