@@ -38,6 +38,14 @@ public:
     // GETTERS
     double get_eigenvalue() const { return this->eigenvalue; };
     Eigen::VectorXd get_eigenvector() const { return this->eigenvector; };
+
+
+    // PUBLIC METHODS
+    /**
+     *  @return if, within a given @param tolerance, this is equal to @param other
+     *  This is the case if the eigenvalues are equal given the @param tolerance, and so are the eigenvectors
+     */
+    bool isEqual(const numopt::eigenproblem::Eigenpair& other, double tolerance = 1.0e-08) const;
 };
 
 

@@ -8,6 +8,7 @@ namespace eigenproblem {
 /*
  *  CONSTRUCTORS
  */
+
 /**
  *  Default constructor based on a given @param dimension
  */
@@ -24,6 +25,32 @@ Eigenpair::Eigenpair(double eigenvalue, const Eigen::VectorXd& eigenvector) :
     eigenvalue (eigenvalue),
     eigenvector (eigenvector)
 {}
+
+
+
+/*
+ *  PUBLIC METHODS
+ */
+
+/**
+ *  @return if, within a given @param tolerance, this is equal to @param other
+ *  This is the case if the eigenvalues are equal given the @param tolerance, and so are the eigenvectors
+ */
+bool Eigenpair::isEqual(const numopt::eigenproblem::Eigenpair& other, double tolerance) const {
+
+
+    if (this->eigenvector.size() != other.get_eigenvector().size()) {
+        throw std::invalid_argument("Can't compare eigenpairs with eigenvectors of different dimension.");
+    }
+
+    if (std::abs(this->eigenvalue - other.eigenvalue) < tolerance) {
+        if (this->eigenvector.isApprox(other.get_eigenvector())) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 
 }  // namespace eigenproblem
