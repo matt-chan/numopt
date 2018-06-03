@@ -65,4 +65,6 @@ script:
   - cd /home/travis/build/GQCG/numopt
   - mkdir build && cd build
   - cmake ..
-  - make && make test && sudo make install
+  - make
+  - build/tests/SparseSolver_test
+#  - make && make test && sudo make install
