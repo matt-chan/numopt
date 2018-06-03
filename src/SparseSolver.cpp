@@ -73,7 +73,9 @@ void SparseSolver::solve() {
 
             this->eigenpairs[i] = Eigenpair(eigenvalue, eigenvector);
         }
-    }  // if successful
+    } else {  // if Spectra was not successful
+        throw std::runtime_error("Spectra could not solve the sparse eigenvalue problem.");
+    }
 }
 
 
