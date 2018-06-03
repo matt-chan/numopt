@@ -200,7 +200,7 @@ void DavidsonSolver::solve() {
                 VA.conservativeResize(Eigen::NoChange, VA.cols()+1);
                 VA.col(VA.cols()-1) = vA;
             }
-            assert((V.transpose() * V).isApprox(Eigen::MatrixXd::Identity(V.cols(), V.cols()), 1.0e-12));  // make sure that the subspace vectors are orthonormal
+            assert((V.transpose() * V).isApprox(Eigen::MatrixXd::Identity(V.cols(), V.cols()), 1.0e-08));  // make sure that the subspace vectors are orthonormal
         }
 
         // Calculate the new subspace matrix
