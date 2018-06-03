@@ -44,6 +44,8 @@ private:
     const Eigen::VectorXd diagonal;  // the diagonal of the matrix in question
     const Eigen::MatrixXd V_0;  // the set of initial guesses (every column is an initial guess)
 
+    size_t number_of_iterations = 0;
+
 
 
 public:
@@ -72,6 +74,7 @@ public:
 
     // GETTERS
     Eigen::VectorXd get_diagonal() override { return this->diagonal; };
+    size_t get_number_of_iterations() const;
 
 
     // PUBLIC METHODS

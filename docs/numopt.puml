@@ -161,6 +161,8 @@ namespace numopt {
                 - const Eigen::VectorXd diagonal
                 - const Eigen::VectorXd t_0
                 - const numopt::VectorFunction matrixVectorProduct
+
+                - size_t number_of_iterations
             == constructors ==
                 **DavidsonSolver**(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const Eigen::VectorXd& t_0,
                 double convergence_threshold = 1.0e-08, double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
@@ -171,6 +173,8 @@ namespace numopt {
             == destructor ==
                  **~DavidsonSolver**() override = default
             __ public methods __
+                + size_t get_number_of_iterations() const
+
                 + void **solve**() override
         }
 

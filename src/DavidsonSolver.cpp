@@ -75,6 +75,19 @@ DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& 
 
 
 /*
+ *  GETTERS
+ */
+size_t DavidsonSolver::get_number_of_iterations() const {
+
+    if (this->is_solved) {
+        return this->number_of_iterations;
+    } else {
+        throw std::invalid_argument("The Davidson hasn't converged (yet) and you are trying to get the number of iterations.");
+    }
+}
+
+
+/*
  *  PUBLIC METHODS
  */
 
@@ -106,7 +119,7 @@ void DavidsonSolver::solve() {
     std::cout << "S: " << std::endl << S << std::endl << std::endl;
 
 
-    size_t iteration_counter = 0;
+    // this->number_of_iterations starts at 0
     while (!(this->is_solved)) {
 
         // Diagonalize the subspace matrix and find the r (this->number_of_requested_eigenpairs) lowest eigenpairs
@@ -180,10 +193,10 @@ void DavidsonSolver::solve() {
                 this->eigenpairs[i] = numopt::eigenproblem::Eigenpair(eigenvalue, eigenvector);
             }
         } else {
-            iteration_counter++;
+            this->number_of_iterations++;
 
             // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
-            if (iteration_counter >= this->maximum_number_of_iterations) {
+            if (this->number_of_iterations >= this->maximum_number_of_iterations) {
                 throw std::runtime_error("The Davidson algorithm did not converge.");
             }
         }
