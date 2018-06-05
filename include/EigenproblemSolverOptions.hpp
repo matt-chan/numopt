@@ -19,6 +19,7 @@
 
 
 #include <cstddef>
+#include <Eigen/Dense>
 
 
 namespace numopt {
@@ -41,17 +42,14 @@ enum class SolverType {
  */
 struct BaseSolverOptions {
 public:
-    /**
-     *  Implement a pure virtual destructor to make the struct abstract: see (https://stackoverflow.com/a/4641013/7930415)
-     *  Derived classes always implement a default constructor
-     */
-    virtual ~BaseSolverOptions() = 0;
+    virtual numopt::eigenproblem::SolverType get_solver_type() = 0;
 
     /*
      *  MEMBERS
      */
     size_t number_of_required_eigenpairs = 1;
 };
+
 
 
 /**
@@ -62,7 +60,12 @@ public:
     /*
      *  MEMBERS
      */
-    static constexpr numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DENSE;
+    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DENSE;
+
+    /*
+     *  METHODS
+     */
+    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
 };
 
 
@@ -74,7 +77,12 @@ public:
     /*
      *  MEMBERS
      */
-    static constexpr numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::SPARSE;
+    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::SPARSE;
+
+    /*
+     *  METHODS
+     */
+    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
 };
 
 
@@ -86,13 +94,20 @@ public:
     /*
      *  MEMBERS
      */
-    static constexpr numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DAVIDSON;
+    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DAVIDSON;
 
     double residue_tolerance = 1.0e-08;
     double correction_threshold = 1.0e-12;
 
     size_t maximum_subspace_dimension = 15;
     size_t collapsed_subspace_dimension = 2;
+
+    Eigen::MatrixXd X_0;  // Eigen::MatrixXd of initial guesses, or Eigen::VectorXd of initial guess
+
+    /*
+     *  METHODS
+     */
+    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
 };
 
 
