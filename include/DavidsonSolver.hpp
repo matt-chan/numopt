@@ -42,7 +42,9 @@ private:
 
     const numopt::VectorFunction matrixVectorProduct;
     const Eigen::VectorXd diagonal;  // the diagonal of the matrix in question
-    const Eigen::VectorXd t_0;  // the initial guess
+    const Eigen::MatrixXd V_0;  // the set of initial guesses (every column is an initial guess)
+
+    size_t number_of_iterations = 0;
 
 
 
@@ -50,19 +52,20 @@ public:
     // CONSTRUCTORS
     /**
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
-     *  and initial guess @param t_0.
+     *  and a set of initial guesses @param V_0
      */
     DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                   const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                   size_t collapsed_subspace_dimension = 2);
+                   const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+
 
     /**
-     *  Constructor based on a given matrix @param A and an initial guess @param t_0
+     *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
      */
-    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                   size_t collapsed_subspace_dimension = 2);
+    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
 
 
     // DESTRUCTOR
@@ -71,16 +74,16 @@ public:
 
     // GETTERS
     Eigen::VectorXd get_diagonal() override { return this->diagonal; };
+    size_t get_number_of_iterations() const;
 
 
     // PUBLIC METHODS
     /**
-     *  Solve the eigenvalue problem related to the given matrix-vector product.
+     *  Solve the eigenvalue problem related to the given matrix-vector product
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     void solve() override;
 };

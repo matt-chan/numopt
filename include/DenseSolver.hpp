@@ -35,9 +35,9 @@ private:
 public:
     // CONSTRUCTOR
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem.
+     *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit DenseSolver(size_t dim);
+    explicit DenseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR
@@ -55,8 +55,7 @@ public:
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     void solve() override;
 

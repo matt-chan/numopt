@@ -31,9 +31,9 @@ class BaseMatrixSolver : public numopt::eigenproblem::BaseEigenproblemSolver {
 public:
     // CONSTRUCTOR
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem.
+     *   Constructor based on the dimension @param dim of the eigenvalue problem and the @param number_of_requested_eigenpairs
      */
-    explicit BaseMatrixSolver(size_t dim);
+    explicit BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR

@@ -9,3 +9,7 @@ target_link_libraries(${LIBRARY_NAME} PUBLIC Eigen3::Eigen)
 
 # Include Spectra
 target_include_directories(${LIBRARY_NAME} PRIVATE ${Spectra_INCLUDE_DIRS})
+
+# Include cpputil
+target_include_directories(${LIBRARY_NAME} PRIVATE ${cpputil_INCLUDE_DIRS})
+target_link_libraries(${LIBRARY_NAME} PRIVATE cpputil)

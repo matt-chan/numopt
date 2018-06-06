@@ -29,10 +29,10 @@ namespace eigenproblem {
  */
 
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem.
+ *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
  */
-DenseSolver::DenseSolver(size_t dim) :
-    BaseMatrixSolver(dim),
+DenseSolver::DenseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
+    BaseMatrixSolver(dim, number_of_requested_eigenpairs),
     matrix (Eigen::MatrixXd::Zero(this->dim, this->dim))
 {}
 
@@ -44,18 +44,25 @@ DenseSolver::DenseSolver(size_t dim) :
 
 /**
  *  Solve the full dense eigenvalue problem of @member matrix.
+ *
+ *  If successful, it sets
+ *      - @member is_solved to true
+ *      - the number of requested eigenpairs in @member eigenpairs
  */
 void DenseSolver::solve() {
 
     // Solve the dense eigenvalue problem of the Hamiltonian matrix.
-    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> self_adjoint_eigensolver (this->matrix);
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> self_adjoint_eigensolver (this->matrix);  // gives the eigenvalues (and corresponding eigenvectors) in ascending order
 
 
-    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use index 0 because
-    // SelfAdjointEigenSolver gives the eigenvalues (and corresponding eigenvalues) in ascending order.
+    // Set number of requested eigenpairs
     this->is_solved = true;
-    this->eigenvalue = self_adjoint_eigensolver.eigenvalues()(0);
-    this->eigenvector = self_adjoint_eigensolver.eigenvectors().col(0);
+    for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+        double eigenvalue = self_adjoint_eigensolver.eigenvalues()(i);
+        Eigen::VectorXd eigenvector = self_adjoint_eigensolver.eigenvectors().col(i);
+
+        this->eigenpairs[i] = Eigenpair(eigenvalue, eigenvector);
+    }
 }
 
 
