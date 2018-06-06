@@ -68,7 +68,7 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs,
                                double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension,
                                size_t collapsed_subspace_dimension) :
-    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; }, // lambda matrix-vector product function created from the given matrix A
+    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
                    A.diagonal(), V_0, number_of_requested_eigenpairs, residue_tolerance, correction_threshold,
                    maximum_subspace_dimension, collapsed_subspace_dimension)
 {}
@@ -104,7 +104,7 @@ void DavidsonSolver::solve() {
     Eigen::MatrixXd VA = Eigen::MatrixXd::Zero(this->dim, this->V_0.cols());
 
     for (size_t j = 0; j < this->V_0.cols(); j++) {
-        VA.col(j) = this->matrixVectorProduct(this->V_0.col(j));
+        VA.col(j) = this->matrixVectorProduct(this->V_0.col(j));  // TODO: matvec with multiple vectors.
     }
 
     // Calculate the initial subspace matrix S
@@ -128,8 +128,8 @@ void DavidsonSolver::solve() {
 
 
         // Calculate the residual vectors and solve the residual equations
-        //  Calculate the residual vectors in the matrix R (dim x number_of_requested_eigenpairs)
-        //  Calculate the correction vectors in the matrix Delta (dim x number_of_requested_eigenpairs)
+        // Calculate the residual vectors in the matrix R (dim x number_of_requested_eigenpairs)
+        // Calculate the correction vectors in the matrix Delta (dim x number_of_requested_eigenpairs)
         Eigen::MatrixXd R = Eigen::MatrixXd::Zero(this->dim, this->number_of_requested_eigenpairs);
         Eigen::MatrixXd Delta = Eigen::MatrixXd::Zero(this->dim, this->number_of_requested_eigenpairs);
         for (size_t column_index = 0; column_index < R.cols(); column_index++) {
@@ -147,8 +147,8 @@ void DavidsonSolver::solve() {
 
 
         // Check for convergence on each of the residual vectors
-        //  If all residual norms are smaller than the threshold, the algorithm is considered converging
-        //  We use !any() because it's possibly smaller than all()
+        // If all residual norms are smaller than the threshold, the algorithm is considered converging
+        // We use !any() because it's possibly smaller than all()
         if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
             this->is_solved = true;
 
@@ -204,8 +204,8 @@ void DavidsonSolver::solve() {
         }
 
         // Calculate the new subspace matrix
-        //  After an iteration, we have enlarged V with new guess vectors, so our subspace matrix S should also increase
-        //  S's dimension is too short by (V.cols - S.cols)
+        // After an iteration, we have enlarged V with new guess vectors, so our subspace matrix S should also increase
+        // S's dimension is too short by (V.cols - S.cols)
         auto previous_subspace_dimension = static_cast<size_t>(S.cols());
         auto current_subspace_dimension = static_cast<size_t>(V.cols());
         auto dimension_difference = current_subspace_dimension - previous_subspace_dimension;

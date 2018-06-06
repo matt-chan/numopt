@@ -96,8 +96,8 @@ public:
      */
     numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DAVIDSON;
 
-    double residue_tolerance = 1.0e-08;
-    double correction_threshold = 1.0e-12;
+    double residue_tolerance = 1.0e-08;  // the tolerance on the norm of the residual vector
+    double correction_threshold = 1.0e-12;  // the threshold used in solving the (approximated) residue correction equation
 
     size_t maximum_subspace_dimension = 15;
     size_t collapsed_subspace_dimension = 2;
