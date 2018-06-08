@@ -23,21 +23,53 @@ set(EXPORT_TYPE ARCHIVE)
 set(PROJECT_SOURCE_FOLDER ${CMAKE_SOURCE_DIR}/src)
 
 # Find the source files
-file(GLOB PROJECT_SOURCE_FILES ${PROJECT_SOURCE_FOLDER}/*.cpp)
+set(PROJECT_SOURCE_FILES
+        ${PROJECT_SOURCE_FOLDER}/BaseEigenproblemSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/BaseMatrixSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/BaseMinimizer.cpp
+        ${PROJECT_SOURCE_FOLDER}/BaseSystemOfEquationsSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/DavidsonSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/DenseSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/Eigenpair.cpp
+        ${PROJECT_SOURCE_FOLDER}/NewtonMinimizer.cpp
+        ${PROJECT_SOURCE_FOLDER}/NewtonSystemOfEquationsSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/SparseSolver.cpp
+        ${PROJECT_SOURCE_FOLDER}/step.cpp)
 
 # Find the header folder
 set(PROJECT_INCLUDE_FOLDER ${CMAKE_SOURCE_DIR}/include)
 
 # Find the header files (not including version.hpp.in)
-file(GLOB PROJECT_INCLUDE_FILES ${PROJECT_INCLUDE_FOLDER}/*.hpp)
+set(PROJECT_INCLUDE_FILES
+        ${PROJECT_INCLUDE_FOLDER}/BaseEigenproblemSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/BaseMatrixSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/BaseMinimizer.hpp
+        ${PROJECT_INCLUDE_FOLDER}/BaseSystemOfEquationsSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/common.hpp
+        ${PROJECT_INCLUDE_FOLDER}/DavidsonSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/DenseSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/Eigenpair.hpp
+        ${PROJECT_INCLUDE_FOLDER}/EigenproblemSolverOptions.hpp
+        ${PROJECT_INCLUDE_FOLDER}/NewtonMinimizer.hpp
+        ${PROJECT_INCLUDE_FOLDER}/NewtonSystemOfEquationsSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/numopt.hpp
+        ${PROJECT_INCLUDE_FOLDER}/SparseSolver.hpp
+        ${PROJECT_INCLUDE_FOLDER}/step.hpp
+        ${PROJECT_INCLUDE_FOLDER}/version.hpp)
 
 # Find the tests folder
 set(PROJECT_TESTS_FOLDER ${CMAKE_SOURCE_DIR}/tests)
 
 # Find the source files for the tests
-file(GLOB PROJECT_TEST_SOURCE_FILES ${PROJECT_TESTS_FOLDER}/*.cpp)
+set(PROJECT_TEST_SOURCE_FILES
+        ${PROJECT_TESTS_FOLDER}/DavidsonSolver_test.cpp
+        ${PROJECT_TESTS_FOLDER}/DenseSolver_test.cpp
+        ${PROJECT_TESTS_FOLDER}/Eigenpair_test.cpp
+        ${PROJECT_TESTS_FOLDER}/NewtonMinimizer_test.cpp
+        ${PROJECT_TESTS_FOLDER}/NewtonSystemOfEquationsSolver_test.cpp
+        ${PROJECT_TESTS_FOLDER}/SparseSolver_test.cpp)
 
-# Find the folder that has sources for executables.
+# Find the folder that has sources for executables
 set(PROJECT_EXECUTABLES_FOLDER ${CMAKE_SOURCE_DIR}/exe)
 
 
