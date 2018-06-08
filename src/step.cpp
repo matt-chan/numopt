@@ -14,28 +14,26 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_NUMOPT_HPP
-#define NUMOPT_NUMOPT_HPP
-
-
-
-// This file acts as a collective include header
-#include "BaseEigenproblemSolver.hpp"
-#include "BaseMatrixSolver.hpp"
-#include "BaseMinimizer.hpp"
-#include "BaseSystemOfEquationsSolver.hpp"
-#include "common.hpp"
-#include "DavidsonSolver.hpp"
-#include "DenseSolver.hpp"
-#include "Eigenpair.hpp"
-#include "EigenproblemSolverOptions.hpp"
-#include "NewtonMinimizer.hpp"
-#include "NewtonSystemOfEquationsSolver.hpp"
-#include "SparseSolver.hpp"
 #include "step.hpp"
 
-#include "version.hpp"
+
+namespace numopt {
 
 
+/**
+ *  Given a current point @param x, a callable vector function @param f and its corresponding callable Jacobian function
+ *  @param J, return the Newton step p:
+ *      J(x) p = - f
+ */
+Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J) {
 
-#endif  // NUMOPT_NUMOPT_HPP
+    // Calculate f(x) and J(x), i.e. the values of the vector field and its Jacobian at the given x
+    Eigen::VectorXd f_vector = f(x);
+    Eigen::MatrixXd J_matrix = J(x);
+
+    // Return the actual Newton step
+    return J_matrix.colPivHouseholderQr().solve(-f_vector);
+}
+
+
+}  // namespace numopt

@@ -14,43 +14,28 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef NUMOPT_BASEMATRIXSOLVER_HPP
-#define NUMOPT_BASEMATRIXSOLVER_HPP
+#ifndef NUMOPT_STEP_HPP
+#define NUMOPT_STEP_HPP
 
 
+#include "common.hpp"
 
-#include "BaseEigenproblemSolver.hpp"
+#include <Eigen/Dense>
 
 
 
 namespace numopt {
-namespace eigenproblem {
 
 
-class BaseMatrixSolver : public numopt::eigenproblem::BaseEigenproblemSolver {
-public:
-    // CONSTRUCTOR
-    /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem and the @param number_of_requested_eigenpairs
-     */
-    explicit BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
+/**
+ *  Given a current point @param x, a callable vector function @param f and its corresponding callable Jacobian function
+ *  @param J, return the Newton step p:
+ *      J(x) p = - f
+ */
+Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J);
 
 
-    // DESTRUCTOR
-    ~BaseMatrixSolver() override = default;
-
-
-    // PUBLIC PURE VIRTUAL METHODS
-    /**
-     *  Add @param value to the matrix at (@param index1, @param index2).
-     */
-    virtual void addToMatrix(double value, size_t index1, size_t index2) = 0;
-};
-
-
-}  // namespace eigenproblem
 }  // namespace numopt
 
 
-
-#endif  // NUMOPT_BASEMATRIXSOLVER_HPP
+#endif  // NUMOPT_STEP_HPP

@@ -2,18 +2,18 @@
 // 
 // Copyright (C) 2017-2018  the GQCG developers
 // 
-// GQCG-cpputil is free software: you can redistribute it and/or modify
+// GQCG-numopt is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// GQCG-cpputil is distributed in the hope that it will be useful,
+// GQCG-numopt is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GQCG-cpputil.  If not, see <http://www.gnu.org/licenses/>.
+// along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef NUMOPT_DAVIDSONSOLVER_HPP
 #define NUMOPT_DAVIDSONSOLVER_HPP
 
@@ -42,7 +42,9 @@ private:
 
     const numopt::VectorFunction matrixVectorProduct;
     const Eigen::VectorXd diagonal;  // the diagonal of the matrix in question
-    const Eigen::VectorXd t_0;  // the initial guess
+    const Eigen::MatrixXd V_0;  // the set of initial guesses (every column is an initial guess)
+
+    size_t number_of_iterations = 0;
 
 
 
@@ -50,33 +52,38 @@ public:
     // CONSTRUCTORS
     /**
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
-     *  and initial guess @param t_0.
+     *  and a set of initial guesses @param V_0
      */
     DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                   const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                   size_t collapsed_subspace_dimension = 2);
+                   const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+
 
     /**
-     *  Constructor based on a given matrix @param A and an initial guess @param t_0
+     *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
      */
-    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::VectorXd& t_0, double residue_tolerance = 1.0e-08,
-                   double correction_threshold = 1.0e-12, size_t maximum_subspace_dimension = 15,
-                   size_t collapsed_subspace_dimension = 2);
+    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
+                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
+                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
 
 
     // DESTRUCTOR
     ~DavidsonSolver() override = default;
 
 
+    // GETTERS
+    Eigen::VectorXd get_diagonal() override { return this->diagonal; };
+    size_t get_number_of_iterations() const;
+
+
     // PUBLIC METHODS
     /**
-     *  Solve the eigenvalue problem related to the given matrix-vector product.
+     *  Solve the eigenvalue problem related to the given matrix-vector product
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     void solve() override;
 };

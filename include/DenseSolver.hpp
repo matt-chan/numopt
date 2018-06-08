@@ -2,18 +2,18 @@
 // 
 // Copyright (C) 2017-2018  the GQCG developers
 // 
-// GQCG-cpputil is free software: you can redistribute it and/or modify
+// GQCG-numopt is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// GQCG-cpputil is distributed in the hope that it will be useful,
+// GQCG-numopt is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GQCG-cpputil.  If not, see <http://www.gnu.org/licenses/>.
+// along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef NUMOPT_DENSESOLVER_HPP
 #define NUMOPT_DENSESOLVER_HPP
 
@@ -35,9 +35,9 @@ private:
 public:
     // CONSTRUCTOR
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem.
+     *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit DenseSolver(size_t dim);
+    explicit DenseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR
@@ -46,6 +46,7 @@ public:
 
     // GETTERS
     Eigen::MatrixXd get_matrix() { return this->matrix; };
+    Eigen::VectorXd get_diagonal() override { return this->matrix.diagonal(); };
 
 
     // PUBLIC OVERRIDDEN METHODS
@@ -54,10 +55,10 @@ public:
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     void solve() override;
+
 
     /**
      *  Add @param value to the matrix at (@param index1, @param index2).

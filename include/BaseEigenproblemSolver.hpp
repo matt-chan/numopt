@@ -2,26 +2,27 @@
 // 
 // Copyright (C) 2017-2018  the GQCG developers
 // 
-// GQCG-cpputil is free software: you can redistribute it and/or modify
+// GQCG-numopt is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// GQCG-cpputil is distributed in the hope that it will be useful,
+// GQCG-numopt is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GQCG-cpputil.  If not, see <http://www.gnu.org/licenses/>.
+// along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef NUMOPT_BASEEIGENVALUESOLVER_HPP
 #define NUMOPT_BASEEIGENVALUESOLVER_HPP
 
 
+#include "Eigenpair.hpp"
 
 #include <cstddef>
 #include <Eigen/Dense>
-
+#include <vector>
 
 
 namespace numopt {
@@ -31,17 +32,21 @@ namespace eigenproblem {
 class BaseEigenproblemSolver {
 protected:
     const size_t dim;  // the dimension of the vector space associated to the eigenvalue problem
+    const size_t number_of_requested_eigenpairs;
 
     bool is_solved = false;
-    double eigenvalue;
-    Eigen::VectorXd eigenvector;
+    std::vector<numopt::eigenproblem::Eigenpair> eigenpairs;  // a collection of the eigenpairs of the eigenproblem
+                                                              // the eigenpairs are sorted with increasing eigenvalue
+
+//    double eigenvalue;
+//    Eigen::VectorXd eigenvector;
 
 
     // PROTECTED CONSTRUCTORS
     /**
-     *  Protected constructor to initialize the const @member dim by @param dim.
+     *  Protected constructor to initialize the const @member dim by @param dim
      */
-    explicit BaseEigenproblemSolver(size_t dim);
+    explicit BaseEigenproblemSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
 public:
@@ -49,22 +54,47 @@ public:
     virtual ~BaseEigenproblemSolver() = default;
 
 
+    // GETTERS
+    virtual Eigen::VectorXd get_diagonal() = 0;
+
+    // GETTERS - EIGENPAIR
+    std::vector<numopt::eigenproblem::Eigenpair> get_eigenpairs() const;
+
+    numopt::eigenproblem::Eigenpair get_lowest_eigenpair() const;
+    /**
+     *  Return the i-th lowest eigenpair
+     */
+    numopt::eigenproblem::Eigenpair get_eigenpair(size_t i) const;
+
+    // GETTERS - EIGENVALUE
+    double get_lowest_eigenvalue() const;
+    /**
+     *  Special shortcut getter for the lowest eigenvalue: will be deprecated in the next major release
+     */
+    double get_eigenvalue() const;
+
+    // GETTERS - EIGENVECTOR
+    Eigen::VectorXd get_lowest_eigenvector() const;
+    double get_lowest_eigenvector(size_t index) const;
+    /**
+     *  Special shortcut getter for the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
+     */
+    Eigen::VectorXd get_eigenvector() const;
+    /**
+     *  Special shortcut getter for the value at @param index of the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
+     */
+    double get_eigenvector(size_t index) const;
+
+
     // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Solve the eigenvalue problem associated to the eigenproblem solver.
+     *  Solve the eigenvalue problem associated to the eigenproblem solver
      *
      *  If successful, it sets
      *      - @member is_solved to true
-     *      - @member eigenvalue to the lowest calculated eigenvalue
-     *      - @member eigenvector to the associated eigenvector
+     *      - the number of requested eigenpairs in @member eigenpairs
      */
     virtual void solve() = 0;
-
-
-    // GETTERS
-    double get_eigenvalue() const;
-    Eigen::VectorXd get_eigenvector() const;
-    double get_eigenvector(size_t index) const;
 };
 
 

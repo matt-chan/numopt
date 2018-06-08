@@ -2,18 +2,18 @@
 // 
 // Copyright (C) 2017-2018  the GQCG developers
 // 
-// GQCG-cpputil is free software: you can redistribute it and/or modify
+// GQCG-numopt is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// GQCG-cpputil is distributed in the hope that it will be useful,
+// GQCG-numopt is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GQCG-cpputil.  If not, see <http://www.gnu.org/licenses/>.
+// along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #include "SparseSolver.hpp"
 
 #include <SymEigsSolver.h>
@@ -30,10 +30,10 @@ namespace eigenproblem {
  */
 
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem.
+ *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
  */
-SparseSolver::SparseSolver(size_t dim) :
-    BaseMatrixSolver(dim),
+SparseSolver::SparseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
+    BaseMatrixSolver(dim, number_of_requested_eigenpairs),
     matrix (Eigen::SparseMatrix<double> (this->dim, this->dim))  // Eigen::Sparse is always initiated to zeros
 {}
 
@@ -48,24 +48,33 @@ SparseSolver::SparseSolver(size_t dim) :
  *
  *  If successful, it sets
  *      - @member is_solved to true
- *      - @member eigenvalue to the lowest calculated eigenvalue
- *      - @member eigenvector to the associated eigenvector
+ *      - the number of requested eigenpairs in @member eigenpairs
  */
 void SparseSolver::solve() {
 
-    // Solve the Sparse eigenvalue problem of the Hamiltonian matrix.
+    // Solve the sparse eigenvalue problem of the Hamiltonian matrix
     Spectra::SparseSymMatProd<double> matrixVectorProduct (this->matrix);
-    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, 1, 3);  // request 1 eigenpair, and use 3 Ritz pairs for the solution (need at least 2 more Ritz pairs than requested eigenvalues)
+
+    // Request the number of eigenpairs, and use at least 2 more Ritz pairs than requested eigenvalues)
+    Spectra::SymEigsSolver<double, Spectra::SMALLEST_ALGE, Spectra::SparseSymMatProd<double>> spectra_sparse_eigensolver (&matrixVectorProduct, static_cast<int>(this->number_of_requested_eigenpairs), static_cast<int>(this->number_of_requested_eigenpairs) + 2);
     spectra_sparse_eigensolver.init();
     spectra_sparse_eigensolver.compute();
 
-    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use index 0 because
-    // we have specified Spectra::SMALLEST_ALGE, which selects eigenvalues with smallest algebraic value. Furthermore,
-    // we have only requested 1 eigenpair.
+    // Set number of requested eigenpairs
+
+    // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use increasing indices because
+    // we have specified Spectra::SMALLEST_ALGE, which selects eigenvalues with smallest algebraic value
     if (spectra_sparse_eigensolver.info() == Spectra::SUCCESSFUL) {
         this->is_solved = true;
-        this->eigenvalue = spectra_sparse_eigensolver.eigenvalues()(0);
-        this->eigenvector = spectra_sparse_eigensolver.eigenvectors().col(0);
+
+        for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
+            double eigenvalue = spectra_sparse_eigensolver.eigenvalues()(i);
+            Eigen::VectorXd eigenvector = spectra_sparse_eigensolver.eigenvectors().col(i);
+
+            this->eigenpairs[i] = Eigenpair(eigenvalue, eigenvector);
+        }
+    } else {  // if Spectra was not successful
+        throw std::runtime_error("Spectra could not solve the sparse eigenvalue problem.");
     }
 }
 
