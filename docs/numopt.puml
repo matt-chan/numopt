@@ -9,7 +9,7 @@ namespace numopt {
                 # constexpr {static} size_t maximum_number_of_iterations = 128
                 # const double convergence_threshold = 1.0e-8
 
-                # double is_solved = false
+                # double _is_solved = false
 
                 # const Eigen::VectorXd x0
                 # const Eigen::VectorXd x
@@ -49,7 +49,7 @@ namespace numopt {
                 # constexpr {static} size_t maximum_number_of_iterations = 128
                 # const double convergence_threshold = 1.0e-8
 
-                # double is_solved = false
+                # double _is_solved = false
 
                 # const Eigen::VectorXd x0
                 # const Eigen::VectorXd x
@@ -100,7 +100,7 @@ namespace numopt {
                 # const size_t dim
                 # const size_t number_of_requested_eigenpairs
 
-                # bool is_solved = false
+                # bool _is_solved = false
                 # std::vector<numopt::eigenproblem::Eigenpair> eigenpairs
             == protected constructors ==
                 # explicit **BaseEigenproblemSolver**(size_t dim, size_t number_of_requested_eigenpairs = 1)
