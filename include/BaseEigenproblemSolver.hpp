@@ -34,12 +34,9 @@ protected:
     const size_t dim;  // the dimension of the vector space associated to the eigenvalue problem
     const size_t number_of_requested_eigenpairs;
 
-    bool is_solved = false;
+    bool _is_solved = false;
     std::vector<numopt::eigenproblem::Eigenpair> eigenpairs;  // a collection of the eigenpairs of the eigenproblem
                                                               // the eigenpairs are sorted with increasing eigenvalue
-
-//    double eigenvalue;
-//    Eigen::VectorXd eigenvector;
 
 
     // PROTECTED CONSTRUCTORS
@@ -56,6 +53,7 @@ public:
 
     // GETTERS
     virtual Eigen::VectorXd get_diagonal() = 0;
+    bool is_solved() const { return this->_is_solved; }
 
     // GETTERS - EIGENPAIR
     std::vector<numopt::eigenproblem::Eigenpair> get_eigenpairs() const;

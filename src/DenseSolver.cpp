@@ -56,7 +56,7 @@ void DenseSolver::solve() {
 
 
     // Set number of requested eigenpairs
-    this->is_solved = true;
+    this->_is_solved = true;
     for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
         double eigenvalue = self_adjoint_eigensolver.eigenvalues()(i);
         Eigen::VectorXd eigenvector = self_adjoint_eigensolver.eigenvectors().col(i);

@@ -42,7 +42,7 @@ BaseEigenproblemSolver::BaseEigenproblemSolver(size_t dim, size_t number_of_requ
  */
 std::vector<numopt::eigenproblem::Eigenpair> BaseEigenproblemSolver::get_eigenpairs() const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->eigenpairs;
     } else {
         throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the eigenpairs.");
@@ -52,7 +52,7 @@ std::vector<numopt::eigenproblem::Eigenpair> BaseEigenproblemSolver::get_eigenpa
 
 numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_lowest_eigenpair() const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->eigenpairs[0];  // the eigenpairs are sorted by increasing eigenvalue
     } else {
         throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the lowest eigenpair.");
@@ -64,7 +64,7 @@ numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_lowest_eigenpair() c
  */
 numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_eigenpair(size_t i) const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->eigenpairs[i];  // the eigenpairs are sorted by increasing eigenvalue
     } else {
         throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the i-th lowest eigenpair.");
@@ -74,7 +74,7 @@ numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_eigenpair(size_t i) 
 
 double BaseEigenproblemSolver::get_lowest_eigenvalue() const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->eigenpairs[0].get_eigenvalue();
     } else {
         throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the lowest eigenvalue.");
@@ -93,7 +93,7 @@ double BaseEigenproblemSolver::get_eigenvalue() const {
 
 Eigen::VectorXd BaseEigenproblemSolver::get_lowest_eigenvector() const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->eigenpairs[0].get_eigenvector();
     } else {
         throw std::logic_error("The eigenvalue problem hasn't been solved yet and you are trying to get the lowest eigenvector.");
