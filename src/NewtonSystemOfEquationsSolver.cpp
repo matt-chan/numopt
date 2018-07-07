@@ -71,7 +71,7 @@ void NewtonSystemOfEquationsSolver::solve() {
         // Check for convergence
         if (dx.norm() <= this->convergence_threshold) {
             this->is_solved = true;
-        } else {  // not is_solved yet
+        } else {  // not _is_solved yet
             iteration_counter++;
 
             // If we reach more than this->maximum_number_of_iterations, the system is considered not to be converging
@@ -79,7 +79,7 @@ void NewtonSystemOfEquationsSolver::solve() {
                 throw std::runtime_error("The Newton procedure did not converge.");
             }
         }
-    }  // while not is_solved loop
+    }  // while not _is_solved loop
 }
 
 

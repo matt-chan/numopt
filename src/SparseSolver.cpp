@@ -65,7 +65,7 @@ void SparseSolver::solve() {
     // Set the eigenvalue and eigenvector as the lowest-energy eigenpair. We can use increasing indices because
     // we have specified Spectra::SMALLEST_ALGE, which selects eigenvalues with smallest algebraic value
     if (spectra_sparse_eigensolver.info() == Spectra::SUCCESSFUL) {
-        this->is_solved = true;
+        this->_is_solved = true;
 
         for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
             double eigenvalue = spectra_sparse_eigensolver.eigenvalues()(i);

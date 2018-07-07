@@ -79,7 +79,7 @@ DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& 
  */
 size_t DavidsonSolver::get_number_of_iterations() const {
 
-    if (this->is_solved) {
+    if (this->_is_solved) {
         return this->number_of_iterations;
     } else {
         throw std::invalid_argument("The Davidson hasn't converged (yet) and you are trying to get the number of iterations.");
@@ -113,7 +113,7 @@ void DavidsonSolver::solve() {
 
 
     // this->number_of_iterations starts at 0
-    while (!(this->is_solved)) {
+    while (!(this->_is_solved)) {
         // Diagonalize the subspace matrix and find the r (this->number_of_requested_eigenpairs) lowest eigenpairs
         // Lambda contains the requested number of eigenvalues, Z contains the corresponding eigenvectors
         // Z is a (subspace_dimension x number_of_requested_eigenpairs)- matrix
@@ -150,7 +150,7 @@ void DavidsonSolver::solve() {
         //  If all residual norms are smaller than the threshold, the algorithm is considered converging
         //  We use !any() because it's possibly smaller than all()
         if (!((R.colwise().norm().array() > this->convergence_threshold).any())) {  // CLion can give errors that .any() is not found, but it compiles
-            this->is_solved = true;
+            this->_is_solved = true;
 
             // Set the eigenvalues and eigenvectors in this->eigenpairs
             for (size_t i = 0; i < this->number_of_requested_eigenpairs; i++) {
