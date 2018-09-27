@@ -16,8 +16,8 @@
 // along with GQCG-numopt.  If not, see <http://www.gnu.org/licenses/>.
 #include "SparseSolver.hpp"
 
-#include <SymEigsSolver.h>
-#include <MatOp/SparseSymMatProd.h>
+#include <Spectra/SymEigsSolver.h>
+#include <Spectra/MatOp/SparseSymMatProd.h>
 
 
 

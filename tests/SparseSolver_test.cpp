@@ -2,8 +2,8 @@
 
 #include "SparseSolver.hpp"
 
-#include <SymEigsSolver.h>
-#include <MatOp/SparseSymMatProd.h>
+#include <Spectra/SymEigsSolver.h>
+#include <Spectra/MatOp/SparseSymMatProd.h>
 
 #include "cpputil.hpp"
 
