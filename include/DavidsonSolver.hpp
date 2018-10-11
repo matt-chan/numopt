@@ -19,6 +19,7 @@
 
 
 #include "BaseEigenproblemSolver.hpp"
+#include "EigenproblemSolverOptions.hpp"
 
 #include "common.hpp"
 
@@ -52,20 +53,15 @@ public:
     // CONSTRUCTORS
     /**
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
-     *  and a set of initial guesses @param V_0
+     *  and a set of davidson_solver_options
      */
-    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                   const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
-                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
-                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, DavidsonSolverOptions davidson_solver_options);
 
 
     /**
-     *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
+     *  Constructor based on a given matrix @param A and a set of davidson_solver_options
      */
-    DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs = 1,
-                   double residue_tolerance = 1.0e-08, double correction_threshold = 1.0e-12,
-                   size_t maximum_subspace_dimension = 15, size_t collapsed_subspace_dimension = 2);
+    DavidsonSolver(const Eigen::MatrixXd& A, DavidsonSolverOptions davidson_solver_options);
 
 
     // DESTRUCTOR

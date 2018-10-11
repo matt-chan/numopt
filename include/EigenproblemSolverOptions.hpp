@@ -1,3 +1,5 @@
+#include <utility>
+
 // This file is part of GQCG-numopt.
 // 
 // Copyright (C) 2017-2018  the GQCG developers
@@ -47,7 +49,7 @@ public:
     /*
      *  MEMBERS
      */
-    size_t number_of_required_eigenpairs = 1;
+    size_t number_of_requested_eigenpairs = 1;
 };
 
 
@@ -103,6 +105,13 @@ public:
     size_t collapsed_subspace_dimension = 2;
 
     Eigen::MatrixXd X_0;  // Eigen::MatrixXd of initial guesses, or Eigen::VectorXd of initial guess
+
+    /*
+     *  CONSTRUCTOR
+     */
+    explicit DavidsonSolverOptions(const Eigen::MatrixXd& initial_guess) :
+        X_0 (initial_guess)
+    {}
 
     /*
      *  METHODS

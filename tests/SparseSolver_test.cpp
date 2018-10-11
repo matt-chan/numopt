@@ -102,7 +102,9 @@ BOOST_AUTO_TEST_CASE ( simple_sparse_number_of_requested_eigenpairs ) {
 
 
     std::vector<Eigen::Triplet<double>> triplet_list;  // needed for Eigen::SparseMatrix<double>
-    numopt::eigenproblem::SparseSolver sparse_solver (rows, number_of_requested_eigenpairs);
+    numopt::eigenproblem::SparseSolverOptions solver_options;
+    solver_options.number_of_requested_eigenpairs = number_of_requested_eigenpairs;
+    numopt::eigenproblem::SparseSolver sparse_solver (rows, solver_options);
 
 
     for (size_t i = 0; i < rows; i++) {

@@ -113,7 +113,9 @@ BOOST_AUTO_TEST_CASE ( simple_dense_number_of_requested_eigenpairs ) {
 
 
     // Add the matrix into the dense solver and find the lowest eigenpair using the dense solver
-    numopt::eigenproblem::DenseSolver dense_solver (dim, number_of_requested_eigenpairs);
+    numopt::eigenproblem::DenseSolverOptions solver_options;
+    solver_options.number_of_requested_eigenpairs = number_of_requested_eigenpairs;
+    numopt::eigenproblem::DenseSolver dense_solver (dim, solver_options);
     for (size_t i = 0; i < dim; i++) {
         for (size_t j = 0; j < dim; j++) {
             dense_solver.addToMatrix(B(i,j), i, j);
