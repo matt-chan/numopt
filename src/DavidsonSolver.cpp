@@ -36,17 +36,15 @@ namespace eigenproblem {
  *  and a set of initial guesses @param V_0
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                               const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs,
-                               double residue_tolerance, double correction_threshold,
-                               size_t maximum_subspace_dimension, size_t collapsed_subspace_dimension) :
-   BaseEigenproblemSolver(static_cast<size_t>(V_0.rows()), number_of_requested_eigenpairs),
+                               DavidsonSolverOptions davidson_solver_options) :
+   BaseEigenproblemSolver (static_cast<size_t>(davidson_solver_options.X_0.rows()), davidson_solver_options.number_of_requested_eigenpairs),
    matrixVectorProduct (matrixVectorProduct),
    diagonal (diagonal),
-   V_0 (V_0),
-   convergence_threshold (residue_tolerance),
-   correction_threshold (correction_threshold),
-   maximum_subspace_dimension (maximum_subspace_dimension),
-   collapsed_subspace_dimension (collapsed_subspace_dimension)
+   V_0 (davidson_solver_options.X_0),
+   convergence_threshold (davidson_solver_options.residue_tolerance),
+   correction_threshold (davidson_solver_options.correction_threshold),
+   maximum_subspace_dimension (davidson_solver_options.maximum_subspace_dimension),
+   collapsed_subspace_dimension (davidson_solver_options.collapsed_subspace_dimension)
 {
     if (V_0.cols() < this->number_of_requested_eigenpairs) {
         throw std::invalid_argument("You have to specify at least as many initial guesses as number of requested eigenpairs.");
@@ -65,12 +63,9 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
 /**
  *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
  */
-DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V_0, size_t number_of_requested_eigenpairs,
-                               double residue_tolerance, double correction_threshold, size_t maximum_subspace_dimension,
-                               size_t collapsed_subspace_dimension) :
-    DavidsonSolver([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
-                   A.diagonal(), V_0, number_of_requested_eigenpairs, residue_tolerance, correction_threshold,
-                   maximum_subspace_dimension, collapsed_subspace_dimension)
+DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, DavidsonSolverOptions davidson_solver_options) :
+    DavidsonSolver ([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
+    A.diagonal(), davidson_solver_options)
 {}
 
 

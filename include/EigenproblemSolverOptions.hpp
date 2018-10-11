@@ -47,7 +47,7 @@ public:
     /*
      *  MEMBERS
      */
-    size_t number_of_required_eigenpairs = 1;
+    size_t number_of_requested_eigenpairs = 1;
 };
 
 

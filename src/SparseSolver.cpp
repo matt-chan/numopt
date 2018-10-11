@@ -32,8 +32,8 @@ namespace eigenproblem {
 /**
  *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
  */
-SparseSolver::SparseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
-    BaseMatrixSolver(dim, number_of_requested_eigenpairs),
+SparseSolver::SparseSolver(size_t dim, SparseSolverOptions sparse_solver_options) :
+    BaseMatrixSolver (dim, sparse_solver_options.number_of_requested_eigenpairs),
     matrix (Eigen::SparseMatrix<double> (this->dim, this->dim))  // Eigen::Sparse is always initiated to zeros
 {}
 
