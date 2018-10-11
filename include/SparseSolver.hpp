@@ -40,7 +40,7 @@ public:
     /**
      *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit SparseSolver(size_t dim, SparseSolverOptions sparse_solver_options);
+    explicit SparseSolver(size_t dim, SparseSolverOptions sparse_solver_options = SparseSolverOptions());
 
 
     // DESTRUCTOR

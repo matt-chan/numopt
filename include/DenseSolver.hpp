@@ -39,8 +39,8 @@ public:
     /**
      *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit DenseSolver(size_t dim, DenseSolverOptions dense_solver_options);
-    explicit DenseSolver(Eigen::MatrixXd matrix, DenseSolverOptions dense_solver_options);
+    explicit DenseSolver(size_t dim, DenseSolverOptions dense_solver_options = DenseSolverOptions());
+    explicit DenseSolver(Eigen::MatrixXd matrix, DenseSolverOptions dense_solver_options = DenseSolverOptions());
 
 
     // DESTRUCTOR

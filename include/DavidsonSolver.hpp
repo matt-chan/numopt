@@ -55,8 +55,7 @@ public:
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
      *  and a set of initial guesses @param V_0
      */
-    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
-                   DavidsonSolverOptions davidson_solver_options);
+    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, DavidsonSolverOptions davidson_solver_options);
 
 
     /**

@@ -1,3 +1,5 @@
+#include <utility>
+
 // This file is part of GQCG-numopt.
 // 
 // Copyright (C) 2017-2018  the GQCG developers
@@ -107,8 +109,8 @@ public:
     /*
      *  CONSTRUCTOR
      */
-    explicit DavidsonSolverOptions(Eigen::MatrixXd& initial_guess) :
-        X_0(initial_guess)
+    explicit DavidsonSolverOptions(Eigen::MatrixXd initial_guess) :
+        X_0(std::move(initial_guess))
     {}
 
     /*
