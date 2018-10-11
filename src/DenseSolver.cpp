@@ -29,7 +29,7 @@ namespace eigenproblem {
  */
 
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
+ *   Constructor based on the dimension @param dim of the eigenvalue problem and @param dense_solver_options
  */
 DenseSolver::DenseSolver(size_t dim, DenseSolverOptions dense_solver_options) :
     BaseMatrixSolver (dim, dense_solver_options.number_of_requested_eigenpairs),
@@ -37,7 +37,7 @@ DenseSolver::DenseSolver(size_t dim, DenseSolverOptions dense_solver_options) :
 {}
 
 /**
- *   Constructor based on @param matrix of the eigenvalue problem and a @param requested_number_of_eigenpairs
+ *   Constructor based on @param matrix of the eigenvalue problem and @param dense_solver_options
  */
 DenseSolver::DenseSolver(Eigen::MatrixXd matrix,  DenseSolverOptions dense_solver_options) :
         BaseMatrixSolver (matrix.cols(), dense_solver_options.number_of_requested_eigenpairs),

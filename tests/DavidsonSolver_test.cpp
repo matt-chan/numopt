@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
     Eigen::VectorXd x_0 = Eigen::VectorXd::Constant(2, 1);
 
     // Create the solver options
-    numopt::eigenproblem::DavidsonSolverOptions solver_options_faulty(x_0);
+    numopt::eigenproblem::DavidsonSolverOptions solver_options_faulty (x_0);
     solver_options_faulty.number_of_requested_eigenpairs = 3;
     solver_options_faulty.maximum_subspace_dimension = 4;
     solver_options_faulty.collapsed_subspace_dimension = 8;
@@ -28,13 +28,13 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
     solver_options_faulty.number_of_requested_eigenpairs = 1;
     BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver (A, solver_options_faulty), std::invalid_argument);  // collapsed subspace dimension (8) cannot be larger than maximum subspace dimension (4)
 
-    numopt::eigenproblem::DavidsonSolverOptions solver_options(x_0);
+    numopt::eigenproblem::DavidsonSolverOptions solver_options (x_0);
     BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver (A, solver_options));
 
 
     // Test a constructor with two supplied guess vectors
     Eigen::MatrixXd Y_0 = Eigen::MatrixXd::Identity(2, 2);
-    numopt::eigenproblem::DavidsonSolverOptions solver_options_faulty_2(Y_0);
+    numopt::eigenproblem::DavidsonSolverOptions solver_options_faulty_2 (Y_0);
     solver_options_faulty_2.maximum_subspace_dimension = 8;
     solver_options_faulty_2.number_of_requested_eigenpairs = 2;
     solver_options_faulty_2.collapsed_subspace_dimension = 1;

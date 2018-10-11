@@ -1,4 +1,4 @@
-// This file is part of GQCG-numopt.
+&// This file is part of GQCG-numopt.
 // 
 // Copyright (C) 2017-2018  the GQCG developers
 // 

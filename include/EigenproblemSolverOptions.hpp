@@ -109,8 +109,8 @@ public:
     /*
      *  CONSTRUCTOR
      */
-    explicit DavidsonSolverOptions(Eigen::MatrixXd initial_guess) :
-        X_0(std::move(initial_guess))
+    explicit DavidsonSolverOptions(const Eigen::MatrixXd& initial_guess) :
+        X_0 (initial_guess)
     {}
 
     /*

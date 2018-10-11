@@ -33,7 +33,7 @@ namespace eigenproblem {
 
 /**
  *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
- *  and a set of initial guesses @param V_0
+ *  and a set of davidson_solver_options
  */
 DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal,
                                DavidsonSolverOptions davidson_solver_options) :
@@ -61,7 +61,7 @@ DavidsonSolver::DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct
 
 
 /**
- *  Constructor based on a given matrix @param A and a set of initial guesses @param V_0
+ *  Constructor based on a given matrix @param A and a set of davidson_solver_options
  */
 DavidsonSolver::DavidsonSolver(const Eigen::MatrixXd& A, DavidsonSolverOptions davidson_solver_options) :
     DavidsonSolver ([A](const Eigen::VectorXd& x) { return A * x; },  // lambda matrix-vector product function created from the given matrix A
