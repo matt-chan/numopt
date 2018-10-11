@@ -35,8 +35,9 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
     // Test a constructor with two supplied guess vectors
     Eigen::MatrixXd Y_0 = Eigen::MatrixXd::Identity(2, 2);
     numopt::eigenproblem::DavidsonSolverOptions solver_options_faulty_2(Y_0);
-    solver_options_faulty_2.maximum_subspace_dimension = 1;
-    solver_options_faulty_2.collapsed_subspace_dimension = 8;
+    solver_options_faulty_2.maximum_subspace_dimension = 8;
+    solver_options_faulty_2.number_of_requested_eigenpairs = 2;
+    solver_options_faulty_2.collapsed_subspace_dimension = 1;
     BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver (A, solver_options_faulty_2), std::invalid_argument);  // collapsed subspace dimension (1) cannot be smaller number of requested eigenpairs (2)
 }
 
@@ -206,10 +207,10 @@ BOOST_AUTO_TEST_CASE ( liu_50_number_of_requested_eigenpairs ) {
     }
 
     // Solve using the Davidson diagonalization, supplying the requested amount of  initial guesses
-    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N,N).topLeftCorner(N, number_of_requested_eigenpairs);
+    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N, N).topLeftCorner(N, number_of_requested_eigenpairs);
     numopt::eigenproblem::DavidsonSolverOptions solver_options (X_0);
     solver_options.number_of_requested_eigenpairs = number_of_requested_eigenpairs;
-    solver_options.maximum_subspace_dimension = number_of_requested_eigenpairs;
+    solver_options.collapsed_subspace_dimension = number_of_requested_eigenpairs;
     numopt::eigenproblem::DavidsonSolver davidson_solver (A, solver_options);
     davidson_solver.solve();
 
@@ -335,10 +336,10 @@ BOOST_AUTO_TEST_CASE ( liu_1000_number_of_requested_eigenpairs ) {
     }
 
     // Solve using the Davidson diagonalization, supplying the requested amount of  initial guesses
-    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N,N).topLeftCorner(N, number_of_requested_eigenpairs);
+    Eigen::MatrixXd X_0 = Eigen::MatrixXd::Identity(N, N).topLeftCorner(N, number_of_requested_eigenpairs);
     numopt::eigenproblem::DavidsonSolverOptions solver_options (X_0);
     solver_options.number_of_requested_eigenpairs = number_of_requested_eigenpairs;
-    solver_options.maximum_subspace_dimension = number_of_requested_eigenpairs;
+    solver_options.collapsed_subspace_dimension = number_of_requested_eigenpairs;
     numopt::eigenproblem::DavidsonSolver davidson_solver (A, solver_options);
     davidson_solver.solve();
 
