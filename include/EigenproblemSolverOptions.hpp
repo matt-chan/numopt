@@ -105,6 +105,13 @@ public:
     Eigen::MatrixXd X_0;  // Eigen::MatrixXd of initial guesses, or Eigen::VectorXd of initial guess
 
     /*
+     *  CONSTRUCTOR
+     */
+    explicit DavidsonSolverOptions(Eigen::MatrixXd& initial_guess) :
+        X_0(initial_guess)
+    {}
+
+    /*
      *  METHODS
      */
     numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
