@@ -19,6 +19,7 @@
 
 
 #include "BaseEigenproblemSolver.hpp"
+#include "EigenproblemSolverOptions.hpp"
 
 #include "common.hpp"
 
@@ -50,6 +51,19 @@ private:
 
 public:
     // CONSTRUCTORS
+    /**
+     *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
+     *  and a set of davidson_solver_options
+     */
+    DavidsonSolver(const numopt::VectorFunction& matrixVectorProduct, const Eigen::VectorXd& diagonal, const DavidsonSolverOptions& davidson_solver_options);
+
+
+    /**
+     *  Constructor based on a given matrix @param A and a set of davidson_solver_options
+     */
+    DavidsonSolver(const Eigen::MatrixXd& A, const DavidsonSolverOptions& davidson_solver_options);
+
+
     /**
      *  Constructor based on a given matrix-vector product function @param matrixVectorProduct, a @param diagonal,
      *  and a set of initial guesses @param V_0

@@ -22,6 +22,7 @@
 #include <Eigen/Sparse>
 
 #include "BaseMatrixSolver.hpp"
+#include "EigenproblemSolverOptions.hpp"
 
 
 
@@ -37,9 +38,13 @@ private:
 public:
     // CONSTRUCTORS
     /**
+     *   Constructor based on the dimension @param dim of the eigenvalue problem and @param sparse_solver_options
+     */
+    SparseSolver(size_t dim, const SparseSolverOptions& sparse_solver_options);
+    /**
      *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
      */
-    explicit SparseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
+    SparseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
 
     // DESTRUCTOR
