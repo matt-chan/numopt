@@ -1,4 +1,4 @@
-# numopt v1.4.0
+# numopt v1.5.0
 
 [![Build Status](https://travis-ci.org/GQCG/numopt.svg?branch=master)](https://travis-ci.org/GQCG/numopt)
 
