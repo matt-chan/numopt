@@ -42,6 +42,24 @@ BOOST_AUTO_TEST_CASE ( constructor ) {
 }
 
 
+BOOST_AUTO_TEST_CASE ( constructor_raw ) {
+
+    // Create an example matrix
+    Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2, 2);
+
+    // Test constructors with one supplied guess vector
+    Eigen::VectorXd x_0 = Eigen::VectorXd::Constant(2, 1);
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0, 3, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);  // 3 requested eigenpairs: not enough initial guesses
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0, 1, 1.0e-08, 1.0e-12, 4, 8), std::invalid_argument);  // collapsed subspace dimension (8) cannot be larger than maximum subspace dimension (4)
+    BOOST_CHECK_NO_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, x_0));
+
+
+    // Test a constructor with two supplied guess vectors
+    Eigen::MatrixXd Y_0 = Eigen::MatrixXd::Identity(2, 2);
+    BOOST_CHECK_THROW(numopt::eigenproblem::DavidsonSolver davidson_solver (A, Y_0, 2, 1.0e-08, 1.0e-12, 8, 1), std::invalid_argument);  // collapsed subspace dimension (1) cannot be smaller number of requested eigenpairs (2)
+}
+
+
 BOOST_AUTO_TEST_CASE ( diagonal_getter_Davidson ) {
 
     // Test the diagonal getter for Davidson
