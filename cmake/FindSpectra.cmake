@@ -11,7 +11,7 @@
 
 
 # For the moment, only an installation in /usr/local is supported
-find_path(SPECTRA_PREFIX README.md HINTS /usr/local/spectra)
+find_path(SPECTRA_PREFIX README.md HINTS ${CMAKE_SOURCE_DIR}/spectra /usr/local/spectra)
 
 if("${SPECTRA_PREFIX}" STREQUAL "SPECTRA_PREFIX-NOTFOUND")
     message(WARNING "Spectra was not found in location /usr/local/.")
