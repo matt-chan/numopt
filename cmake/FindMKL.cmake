@@ -7,7 +7,7 @@
 # MKL_LIBRARIES - The MKL libraries
 
 # We start by looking for the mkl header file. If found, we will move up in directories.
-find_path(MKL_PREFIX mkl.h HINTS /opt/intel/mkl/include ${MKLROOT}/include)
+find_path(MKL_PREFIX mkl.h HINTS /opt/intel/mkl/include $ENV{MKLROOT}/include)
 
 if("${MKL_PREFIX}" STREQUAL "MKL_PREFIX-NOTFOUND")
     message(FATAL_ERROR "MKL not found. Please set MKLROOT in environment variables in order to use MKL.")
