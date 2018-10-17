@@ -10,7 +10,7 @@
 find_path(MKL_PREFIX mkl.h HINTS /opt/intel/mkl/include ${MKLROOT}/include)
 
 if("${MKL_PREFIX}" STREQUAL "MKL_PREFIX-NOTFOUND")
-    message(WARNING "MKL not found. Please set MKLROOT in environment variables in order to use MKL.")
+    message(FATAL_ERROR "MKL not found. Please set MKLROOT in environment variables in order to use MKL.")
 else()
     set(MKL_FOUND TRUE)
 
