@@ -37,11 +37,20 @@ else()
             NAMES libmkl_core.a
             PATHS ${MKL_PREFIX}/lib ${MKL_PREFIX}/lib/intel64)
 
+    # Cluster compilations need additional options
+    find_library(MKL_LAPACK
+            NAMES libmkl_lapack.a
+            PATHS ${MKL_PREFIX}/lib ${MKL_PREFIX}/lib/intel64)
+    # If Lapack is not found, then you are not on a cluster
+    if("${MKL_LAPACK}" STREQUAL "MKL_LAPACK-NOTFOUND")
+        set(MKL_LAPACK "")
+    endif()
+
     find_library(MKL_INTEL_OPENMP
             NAMES libiomp5.a
             PATHS ${INTEL_PREFIX}/lib ${INTEL_PREFIX}/lib/intel64)
 
-    set(MKL_LIBRARIES ${MKL_INTERFACE_LIBRARY} ${MKL_INTEL_THREAD} ${MKL_CORE_LIBRARY} ${MKL_INTEL_OPENMP} pthread m dl)
+    set(MKL_LIBRARIES ${MKL_INTERFACE_LIBRARY} ${MKL_INTEL_THREAD} ${MKL_CORE_LIBRARY} ${MKL_LAPACK} ${MKL_INTEL_OPENMP} pthread m dl)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DEIGEN_USE_MKL_ALL -DMKL_LP64 -m64")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEIGEN_USE_MKL_ALL -DMKL_LP64 -m64")
 endif()
