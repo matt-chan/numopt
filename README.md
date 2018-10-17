@@ -30,7 +30,7 @@ To install this library:
         * the header files (and cmake files, see Usage) will be installed in `prefix/numopt/include`
     *  if you want to use [![MKL Dependency](https://img.shields.io/badge/MKL-2019+-000000.svg)](https://software.intel.com/en-us/mkl) as a backend for BLAS/LAPACK operations, you should add the USE_MKL option
     ```
-    cmake -DINSTALLATION_PREFIX=prefix -DUSE_MKL ..    
+    cmake -DINSTALLATION_PREFIX=prefix -DUSE_MKL=ON ..    
     ```
 
 
