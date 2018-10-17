@@ -8,7 +8,7 @@ project(numopt
         LANGUAGES CXX)
 
 # Option to support MKL builds
-option(USE_MKL "Use the Intel Math Kernel Libraries" ON)
+option(USE_MKL "Use the Intel Math Kernel Libraries" OFF)
 
 
 # To enable the C++11 standard, we have to add flags like -std=gnu+11 or so. CMake can take care of this:
