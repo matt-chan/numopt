@@ -11,6 +11,11 @@ A C++ library for performing numerical optimization.
 [![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.4+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 [![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.2+-blue.svg)](https://github.com/GQCG/cpputil)
 
+If you have [![Boost Dependency](https://img.shields.io/badge/MKL-2019+-000000.svg)](https://software.intel.com/en-us/mkl) installed, please set the INTEL and MKLROOT environment variables. On a Mac OS system, these should be equal to
+```
+export INTEL=/opt/intel
+export MKLROOT=/opt/intel/mkl
+```
 
 
 ## Installation

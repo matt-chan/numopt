@@ -18,3 +18,7 @@ version.hpp
 
 *backup*/
 *back-up*/
+
+# Custom release and debug builds
+debug/
+release/

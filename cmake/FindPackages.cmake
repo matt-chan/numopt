@@ -12,3 +12,6 @@ find_package(Spectra REQUIRED)
 
 # Find cpputil
 find_package(cpputil 1.2.1 REQUIRED)
+
+# Find MKL (optional)
+find_package(MKL)

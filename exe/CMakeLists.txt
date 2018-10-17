@@ -16,3 +16,9 @@ target_link_libraries(davidson_timings PRIVATE Eigen3::Eigen)
 # Include cpputil
 target_include_directories(davidson_timings PRIVATE ${cpputil_INCLUDE_DIRS})
 target_link_libraries(davidson_timings PRIVATE cpputil)
+
+# Include MKL (optional)
+if (MKL_FOUND)
+    target_include_directories(davidson_timings PRIVATE ${MKL_INCLUDE_DIRS})
+    target_link_libraries(davidson_timings PRIVATE ${MKL_LIBRARIES})
+endif()
