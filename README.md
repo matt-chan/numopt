@@ -9,8 +9,6 @@ A C++ library for performing numerical optimization.
 ## Dependencies
 [![Boost Dependency](https://img.shields.io/badge/Boost-1.65.1+-000000.svg)](www.boost.org)
 [![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.4+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-[![Spectra Dependency](https://img.shields.io/badge/Spectra-0.6.1+-000000.svg)](https://github.com/yixuan/spectra/)
-
 [![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.2+-blue.svg)](https://github.com/GQCG/cpputil)
 
 
@@ -19,7 +17,7 @@ A C++ library for performing numerical optimization.
 To install this library:
 1. clone the master branch, which contains the latest release:
 
-        git clone https://github.com/GQCG/numopt.git --branch master --single-branch
+        git clone https://github.com/GQCG/numopt.git --branch master --single-branch --recurse-submodules
         cd numopt
 
 2. perform an out-of-source cmake build:
