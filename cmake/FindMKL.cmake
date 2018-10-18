@@ -17,7 +17,7 @@ else()
     # Go up to MKL and INTEL directories
     get_filename_component(MKL_PREFIX ${MKL_PREFIX} DIRECTORY)
     get_filename_component(INTEL_PREFIX ${MKL_PREFIX} DIRECTORY)
-    message(STATUS "MKL was found at:")
+    message(STATUS "MKL was found at " ${INTEL_PREFIX} " " ${MKL_PREFIX})
     message(STATUS ${MKL_PREFIX})
     message(STATUS ${INTEL_PREFIX})
 
