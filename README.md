@@ -11,8 +11,6 @@ A C++ library for performing numerical optimization.
 [![Eigen3 Dependency](https://img.shields.io/badge/Eigen-3.3.4+-000000.svg)](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 [![cpputil Dependency](https://img.shields.io/badge/cpputil-1.2.2+-blue.svg)](https://github.com/GQCG/cpputil)
 
-
-
 ## Installation
 To install this library:
 1. clone the master branch, which contains the latest release:
@@ -30,7 +28,10 @@ To install this library:
     * `prefix` is the installation prefix (defaulted to `/usr/local`) you want the library to be installed at:
         * the library `libnumopt.a` will be installed in `prefix/numopt/lib`
         * the header files (and cmake files, see Usage) will be installed in `prefix/numopt/include`
-
+    *  if you want to use [![MKL Dependency](https://img.shields.io/badge/MKL-2019+-000000.svg)](https://software.intel.com/en-us/mkl) as a backend for BLAS/LAPACK operations, you should add the USE_MKL option
+    ```
+    cmake -DINSTALLATION_PREFIX=prefix -DUSE_MKL=ON ..    
+    ```
 
 
 ## Usage

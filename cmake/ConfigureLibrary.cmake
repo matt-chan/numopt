@@ -13,3 +13,9 @@ target_include_directories(${LIBRARY_NAME} PRIVATE ${Spectra_INCLUDE_DIRS})
 # Include cpputil
 target_include_directories(${LIBRARY_NAME} PRIVATE ${cpputil_INCLUDE_DIRS})
 target_link_libraries(${LIBRARY_NAME} PRIVATE cpputil)
+
+# Include MKL (optional)
+if (MKL_FOUND)
+    target_include_directories(${LIBRARY_NAME} PRIVATE ${MKL_INCLUDE_DIRS})
+    target_link_libraries(${LIBRARY_NAME} PRIVATE ${MKL_LIBRARIES})
+endif()
