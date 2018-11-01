@@ -18,7 +18,7 @@ requirements:
   host:
     - eigen >=3.3.4
     - boost >=1.6.5
-    - cpputil >=1.2.2
+    - cpputil >=1.5.1
     - mkl >=2019.0
     - mkl-include >=2019.0
   run:
