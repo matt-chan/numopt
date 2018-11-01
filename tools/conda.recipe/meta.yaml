@@ -1,0 +1,33 @@
+package:
+  name: numopt
+  version: 1.5.0
+
+source:
+  path: ../../
+
+build:
+  run_exports:
+    - numopt
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - ccache
+  host:
+    - eigen >=3.3.4
+    - boost >=1.6.5
+    - cpputil >=1.2.2
+    - mkl >=2019.0
+    - mkl-include >=2019.0
+  run:
+    - mkl >=2019.0
+test:
+  commands:
+    - conda inspect linkages numopt 
+
+about:
+  home: https://github.com/GQCG/numopt 
+  license: LGPL
+
