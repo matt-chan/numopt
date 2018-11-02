@@ -32,7 +32,10 @@ namespace syseq {
  */
 
 /**
- *  Constructor based on an initial guess @param x0, a (callable) function @param f and a (callable) Jacobian @param J
+ *  @param x0                           the initial guess
+ *  @param f                            a callable vector function
+ *  @param J                            the corresponding callable Jacobian
+ *  @param convergence_threshold        the threshold used to determine convergence
  */
 NewtonSystemOfEquationsSolver::NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f,
                                                              const JacobianFunction& J, double convergence_threshold) :
@@ -51,8 +54,8 @@ NewtonSystemOfEquationsSolver::NewtonSystemOfEquationsSolver(const Eigen::Vector
  *  Find a solution to the problem f(x) = 0
  *
  *  If successful, it sets
- *      - @member is_solved to true
- *      - @member x to the found solution
+ *      - is_solved to true
+ *      - the found solution
  */
 void NewtonSystemOfEquationsSolver::solve() {
 

@@ -30,6 +30,9 @@ namespace numopt {
 namespace eigenproblem {
 
 
+/**
+ *  An eigenproblem solver that stores a sparse representation of the matrix
+ */
 class SparseSolver : public numopt::eigenproblem::BaseMatrixSolver {
 private:
     Eigen::SparseMatrix<double> matrix;
@@ -38,11 +41,14 @@ private:
 public:
     // CONSTRUCTORS
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem and @param sparse_solver_options
+     *  @param dim                      the dimension of the matrix
+     *  @param sparse_solver_options    the options to be used for the sparse eigenproblem algorithm
      */
     SparseSolver(size_t dim, const SparseSolverOptions& sparse_solver_options);
+
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
+     *  @param dim                                  the dimension of the matrix
+     *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
      */
     SparseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
@@ -57,16 +63,20 @@ public:
 
     // PUBLIC OVERRIDDEN METHODS
     /**
-     *  Solve the sparse eigenvalue problem of @member matrix.
+     *  Solve the sparse eigenvalue problem
      *
      *  If successful, it sets
-     *      - @member is_solved to true
-     *      - the number of requested eigenpairs in @member eigenpairs
+     *      - _is_solved to true
+     *      - the number of requested eigenpairs
      */
     void solve() override;
 
     /**
-     *  Add @param value to the matrix at (@param index1, @param index2).
+     *  @param value        the value to be added
+     *  @param index1       the first index of the matrix
+     *  @param index2       the second index of the matrix
+     *
+     *  Add the value to the matrix at (index1, index2)
      */
     void addToMatrix(double value, size_t index1, size_t index2) override;
 };

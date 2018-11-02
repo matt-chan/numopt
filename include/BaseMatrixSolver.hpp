@@ -27,11 +27,15 @@ namespace numopt {
 namespace eigenproblem {
 
 
+/**
+ *  A base class for eigenproblem solvers in which the whole matrix is supplied
+ */
 class BaseMatrixSolver : public numopt::eigenproblem::BaseEigenproblemSolver {
 public:
     // CONSTRUCTOR
     /**
-     *   Constructor based on the dimension @param dim of the eigenvalue problem and the @param number_of_requested_eigenpairs
+     *  @param dim                                  the dimension of the eigenvalue problem
+     *  @param number_of_requested_eigenpairs       the number of eigenpairs the solver should find
      */
     explicit BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
 
@@ -42,7 +46,11 @@ public:
 
     // PUBLIC PURE VIRTUAL METHODS
     /**
-     *  Add @param value to the matrix at (@param index1, @param index2).
+     *  @param value        the value to be added
+     *  @param index1       the first index of the matrix
+     *  @param index2       the second index of the matrix
+     *
+     *  Add the value to the matrix at (index1, index2)
      */
     virtual void addToMatrix(double value, size_t index1, size_t index2) = 0;
 };

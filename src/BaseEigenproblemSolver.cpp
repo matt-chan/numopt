@@ -27,7 +27,8 @@ namespace eigenproblem {
  */
 
 /**
- *  Protected constructor to initialize the const @member dim by @param dim.
+ *  @param dim                                  the dimension of the vector space associated to the eigenvalue problem
+ *  @param number_of_requested_eigenpairs       the number of eigenpairs the solver should find
  */
 BaseEigenproblemSolver::BaseEigenproblemSolver(size_t dim, size_t number_of_requested_eigenpairs) :
     dim (dim),
@@ -59,8 +60,11 @@ numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_lowest_eigenpair() c
     }
 }
 
+
 /**
- *  Return the i-th lowest eigenpair
+ *  @param i        the index for the i-th lowest eigenpair
+ *
+ *  @return the i-th lowest eigenpair
  */
 numopt::eigenproblem::Eigenpair BaseEigenproblemSolver::get_eigenpair(size_t i) const {
 
@@ -101,6 +105,11 @@ Eigen::VectorXd BaseEigenproblemSolver::get_lowest_eigenvector() const {
 }
 
 
+/**
+ *  @param index        the index of an element of the lowest eigenvector
+ *
+ *  @return the element at the given index of the lowest eigenvector
+ */
 double BaseEigenproblemSolver::get_lowest_eigenvector(size_t index) const {
 
     return this->get_lowest_eigenvector()[index];
@@ -117,7 +126,9 @@ Eigen::VectorXd BaseEigenproblemSolver::get_eigenvector() const {
 
 
 /**
- *  Special shortcut getter for the value at @param index of the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
+ *  @param index        the index of an element of the lowest eigenvector
+ *
+ *  @return the value at the index of the eigenvector corresponding to the lowest eigenvalue: will be deprecated in the next major release
  */
 double BaseEigenproblemSolver::get_eigenvector(size_t index) const {
 

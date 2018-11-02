@@ -19,7 +19,9 @@
 
 
 
-// This file acts as a collective include header
+/**
+ *  The collective include header for numopt
+ */
 #include "BaseEigenproblemSolver.hpp"
 #include "BaseMatrixSolver.hpp"
 #include "BaseMinimizer.hpp"

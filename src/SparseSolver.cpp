@@ -30,15 +30,18 @@ namespace eigenproblem {
  */
 
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and @param sparse_solver_options
+ *  @param dim                      the dimension of the matrix
+ *  @param sparse_solver_options    the options to be used for the sparse eigenproblem algorithm
  */
 SparseSolver::SparseSolver(size_t dim, const SparseSolverOptions& sparse_solver_options) :
     BaseMatrixSolver (dim, sparse_solver_options.number_of_requested_eigenpairs),
     matrix (Eigen::SparseMatrix<double> (this->dim, this->dim))  // Eigen::Sparse is always initiated to zeros
 {}
 
+
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
+ *  @param dim                                  the dimension of the matrix
+ *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
  */
 SparseSolver::SparseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
         BaseMatrixSolver(dim, number_of_requested_eigenpairs),
@@ -51,11 +54,11 @@ SparseSolver::SparseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
  */
 
 /**
- *  Solve the sparse eigenvalue problem of @member matrix.
+ *  Solve the sparse eigenvalue problem
  *
  *  If successful, it sets
- *      - @member is_solved to true
- *      - the number of requested eigenpairs in @member eigenpairs
+ *      - _is_solved to true
+ *      - the number of requested eigenpairs
  */
 void SparseSolver::solve() {
 
@@ -87,7 +90,11 @@ void SparseSolver::solve() {
 
 
 /**
- *  Add @param value to the matrix at (@param index1, @param index2).
+ *  @param value        the value to be added
+ *  @param index1       the first index of the matrix
+ *  @param index2       the second index of the matrix
+ *
+ *  Add the value to the matrix at (index1, index2)
  */
 void SparseSolver::addToMatrix(double value, size_t index1, size_t index2) {
     this->matrix.coeffRef(index1,index2) += value;
