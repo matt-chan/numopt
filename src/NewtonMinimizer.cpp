@@ -32,8 +32,10 @@ namespace minimization {
  *  CONSTRUCTORS
  */
 /**
- *  Constructor based on a given initial guess @param x0, a callable gradient function @param grad, a callable
- *  Hessian function @param H, and a @param convergence_threshold
+ *  @param x0                           the initial guess
+ *  @param grad                         the callable gradient function
+ *  @param H                            the callable Hessian function
+ *  @param convergence_threshold        the threshold used for establishing convergence
  */
 NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H,
                                  double convergence_threshold) :
@@ -50,8 +52,8 @@ NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFuncti
  *  Minimize the function f(x)
  *
  *  If successful, sets
- *      - @member is_solved to true
- *      - @member x to the found solution
+ *      - is_solved to true
+ *      - the found solution
  */
 void NewtonMinimizer::solve() {
 

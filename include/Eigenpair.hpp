@@ -39,14 +39,15 @@ private:
 public:
     // CONSTRUCTORS
     /**
-     *  Initializing constructor based on a given @param dimension, this will:
-     *      - set @member eigenvalue to 0.0
-     *      - set @member eigenvector to an @param dimensional Eigen::VectorXd::Zero
+     *  A constructor that sets the eigenvalue to zero and the corresponding eigenvector to zeros
+     *
+     *  @param dimension        the dimension of the eigenvector
      */
     explicit Eigenpair(size_t dimension = 1);
 
     /**
-     *  Constructor based on a given @param eigenvalue and @param eigenvector
+     *  @param eigenvalue       the eigenvalue
+     *  @param eigenvector      the eigenvector
      */
     Eigenpair(double eigenvalue, const Eigen::VectorXd& eigenvector);
 
@@ -58,10 +59,12 @@ public:
 
     // PUBLIC METHODS
     /**
-     *  @return if, within a given @param tolerance, this is equal to @param other
-     *  This is the case if the eigenvalues are equal given the @param tolerance, and so are the eigenvectors
+     *  @param other            the other Eigenpair
+     *  @param tolerance        a tolerance for comparison
+     *
+     *  @return if this Eigenpair is equal to the other: if the eigenvalues and eigenvectors are equal given the tolerance
      */
-    bool isEqual(const numopt::eigenproblem::Eigenpair& other, double tolerance = 1.0e-08) const;
+    bool isEqual(const numopt::eigenproblem::Eigenpair& other, double tolerance=1.0e-08) const;
 };
 
 

@@ -25,7 +25,8 @@ namespace eigenproblem {
 
 // CONSTRUCTOR
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and the @param number_of_requested_eigenpairs
+ *  @param dim                                  the dimension of the eigenvalue problem
+ *  @param number_of_requested_eigenpairs       the number of eigenpairs the solver should find
  */
 BaseMatrixSolver::BaseMatrixSolver(size_t dim, size_t number_of_requested_eigenpairs) :
     BaseEigenproblemSolver(dim, number_of_requested_eigenpairs)

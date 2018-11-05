@@ -21,8 +21,11 @@ namespace numopt {
 
 
 /**
- *  Given a current point @param x, a callable vector function @param f and its corresponding callable Jacobian function
- *  @param J, return the Newton step p:
+ *  @param x        the current point
+ *  @param f        a callable vector function
+ *  @param J        the corresponding Jacobian function
+ *
+ *  @return the Newton step
  *      J(x) p = - f
  */
 Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J) {
