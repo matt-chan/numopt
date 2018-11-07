@@ -37,7 +37,7 @@ namespace minimization {
  *  @param H                            the callable Hessian function
  *  @param convergence_threshold        the threshold used for establishing convergence
  */
-NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H,
+NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const VectorFunction& grad, const MatrixFunction& H,
                                  double convergence_threshold) :
     BaseMinimizer(x0, convergence_threshold),
     grad (grad),
@@ -62,7 +62,7 @@ void NewtonMinimizer::solve() {
 
     // For mathematical correctness, the Jacobian of the gradient is the transpose of the Hessian of the scalar function
     // behind it
-    numopt::JacobianFunction H_t = [this](const Eigen::VectorXd& x) {
+    numopt::MatrixFunction H_t = [this](const Eigen::VectorXd& x) {
         Eigen::MatrixXd H = this->H(x);
         H.transposeInPlace();
         return H;

@@ -35,7 +35,7 @@ namespace numopt {
  *  @return the Newton step
  *      J(x) p = - f
  */
-Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J);
+Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const MatrixFunction& J);
 
 
 }  // namespace numopt

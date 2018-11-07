@@ -28,7 +28,7 @@ namespace numopt {
  *  @return the Newton step
  *      J(x) p = - f
  */
-Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const JacobianFunction& J) {
+Eigen::VectorXd newtonStep(const Eigen::VectorXd& x, const VectorFunction& f, const MatrixFunction& J) {
 
     // Calculate f(x) and J(x), i.e. the values of the vector field and its Jacobian at the given x
     Eigen::VectorXd f_vector = f(x);
