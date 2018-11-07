@@ -34,7 +34,7 @@ namespace syseq {
 class NewtonSystemOfEquationsSolver : public BaseSystemOfEquationsSolver {
 private:
     const VectorFunction f;  // function wrapper for the vector 'function'
-    const JacobianFunction J;  // function wrapper for the JacobianFunction
+    const MatrixFunction J;  // function wrapper for the JacobianFunction
 
 
 public:
@@ -45,7 +45,7 @@ public:
      *  @param J                            the corresponding callable Jacobian
      *  @param convergence_threshold        the threshold used to determine convergence
      */
-    NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+    NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f, const MatrixFunction& J,
                                   double convergence_threshold = 1.0e-08);
 
 

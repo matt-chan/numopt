@@ -33,8 +33,8 @@ namespace minimization {
  */
 class NewtonMinimizer : public BaseMinimizer {
 private:
-    const GradientFunction grad;
-    const HessianFunction H;
+    const VectorFunction grad;
+    const MatrixFunction H;
 
 
 public:
@@ -45,7 +45,7 @@ public:
      *  @param H                            the callable Hessian function
      *  @param convergence_threshold        the threshold used for establishing convergence
      */
-    NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H,
+    NewtonMinimizer(const Eigen::VectorXd& x0, const VectorFunction& grad, const MatrixFunction& H,
                     double convergence_threshold = 1.0e-08);
 
 

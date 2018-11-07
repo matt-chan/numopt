@@ -38,7 +38,7 @@ namespace syseq {
  *  @param convergence_threshold        the threshold used to determine convergence
  */
 NewtonSystemOfEquationsSolver::NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f,
-                                                             const JacobianFunction& J, double convergence_threshold) :
+                                                             const MatrixFunction& J, double convergence_threshold) :
     BaseSystemOfEquationsSolver(x0, convergence_threshold),
     f (f),
     J (J)

@@ -59,12 +59,8 @@ public:
  */
 struct DenseSolverOptions : public BaseSolverOptions {
 public:
-    // MEMBERS
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DENSE;
-
-
     // OVERRIDDEN METHODS
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::DENSE; };
 };
 
 
@@ -74,12 +70,8 @@ public:
  */
 struct SparseSolverOptions : public BaseSolverOptions {
 public:
-    // MEMBERS
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::SPARSE;
-
-
     // OVERRIDDEN METHODS
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::SPARSE; };
 };
 
 
@@ -90,8 +82,6 @@ public:
 struct DavidsonSolverOptions : public BaseSolverOptions {
 public:
     // MEMBERS
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DAVIDSON;
-
     double residue_tolerance = 1.0e-08;  // the tolerance on the norm of the residual vector
     double correction_threshold = 1.0e-12;  // the threshold used in solving the (approximated) residue correction equation
 
@@ -111,7 +101,7 @@ public:
 
 
     // OVERRIDDEN METHODS
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::DAVIDSON; };
 };
 
 
