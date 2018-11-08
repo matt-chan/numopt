@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 # Specify the project, its version and the used language
 project(numopt
-        VERSION 1.5.1
+        VERSION 1.6.0
         LANGUAGES CXX)
 
 # Option to support MKL builds
