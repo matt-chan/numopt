@@ -29,25 +29,40 @@ namespace numopt {
 namespace eigenproblem {
 
 
+/**
+ *  An eigenproblem solver that stores a dense representation of the matrix
+ */
 class DenseSolver : public numopt::eigenproblem::BaseMatrixSolver {
 private:
     Eigen::MatrixXd matrix;
 
 
 public:
-    // CONSTRUCTOR
+    // CONSTRUCTORS
     /**
-     *   Constructor based on the dimension @param dim or matrix of the eigenvalue problem and @param dense_solver_options
+     *  @param dim                      the dimension of the matrix
+     *  @param dense_solver_options     the options to be used for the dense eigenproblem algorithm
      */
     DenseSolver(size_t dim, const DenseSolverOptions& dense_solver_options);
-    DenseSolver(Eigen::MatrixXd matrix, const DenseSolverOptions& dense_solver_options);
-
 
     /**
-     *   Constructor based on the dimension @param dim or matrix of the eigenvalue problem and a @param requested_number_of_eigenpairs
+     *  @param matrix                   the full dense representation of the matrix
+     *  @param dense_solver_options     the options to be used for the dense eigenproblem algorithm
+     */
+    DenseSolver(const Eigen::MatrixXd& matrix, const DenseSolverOptions& dense_solver_options);
+
+    /**
+     *  @param dim                                  the dimension of the matrix
+     *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
      */
     DenseSolver(size_t dim, size_t number_of_requested_eigenpairs = 1);
+
+    /**
+     *  @param matrix                   the full dense representation of the matrix
+     *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
+     */
     DenseSolver(Eigen::MatrixXd matrix, size_t number_of_requested_eigenpairs = 1);
+
 
     // DESTRUCTOR
     ~DenseSolver() override = default;
@@ -60,17 +75,20 @@ public:
 
     // PUBLIC OVERRIDDEN METHODS
     /**
-     *  Solve the full dense eigenvalue problem of @member matrix.
+     *  Solve the full dense eigenvalue problem
      *
      *  If successful, it sets
-     *      - @member is_solved to true
-     *      - the number of requested eigenpairs in @member eigenpairs
+     *      - _is_solved to true
+     *      - the number of requested eigenpairs
      */
     void solve() override;
 
-
     /**
-     *  Add @param value to the matrix at (@param index1, @param index2).
+     *  @param value        the value to be added
+     *  @param index1       the first index of the matrix
+     *  @param index2       the second index of the matrix
+     *
+     *  Add the value to the matrix at (index1, index2)
      */
     void addToMatrix(double value, size_t index1, size_t index2) override;
 };

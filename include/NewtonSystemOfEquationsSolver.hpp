@@ -28,19 +28,24 @@ namespace numopt {
 namespace syseq {
 
 
+/**
+ *  A class that is solves a system of equations by using a Newton algorithm
+ */
 class NewtonSystemOfEquationsSolver : public BaseSystemOfEquationsSolver {
 private:
     const VectorFunction f;  // function wrapper for the vector 'function'
-    const JacobianFunction J;  // function wrapper for the JacobianFunction
+    const MatrixFunction J;  // function wrapper for the JacobianFunction
 
 
 public:
-    // CONSTRUCTOR
+    // CONSTRUCTORS
     /**
-     *  Constructor based on an initial guess @param x0, a function wrapper for the function @param f and a function 
-     *  wrapper for the Jacobian @param J.
+     *  @param x0                           the initial guess
+     *  @param f                            a callable vector function
+     *  @param J                            the corresponding callable Jacobian
+     *  @param convergence_threshold        the threshold used to determine convergence
      */
-    NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f, const JacobianFunction& J,
+    NewtonSystemOfEquationsSolver(const Eigen::VectorXd& x0, const VectorFunction& f, const MatrixFunction& J,
                                   double convergence_threshold = 1.0e-08);
 
 
@@ -49,8 +54,8 @@ public:
      *  Find a solution to the problem f(x) = 0
      *
      *  If successful, it sets
-     *      - @member is_solved to true
-     *      - @member x to the found solution
+     *      - is_solved to true
+     *      - the found solution
      */
     void solve() override;
 };

@@ -29,31 +29,38 @@ namespace eigenproblem {
  */
 
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and @param dense_solver_options
+ *  @param dim                      the dimension of the matrix
+ *  @param dense_solver_options     the options to be used for the dense eigenproblem algorithm
  */
 DenseSolver::DenseSolver(size_t dim, const DenseSolverOptions& dense_solver_options) :
     BaseMatrixSolver (dim, dense_solver_options.number_of_requested_eigenpairs),
     matrix (Eigen::MatrixXd::Zero(this->dim, this->dim))
 {}
 
+
 /**
- *   Constructor based on @param matrix of the eigenvalue problem and @param dense_solver_options
+ *  @param matrix                   the full dense representation of the matrix
+ *  @param dense_solver_options     the options to be used for the dense eigenproblem algorithm
  */
-DenseSolver::DenseSolver(Eigen::MatrixXd matrix, const DenseSolverOptions& dense_solver_options) :
+DenseSolver::DenseSolver(const Eigen::MatrixXd& matrix, const DenseSolverOptions& dense_solver_options) :
         BaseMatrixSolver (matrix.cols(), dense_solver_options.number_of_requested_eigenpairs),
         matrix (matrix)
 {}
 
+    
 /**
- *   Constructor based on the dimension @param dim of the eigenvalue problem and a @param requested_number_of_eigenpairs
+ *  @param dim                                  the dimension of the matrix
+ *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
  */
 DenseSolver::DenseSolver(size_t dim, size_t number_of_requested_eigenpairs) :
         BaseMatrixSolver (dim, number_of_requested_eigenpairs),
         matrix (Eigen::MatrixXd::Zero(this->dim, this->dim))
 {}
 
+
 /**
- *   Constructor based on @param matrix of the eigenvalue problem and a @param requested_number_of_eigenpairs
+ *  @param matrix                   the full dense representation of the matrix
+ *  @param number_of_requested_eigenpairs       the number of eigenpairs the eigensolver should find
  */
 DenseSolver::DenseSolver(Eigen::MatrixXd matrix, size_t number_of_requested_eigenpairs) :
         BaseMatrixSolver (matrix.cols(), number_of_requested_eigenpairs),
@@ -66,7 +73,7 @@ DenseSolver::DenseSolver(Eigen::MatrixXd matrix, size_t number_of_requested_eige
  */
 
 /**
- *  Solve the full dense eigenvalue problem of @member matrix.
+ *  Solve the dense eigenvalue problem
  *
  *  If successful, it sets
  *      - @member is_solved to true
@@ -90,7 +97,11 @@ void DenseSolver::solve() {
 
 
 /**
- *  Add @param value to the matrix at (@param index1, @param index2).
+ *  @param value        the value to be added
+ *  @param index1       the first index of the matrix
+ *  @param index2       the second index of the matrix
+ *
+ *  Add the value to the matrix at (index1, index2)
  */
 void DenseSolver::addToMatrix(double value, size_t index1, size_t index2) {
     this->matrix(index1, index2) += value;

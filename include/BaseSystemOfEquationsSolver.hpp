@@ -27,6 +27,9 @@ namespace numopt {
 namespace syseq {
 
 
+/**
+ *  A base class for solving systems of equations
+ */
 class BaseSystemOfEquationsSolver {
 protected:
     constexpr static size_t maximum_number_of_iterations = 128;
@@ -41,7 +44,8 @@ protected:
 public:
     // CONSTRUCTORS
     /**
-     *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
+     *  @param x0                           the initial guess
+     *  @param convergence_threshold        the threshold for establishing convergence
      */
     BaseSystemOfEquationsSolver(const Eigen::VectorXd& x0, double convergence_threshold);
 
@@ -59,8 +63,8 @@ public:
      *  Solve the problem associated to the numerical minimization method
      *
      *  If successful, it sets
-     *      - @member is_solved to true
-     *      - @member x to the found solution
+     *      - is_solved to true
+     *      - the found solution
      */
     virtual void solve() = 0;
 };
