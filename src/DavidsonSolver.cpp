@@ -194,6 +194,8 @@ void DavidsonSolver::solve() {
 
                 this->eigenpairs[i] = numopt::eigenproblem::Eigenpair(eigenvalue, eigenvector);
             }
+	
+	    break;  // because we don't want the flow to continue to after the if-statement
         }
 
         else {  // if not yet converged
