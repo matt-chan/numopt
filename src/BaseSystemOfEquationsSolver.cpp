@@ -26,7 +26,8 @@ namespace syseq {
  *  CONSTRUCTORS
  */
 /**
- *  Constructor based on a given initial guess @param x0 and a @param convergence_threshold
+ *  @param x0                           the initial guess
+ *  @param convergence_threshold        the threshold for establishing convergence
  */
 BaseSystemOfEquationsSolver::BaseSystemOfEquationsSolver(const Eigen::VectorXd& x0, double convergence_threshold) :
     x0 (x0),

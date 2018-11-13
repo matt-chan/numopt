@@ -27,6 +27,9 @@ namespace numopt {
 namespace minimization {
 
 
+/**
+ *  A base class for the implementation of minimizers
+ */
 class BaseMinimizer {
 protected:
     constexpr static size_t maximum_number_of_iterations = 128;

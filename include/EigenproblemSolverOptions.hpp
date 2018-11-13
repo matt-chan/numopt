@@ -38,66 +38,50 @@ enum class SolverType {
 };
 
 
+
 /**
- *  POD (plain object data) struct to specify eigenproblem solver options
- *  The derived structs can be used to interface with the eigenproblem solvers implemented in numopt::eigenproblem
+ *  A base struct to specify eigenproblem solver options, whose derived structs can be used with the eigenproblem solvers
  */
 struct BaseSolverOptions {
 public:
-    virtual numopt::eigenproblem::SolverType get_solver_type() = 0;
-
-    /*
-     *  MEMBERS
-     */
+    // MEMBERS
     size_t number_of_requested_eigenpairs = 1;
+
+
+    // PURE VIRTUAL METHODS
+    virtual numopt::eigenproblem::SolverType get_solver_type() = 0;
 };
 
 
 
 /**
- *  POD struct to specify dense eigenproblem solver options
+ *  A struct to specify dense eigenproblem solver options
  */
 struct DenseSolverOptions : public BaseSolverOptions {
 public:
-    /*
-     *  MEMBERS
-     */
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DENSE;
-
-    /*
-     *  METHODS
-     */
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+    // OVERRIDDEN METHODS
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::DENSE; };
 };
 
 
+
 /**
- *  POD struct to specify sparse eigenproblem solver options
+ *  A struct to specify sparse eigenproblem solver options
  */
 struct SparseSolverOptions : public BaseSolverOptions {
 public:
-    /*
-     *  MEMBERS
-     */
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::SPARSE;
-
-    /*
-     *  METHODS
-     */
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+    // OVERRIDDEN METHODS
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::SPARSE; };
 };
 
 
+
 /**
- *  POD struct to specify Davidson eigenproblem solver options
+ *  A struct to specify Davidson eigenproblem solver options
  */
 struct DavidsonSolverOptions : public BaseSolverOptions {
 public:
-    /*
-     *  MEMBERS
-     */
-    numopt::eigenproblem::SolverType solver_type = numopt::eigenproblem::SolverType::DAVIDSON;
-
+    // MEMBERS
     double residue_tolerance = 1.0e-08;  // the tolerance on the norm of the residual vector
     double correction_threshold = 1.0e-12;  // the threshold used in solving the (approximated) residue correction equation
 
@@ -106,17 +90,18 @@ public:
 
     Eigen::MatrixXd X_0;  // Eigen::MatrixXd of initial guesses, or Eigen::VectorXd of initial guess
 
-    /*
-     *  CONSTRUCTOR
+
+    // CONSTRUCTORS
+    /**
+     *  @param initial_guess        the initial guess(es) for the Davidson algorithm, specified as column(s) of the given vector/matrix
      */
     explicit DavidsonSolverOptions(const Eigen::MatrixXd& initial_guess) :
         X_0 (initial_guess)
     {}
 
-    /*
-     *  METHODS
-     */
-    numopt::eigenproblem::SolverType get_solver_type () override { return this->solver_type; };
+
+    // OVERRIDDEN METHODS
+    numopt::eigenproblem::SolverType get_solver_type () override { return numopt::eigenproblem::SolverType::DAVIDSON; };
 };
 
 

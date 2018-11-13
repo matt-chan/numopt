@@ -27,11 +27,8 @@
 namespace numopt {
 
 
-typedef std::function<Eigen::VectorXd (const Eigen::VectorXd&)> VectorFunction;
-typedef std::function<Eigen::VectorXd (const Eigen::VectorXd&)> GradientFunction;
-
-typedef std::function<Eigen::MatrixXd (const Eigen::VectorXd&)> JacobianFunction;
-typedef std::function<Eigen::MatrixXd (const Eigen::VectorXd&)> HessianFunction;
+using VectorFunction = std::function<Eigen::VectorXd (const Eigen::VectorXd&)>;
+using MatrixFunction = std::function<Eigen::MatrixXd (const Eigen::VectorXd&)>;
 
 
 }  // namespace numopt

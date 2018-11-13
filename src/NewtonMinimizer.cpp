@@ -32,10 +32,12 @@ namespace minimization {
  *  CONSTRUCTORS
  */
 /**
- *  Constructor based on a given initial guess @param x0, a callable gradient function @param grad, a callable
- *  Hessian function @param H, and a @param convergence_threshold
+ *  @param x0                           the initial guess
+ *  @param grad                         the callable gradient function
+ *  @param H                            the callable Hessian function
+ *  @param convergence_threshold        the threshold used for establishing convergence
  */
-NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFunction& grad, const HessianFunction& H,
+NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const VectorFunction& grad, const MatrixFunction& H,
                                  double convergence_threshold) :
     BaseMinimizer(x0, convergence_threshold),
     grad (grad),
@@ -50,8 +52,8 @@ NewtonMinimizer::NewtonMinimizer(const Eigen::VectorXd& x0, const GradientFuncti
  *  Minimize the function f(x)
  *
  *  If successful, sets
- *      - @member is_solved to true
- *      - @member x to the found solution
+ *      - is_solved to true
+ *      - the found solution
  */
 void NewtonMinimizer::solve() {
 
@@ -60,7 +62,7 @@ void NewtonMinimizer::solve() {
 
     // For mathematical correctness, the Jacobian of the gradient is the transpose of the Hessian of the scalar function
     // behind it
-    numopt::JacobianFunction H_t = [this](const Eigen::VectorXd& x) {
+    numopt::MatrixFunction H_t = [this](const Eigen::VectorXd& x) {
         Eigen::MatrixXd H = this->H(x);
         H.transposeInPlace();
         return H;
