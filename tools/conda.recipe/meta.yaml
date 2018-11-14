@@ -1,6 +1,6 @@
 package:
   name: numopt
-  version: 1.5.0
+  version: 1.6.0
 
 source:
   path: ../../
@@ -18,7 +18,7 @@ requirements:
   host:
     - eigen >=3.3.4
     - boost >=1.6.5
-    - cpputil >=1.5.1
+    - cpputil >=1.6.0
     - mkl >=2019.0
     - mkl-include >=2019.0
   run:
